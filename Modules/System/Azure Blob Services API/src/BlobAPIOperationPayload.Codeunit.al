@@ -17,8 +17,6 @@ codeunit 9042 "Blob API Operation Payload"
         HeaderValues: Dictionary of [Text, Text];
         OptionalHeaderValues: Dictionary of [Text, Text];
         OptionalUriParameters: Dictionary of [Text, Text];
-        Response: HttpResponseMessage;
-        ResponseIsSet: Boolean;
 
     // #region Initialize Requests
     /// <summary>
