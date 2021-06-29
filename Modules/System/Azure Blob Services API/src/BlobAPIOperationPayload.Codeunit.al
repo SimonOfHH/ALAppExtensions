@@ -329,7 +329,6 @@ codeunit 9042 "Blob API Operation Payload"
         SortedDictionary: DotNet SortedDictionary2;
         SortedDictionaryEntry: DotNet GenericKeyValuePair2;
         HeaderKey: Text;
-        HeaderValue: Text;
     begin
         SortedDictionary := SortedDictionary.SortedDictionary();
 
