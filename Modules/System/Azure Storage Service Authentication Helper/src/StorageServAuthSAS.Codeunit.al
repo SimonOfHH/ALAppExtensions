@@ -90,7 +90,7 @@ codeunit 9062 "Storage Serv. Auth. SAS"
     /// Allowed values are: http, https
     /// </summary>
     /// <param name="ResourceType">Value (as Text) specifying the used protocols</param>
-    procedure AddProtocl(Protocol: Text)
+    procedure AddProtocol(Protocol: Text)
     begin
         Protocols.Add(Protocol);
     end;

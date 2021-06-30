@@ -11,11 +11,6 @@ codeunit 9061 "Storage Serv. Auth. Access Key"
 {
     Access = Public;
 
-    trigger OnRun()
-    begin
-
-    end;
-
     var
         AuthFormatHelper: Codeunit "Auth. Format Helper";
         ApiVersion: Enum "Storage service API Version";
