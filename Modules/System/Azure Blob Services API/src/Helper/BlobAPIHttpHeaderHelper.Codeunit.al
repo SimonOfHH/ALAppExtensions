@@ -17,7 +17,7 @@ codeunit 9048 "Blob API HttpHeader Helper"
     begin
         Headers := Client.DefaultRequestHeaders;
         // Add to all requests >>
-        UsedDateTimeText := FormatHelper.GetRfc1123DateTime();
+        UsedDateTimeText := FormatHelper.GetRfc1123DateTime(CurrentDateTime());
         OperationPayload.AddHeader('x-ms-date', UsedDateTimeText);
         OperationPayload.AddHeader('x-ms-version', Format(OperationPayload.GetApiVersion()));
         // Add to all requests <<

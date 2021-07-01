@@ -22,7 +22,7 @@ codeunit 9063 "Storage Service Authorization"
     var
         StorageServAuthSharedKey: Codeunit "Storage Serv. Auth. Shared Key";
     begin
-        StorageServAuthSharedKey.SetSecret(Secret);
+        StorageServAuthSharedKey.SetSharedKey(Secret);
         exit(StorageServAuthSharedKey);
     end;
 }
