@@ -7,9 +7,14 @@
 /// Exposes functionality to handle the creation of an Account SAS (Shared Access Signature)
 /// More Information: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas
 /// </summary>
-codeunit 9062 "Storage Serv. Auth. SAS"
+codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorization"
 {
-    Access = Public;
+    Access = Internal;
+
+    procedure Authorize(Payload: Interface "Storage Service Payload")
+    begin
+        // TODO
+    end;
 
     /// <summary>
     /// Sets the name of the Azure Storage Account

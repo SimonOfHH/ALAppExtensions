@@ -14,7 +14,6 @@ codeunit 9048 "Blob API HttpHeader Helper"
         Headers: HttpHeaders;
         HeadersDictionary: Dictionary of [Text, Text];
         HeaderKey: Text;
-        AuthType: Enum "Storage Service Authorization Type";
     begin
         Headers := Client.DefaultRequestHeaders;
         // Add to all requests >>
@@ -27,12 +26,6 @@ codeunit 9048 "Blob API HttpHeader Helper"
         foreach HeaderKey in HeadersDictionary.Keys do
             if not IsContentHeader(HeaderKey) then
                 OperationPayload.AddHeader(Headers, HeaderKey, HeadersDictionary.Get(HeaderKey));
-        case OperationPayload.GetAuthorizationType() of
-            AuthType::AccessKey:
-                OperationPayload.AddHeader(Headers, 'Authorization', OperationPayload.GetSharedKeySignature(HttpRequestType));
-        //AuthType::"AAD (Client Credentials)":
-        //    OperationPayload.AddHeader(Headers, 'Authorization', OperationPayload.GetAADBearerToken(HttpRequestType));
-        end;
     end;
 
     procedure HandleContentHeaders(var Content: HttpContent; var OperationPayload: Codeunit "Blob API Operation Payload"): Boolean

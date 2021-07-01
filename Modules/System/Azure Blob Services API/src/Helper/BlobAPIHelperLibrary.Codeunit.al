@@ -191,7 +191,6 @@ codeunit 9043 "Blob API Helper Library"
         GetApiVersionParts(CurrApiVersion, YearCurr, MonthCurr, DayCurr);
         GetApiVersionParts(CompareApiVersion, YearCompare, MonthCompare, DayCompare);
 
-
         if YearCurr > YearCompare then
             exit(true);
         if YearCurr < YearCompare then

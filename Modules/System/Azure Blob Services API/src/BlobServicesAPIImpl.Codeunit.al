@@ -598,7 +598,6 @@ codeunit 9041 "Blob Services API Impl."
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
-        Response: HttpResponseMessage;
     begin
         OperationPayload.SetOperation(Operation::GetBlobProperties);
         OperationResponse := BlobAPIWebRequestHelper.HeadOperation(OperationPayload, StrSubstNo(PropertiesOperationNotSuccessfulErr, 'get', '')); // TODO: Validate
@@ -1030,8 +1029,6 @@ codeunit 9041 "Blob Services API Impl."
     end;
 
     procedure PutPageFromURL(var OperationPayload: Codeunit "Blob API Operation Payload"; StartRangeSource: Integer; EndRangeSource: Integer; SourceUri: Text): Codeunit "Blob API Operation Response"
-    var
-        OperationResponse: Codeunit "Blob API Operation Response";
     begin
         exit(PutPageFromURL(OperationPayload, StartRangeSource, EndRangeSource, StartRangeSource, EndRangeSource, SourceUri)); // uses the same ranges for source and destination
     end;

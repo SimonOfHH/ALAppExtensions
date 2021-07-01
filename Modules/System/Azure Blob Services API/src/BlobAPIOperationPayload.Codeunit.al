@@ -2,14 +2,39 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
-codeunit 9042 "Blob API Operation Payload"
+codeunit 9042 "Blob API Operation Payload" implements "Storage Service Payload"
 {
     Access = Public;
 
+    procedure AddHeader("Key": Text; "Value": Text)
+    begin
+        if HeaderValues.ContainsKey("Key") then
+            HeaderValues.Remove("Key");
+        HeaderValues.Add("Key", "Value");
+    end;
+
+    procedure AddParameter(ParameterName: Text; ParameterValue: Text)
+    begin
+        // TODO
+    end;
+
+    /// <summary>
+    /// Returns the Storage Account name for this request
+    /// </summary>
+    /// <returns>The Storage Account name</returns>
+    procedure GetStorageAccountName(): Text
+    begin
+        // TODO
+    end;
+
+    procedure GetAuthorization(): Interface "Storage Service Authorization"
+    begin
+        exit(Authorization);
+    end;
+
     var
-        AuthType: Enum "Storage Service Authorization Type";
+        Authorization: Interface "Storage Service Authorization";
         ApiVersion: Enum "Storage Service API Version";
-        Secret: Text;
         StorageAccountName: Text;
         ContainerName: Text;
         BlobName: Text;
@@ -23,30 +48,9 @@ codeunit 9042 "Blob API Operation Payload"
     /// Initializes the object to be used in an API operation
     /// </summary>
     /// <param name="NewStorageAccountName">The Storage Account to use</param>
-    procedure InitializeRequest(NewStorageAccountName: Text)
+    procedure Initialize(NewStorageAccountName: Text; Authorization: Interface "Storage Service Authorization")
     begin
-        InitializeRequest(NewStorageAccountName, '');
-    end;
-
-    /// <summary>
-    /// Initializes the object to be used in an API operation
-    /// </summary>
-    /// <param name="NewStorageAccountName">The Storage Account to use</param>
-    /// <param name="NewContainerName">The name of the container in the Storage Account</param>
-    procedure InitializeRequest(NewStorageAccountName: Text; NewContainerName: Text)
-    begin
-        InitializeRequest(NewStorageAccountName, NewContainerName, '');
-    end;
-
-    /// <summary>
-    /// Initializes the object to be used in an API operation
-    /// </summary>
-    /// <param name="NewStorageAccountName">The Storage Account to use</param>
-    /// <param name="NewContainerName">The name of the container in the Storage Account</param>
-    /// <param name="NewBlobName">The Name of the Blob</param>
-    procedure InitializeRequest(NewStorageAccountName: Text; NewContainerName: Text; NewBlobName: Text)
-    begin
-        InitializeRequest(NewStorageAccountName, NewContainerName, NewBlobName, ApiVersion::"2017-04-17");
+        Initialize(NewStorageAccountName, Authorization, Enum::"Storage Service API Version"::"2017-04-17");
     end;
 
     /// <summary>
@@ -56,26 +60,14 @@ codeunit 9042 "Blob API Operation Payload"
     /// <param name="NewContainerName">The name of the container in the Storage Account</param>
     /// <param name="NewBlobName">The Name of the Blob</param>
     /// <param name="NewApiVersion">The used API version</param>
-    procedure InitializeRequest(NewStorageAccountName: Text; NewContainerName: Text; NewBlobName: Text; NewApiVersion: Enum "Storage Service API Version")
+    procedure Initialize(NewStorageAccountName: Text; NewAuthorization: Interface "Storage Service Authorization"; NewApiVersion: Enum "Storage Service API Version")
     begin
         StorageAccountName := NewStorageAccountName;
-        ContainerName := NewContainerName;
-        BlobName := NewBlobName;
         ApiVersion := NewApiVersion;
+        Authorization := NewAuthorization;
     end;
     // #endregion Initialize Requests
 
-    // #region Initialize Authorization
-    /// <summary>
-    /// Initializes the Authorization method for object to be used in an API operation
-    /// </summary>
-    /// <param name="NewAuthType">Enum "Storage Service Authorization Type" specifying the authorization type</param>
-    /// <param name="NewSecret">The Secret (as Text) to use during authorization (SAS Token or SharedKey)</param>
-    procedure InitializeAuthorization(NewAuthType: Enum "Storage Service Authorization Type"; NewSecret: Text)
-    begin
-        AuthType := NewAuthType;
-        Secret := NewSecret;
-    end;
     // #endregion Initialize Authorization
 
     // #region Set/Get Globals
@@ -86,15 +78,6 @@ codeunit 9042 "Blob API Operation Payload"
     procedure SetStorageAccountName(NewStorageAccountName: Text)
     begin
         StorageAccountName := NewStorageAccountName;
-    end;
-
-    /// <summary>
-    /// Returns the Storage Account name for this request
-    /// </summary>
-    /// <returns>The Storage Account name</returns>
-    procedure GetStorageAccountName(): Text
-    begin
-        exit(StorageAccountName);
     end;
 
     /// <summary>
@@ -131,42 +114,6 @@ codeunit 9042 "Blob API Operation Payload"
     procedure GetBlobName(): Text
     begin
         exit(BlobName);
-    end;
-
-    /// <summary>
-    /// Sets the Authorization Type for this request
-    /// </summary>
-    /// <param name="NewAuthType">The Authorization Type</param>
-    procedure SetAuthorizationType(NewAuthType: Enum "Storage Service Authorization Type")
-    begin
-        AuthType := NewAuthType;
-    end;
-
-    /// <summary>
-    /// Returns the Authorization Type for this request
-    /// </summary>
-    /// <returns>The Authorization Type</returns>
-    procedure GetAuthorizationType(): Enum "Storage Service Authorization Type"
-    begin
-        exit(AuthType);
-    end;
-
-    /// <summary>
-    /// Sets the Secret for this request
-    /// </summary>
-    /// <param name="NewSecret">The Secret</param>
-    procedure SetSecret(NewSecret: Text)
-    begin
-        Secret := NewSecret;
-    end;
-
-    /// <summary>
-    /// Returns the Secret for this request
-    /// </summary>
-    /// <returns>The Secret</returns>
-    procedure GetSecret(): Text
-    begin
-        exit(Secret);
     end;
 
     /// <summary>
@@ -232,12 +179,12 @@ codeunit 9042 "Blob API Operation Payload"
     /// Creates the Uri for this object, based on given values
     /// </summary>
     /// <returns>An Uri (as Text) for this API Operation</returns>
-    procedure ConstructUri(): Text
+    internal procedure ConstructUri(): Text
     var
-        URIHelepr: Codeunit "Blob API URI Helper";
+        URIHelper: Codeunit "Blob API URI Helper";
     begin
-        URIHelepr.SetOptionalUriParameter(OptionalUriParameters);
-        exit(URIHelepr.ConstructUri(StorageAccountName, ContainerName, BlobName, Operation, AuthType, Secret));
+        URIHelper.SetOptionalUriParameter(OptionalUriParameters);
+        exit(URIHelper.ConstructUri(StorageAccountName, ContainerName, BlobName, Operation));
     end;
     // #endregion Uri generation
 
@@ -249,25 +196,13 @@ codeunit 9042 "Blob API Operation Payload"
     /// <returns>The SharedKey signature (as Text) for this API Operation, which is added to the "Authorization"-header</returns>
     internal procedure GetSharedKeySignature(HttpRequestType: Enum "Http Request Type"): Text
     var
-        ReqAuthAccessKey: Codeunit "Storage Serv. Auth. Access Key";
+        ReqAuthAccessKey: Codeunit "Storage Serv. Auth. Shared Key";
     begin
         ReqAuthAccessKey.SetHeaderValues(HeaderValues);
         ReqAuthAccessKey.SetApiVersion(ApiVersion);
-        exit(ReqAuthAccessKey.GetSharedKeySignature(HttpRequestType, StorageAccountName, ConstructUri(), Secret));
+        exit(ReqAuthAccessKey.GetSharedKeySignature(HttpRequestType, StorageAccountName, ConstructUri()));
     end;
     // #endregion Shared Key Signature Generation
-
-    /// <summary>
-    /// Adds an entry to the internally used Header-Dictionary
-    /// </summary>
-    /// <param name="Key">Identifier for the Header</param>
-    /// <param name="Value">Value for the Header</param>
-    procedure AddHeader("Key": Text; "Value": Text)
-    begin
-        if HeaderValues.ContainsKey("Key") then
-            HeaderValues.Remove("Key");
-        HeaderValues.Add("Key", "Value");
-    end;
 
     /// <summary>
     /// Adds an entry to the internally used Header-Dictionary and to a HttpHeaders-variable at the same time

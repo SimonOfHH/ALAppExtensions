@@ -18,17 +18,16 @@ codeunit 9046 "Blob API URI Helper"
     // #region Uri generation
     procedure ConstructUri(var OperationPayload: Codeunit "Blob API Operation Payload"): Text
     begin
-        exit(ConstructUri(OperationPayload.GetStorageAccountName(), OperationPayload.GetContainerName(), OperationPayload.GetBlobName(), OperationPayload.GetOperation(), OperationPayload.GetAuthorizationType(), OperationPayload.GetSecret()));
+        exit(ConstructUri(OperationPayload.GetStorageAccountName(), OperationPayload.GetContainerName(), OperationPayload.GetBlobName(), OperationPayload.GetOperation()));
     end;
 
-    procedure ConstructUri(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "Blob Service API Operation"; AuthType: Enum "Storage Service Authorization Type"; Secret: Text): Text
+    procedure ConstructUri(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "Blob Service API Operation"): Text
     var
         FormatHelper: Codeunit "Blob API Format Helper";
-        AuthorizationType: Enum "Storage Service Authorization Type";
         ConstructedUrl: Text;
         BlobStorageBaseUrlLbl: Label 'https://%1.blob.core.windows.net', Comment = '%1 = Storage Account Name';
     begin
-        TestConstructUrlParameter(StorageAccountName, ContainerName, BlobName, Operation, AuthType, Secret);
+        TestConstructUrlParameter(StorageAccountName, ContainerName, BlobName, Operation);
 
         // e.g. https://<StorageAccountName>-secondary.blob.core.windows.net/?restype=service&comp=stats
         if (Operation = Operation::GetBlobServiceStats) and (StorageAccountName <> 'devstoreaccount1') then
@@ -51,10 +50,6 @@ codeunit 9046 "Blob API URI Helper"
             FormatHelper.AppendToUri(ConstructedUrl, 'blockid', RetrieveFromOptionalUriParameters('blockid'));
 
         AddOptionalUriParameters(ConstructedUrl);
-
-        // If SaS-Token is used for authentication, append it to the URI
-        if AuthType = AuthorizationType::SasToken then
-            FormatHelper.AppendToUri(ConstructedUrl, '', Secret);
         exit(ConstructedUrl);
     end;
 
@@ -224,27 +219,15 @@ codeunit 9046 "Blob API URI Helper"
             end;
     end;
 
-    local procedure TestConstructUrlParameter(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "Blob Service API Operation"; AuthType: Enum "Storage Service Authorization Type"; Secret: Text)
+    local procedure TestConstructUrlParameter(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "Blob Service API Operation")
     var
-        AuthorizationType: Enum "Storage Service Authorization Type";
         ValueCanNotBeEmptyErr: Label '%1 can not be empty', Comment = '%1 = Variable Name';
         StorageAccountNameLbl: Label 'Storage Account Name';
-        SasTokenLbl: Label 'Shared Access Signature (Token)';
-        AccesKeyLbl: Label 'Access Key';
         ContainerNameLbl: Label 'Container Name';
         BlobNameLbl: Label 'Blob Name';
     begin
         if StorageAccountName = '' then
             Error(ValueCanNotBeEmptyErr, StorageAccountNameLbl);
-
-        case AuthType of
-            AuthorizationType::SasToken:
-                if Secret = '' then
-                    Error(ValueCanNotBeEmptyErr, SasTokenLbl);
-            AuthorizationType::AccessKey:
-                if Secret = '' then
-                    Error(ValueCanNotBeEmptyErr, AccesKeyLbl);
-        end;
 
         case true of
             Operation in [Operation::GetBlob, Operation::PutBlob, Operation::DeleteBlob]:

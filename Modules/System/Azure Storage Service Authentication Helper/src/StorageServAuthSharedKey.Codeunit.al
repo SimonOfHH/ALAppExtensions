@@ -7,13 +7,20 @@
 /// Exposes functionality to handle the creation of a signature to sign requests to the Storage Services REST API
 /// More Information: https://docs.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key
 /// </summary>
-codeunit 9061 "Storage Serv. Auth. Access Key"
+codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Authorization"
 {
-    Access = Public;
+    Access = Internal;
+
+    procedure Authorize(Payload: Interface "Storage Service Payload")
+    begin
+        Payload.AddHeader('Authorization', '');
+    end;
 
     var
         AuthFormatHelper: Codeunit "Auth. Format Helper";
         ApiVersion: Enum "Storage service API Version";
+        [NonDebuggable]
+        Secret: Text;
         HeaderValues: Dictionary of [Text, Text];
 
     /// <summary>
@@ -24,6 +31,11 @@ codeunit 9061 "Storage Serv. Auth. Access Key"
     procedure SetHeaderValues(NewHeaderValues: Dictionary of [Text, Text])
     begin
         HeaderValues := NewHeaderValues;
+    end;
+
+    procedure SetSecret(NewSecret: Text)
+    begin
+        Secret := NewSecret;
     end;
 
     /// <summary>
@@ -43,7 +55,7 @@ codeunit 9061 "Storage Serv. Auth. Access Key"
     /// <param name="UriString">The Uri (as Text) for this request</param>
     /// <param name="Secret">The Secret (Access Key) to sign the request</param>
     /// <returns>Signature (as Text) to authenticate the request</returns>
-    procedure GetSharedKeySignature(HttpRequestType: Enum "Http Request Type"; StorageAccount: Text; UriString: Text; Secret: Text): Text
+    procedure GetSharedKeySignature(HttpRequestType: Enum "Http Request Type"; StorageAccount: Text; UriString: Text): Text
     var
         StringToSign: Text;
         Signature: Text;
