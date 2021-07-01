@@ -7,7 +7,7 @@ codeunit 9060 "Auth. Format Helper"
 {
     Access = Internal;
 
-    procedure GetNewLineCharacter(): Text
+    procedure NewLine(): Text
     var
         LF: Char;
     begin
@@ -36,7 +36,6 @@ codeunit 9060 "Auth. Format Helper"
 
     procedure GetCanonicalizedHeaders(Headers: Dictionary of [Text, Text]): Text
     var
-        AuthenticationHelper: Codeunit "Auth. Format Helper";
         HeaderKey: Text;
         HeaderValue: Text;
         CanonicalizedHeaders: Text;
@@ -46,7 +45,7 @@ codeunit 9060 "Auth. Format Helper"
         foreach HeaderKey in Headers.Keys do
             if (HeaderKey.ToLower().StartsWith('x-ms-')) then begin // only add headers that start with "x-ms-"
                 if CanonicalizedHeaders <> '' then
-                    CanonicalizedHeaders += AuthenticationHelper.GetNewLineCharacter();
+                    CanonicalizedHeaders += NewLine();
                 HeaderValue := Headers.Get(HeaderKey);
                 CanonicalizedHeaders += StrSubstNo(KeyValuePairLbl, HeaderKey.ToLower(), HeaderValue)
             end;
@@ -57,7 +56,6 @@ codeunit 9060 "Auth. Format Helper"
     var
         Uri: Codeunit Uri;
         UriBuider: Codeunit "Uri Builder";
-        AuthenticationHelper: Codeunit "Auth. Format Helper";
         SortedDictionaryQuery: DotNet SortedDictionary2;
         SortedDictionaryEntry: DotNet GenericKeyValuePair2;
         QueryString: Text;
@@ -84,7 +82,7 @@ codeunit 9060 "Auth. Format Helper"
             // see: https://docs.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key#constructing-the-canonicalized-headers-string
             SplitQueryStringIntoSortedDictionary(QueryString, SortedDictionaryQuery);
             foreach SortedDictionaryEntry in SortedDictionaryQuery do begin
-                StringBuilderQuery.Append(AuthenticationHelper.GetNewLineCharacter());
+                StringBuilderQuery.Append(NewLine());
                 StringBuilderQuery.Append(StrSubstNo(KeyValuePairLbl, SortedDictionaryEntry."Key", Uri.UnescapeDataString(SortedDictionaryEntry.Value)));
             end;
         end;
@@ -128,19 +126,19 @@ codeunit 9060 "Auth. Format Helper"
         StringToSign: Text;
     begin
         // TODO: Add Handling-structure for different API-versions
-        StringToSign += Format(HttpRequestType) + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Encoding') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Language') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Length') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-MD5') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Type') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Date') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-Modified-Since') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-Match') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-None-Match') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-Unmodified-Since') + GetNewLineCharacter();
-        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Range') + GetNewLineCharacter();
-        StringToSign += GetCanonicalizedHeaders(HeaderValues) + GetNewLineCharacter();
+        StringToSign += Format(HttpRequestType) + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Encoding') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Language') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Length') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-MD5') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Content-Type') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Date') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-Modified-Since') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-Match') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-None-Match') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'If-Unmodified-Since') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(HeaderValues, 'Range') + NewLine();
+        StringToSign += GetCanonicalizedHeaders(HeaderValues) + NewLine();
         StringToSign += GetCanonicalizedResource(StorageAccount, UriString);
         exit(StringToSign);
     end;
@@ -162,15 +160,15 @@ codeunit 9060 "Auth. Format Helper"
     var
         StringToSign: Text;
     begin
-        StringToSign += AccountName + GetNewLineCharacter();
-        StringToSign += PermissionsToString(Permissions) + GetNewLineCharacter();
-        StringToSign += ServicesToString(Services) + GetNewLineCharacter();
-        StringToSign += ResourcesToString(Resources) + GetNewLineCharacter();
-        StringToSign += DateToString(StartDate) + GetNewLineCharacter();
-        StringToSign += DateToString(EndDate) + GetNewLineCharacter();
-        StringToSign += IPRange + GetNewLineCharacter();
-        StringToSign += ProtocolsToString(Protocols) + GetNewLineCharacter();
-        StringToSign += VersionToString(ApiVersion) + GetNewLineCharacter();
+        StringToSign += AccountName + NewLine();
+        StringToSign += PermissionsToString(Permissions) + NewLine();
+        StringToSign += ServicesToString(Services) + NewLine();
+        StringToSign += ResourcesToString(Resources) + NewLine();
+        StringToSign += DateToString(StartDate) + NewLine();
+        StringToSign += DateToString(EndDate) + NewLine();
+        StringToSign += IPRange + NewLine();
+        StringToSign += ProtocolsToString(Protocols) + NewLine();
+        StringToSign += VersionToString(ApiVersion) + NewLine();
         exit(StringToSign);
     end;
 
