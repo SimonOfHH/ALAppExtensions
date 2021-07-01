@@ -16,10 +16,10 @@ interface "Storage Serv. Auth. Shared Key"
     procedure SetHeaderValues(NewHeaderValues: Dictionary of [Text, Text]);
 
     /// <summary>
-    /// Sets the secre
+    /// Sets the shared key to use in the authorization.
     /// </summary>
-    /// <param name="NewSecret"></param>
-    procedure SetSecret(NewSecret: Text);
+    /// <param name="NewSharedKey">The value of the shared key.</param>
+    procedure SetSharedKey(NewSharedKey: Text);
 
     /// <summary>
     /// Sets the API Version to be used for the desired operation

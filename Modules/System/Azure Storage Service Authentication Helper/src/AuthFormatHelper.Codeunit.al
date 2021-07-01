@@ -25,6 +25,7 @@ codeunit 9060 "Auth. Format Helper"
         exit(DateTimeAsXmlString);
     end;
 
+    [NonDebuggable]
     procedure GetAccessKeyHashCode(StringToSign: Text; AccessKey: Text): Text;
     var
         CryptographyMgmt: Codeunit "Cryptography Management";

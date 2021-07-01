@@ -11,9 +11,10 @@ codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Autho
 {
     Access = Internal;
 
-    procedure Authorize(Payload: Interface "Storage Service Operation Payload")
+    procedure Authorize(OperationPayload: Interface "Storage Service Operation Payload")
     begin
-        Payload.AddHeader('Authorization', ''); // TODO add header value
+        OperationPayload.AddHeader('x-ms-date', ''); // TODO add header value
+        OperationPayload.AddHeader('Authorization', ''); // TODO add header value
     end;
 
     var
@@ -27,15 +28,14 @@ codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Autho
     /// Sets the Dictionary of HttpHeader Identifier/Value-combinations which will be use for signature-generation
     /// </summary>
     /// <param name="NewHeaderValues">Dictionary containing HttpHeader-Identifier and -values</param>
-
     procedure SetHeaderValues(NewHeaderValues: Dictionary of [Text, Text])
     begin
         HeaderValues := NewHeaderValues;
     end;
 
-    procedure SetSecret(NewSecret: Text)
+    procedure SetSharedKey(NewSharedKey: Text)
     begin
-        Secret := NewSecret;
+        Secret := NewSharedKey;
     end;
 
     /// <summary>
@@ -51,7 +51,7 @@ codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Autho
     var
         StorageServAuthSharedKey: Codeunit "Storage Serv. Auth. Shared Key";
     begin
-        StorageServAuthSharedKey.SetSecret(Secret);
+        StorageServAuthSharedKey.SetSharedKey(Secret);
         StorageServAuthSharedKey.SetApiVersion(ApiVersion);
         StorageServAuthSharedKey.SetHeaderValues(HeaderValues);
         // TODO add everything from the state
@@ -67,6 +67,7 @@ codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Autho
     /// <param name="UriString">The Uri (as Text) for this request</param>
     /// <param name="Secret">The Secret (Access Key) to sign the request</param>
     /// <returns>Signature (as Text) to authenticate the request</returns>
+    [NonDebuggable]
     procedure GetSharedKeySignature(HttpRequestType: Enum "Http Request Type"; StorageAccount: Text; UriString: Text): Text
     var
         StringToSign: Text;
