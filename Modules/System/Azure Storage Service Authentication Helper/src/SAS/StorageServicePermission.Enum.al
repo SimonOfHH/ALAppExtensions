@@ -12,16 +12,40 @@ enum 9064 "Storage Service Permission"
     Access = Public;
     Extensible = false;
 
-    value(0; Read) { }
-    value(1; Write) { }
-    value(2; Delete) { }
-    value(3; PermantDelete) { }
-    value(4; List) { }
-    value(5; Add) { }
-    value(6; Create) { }
-    value(7; Update) { }
-    value(8; Process) { }
-    value(9; VersionDeletion) { }
-    value(10; BlobIndexReadWrite) { }
-    value(11; BlobIndexFilter) { }
+    value(0; Read)
+    {
+        Caption = 'r', Locked = true;
+    }
+    value(1; Write)
+    {
+        Caption = 'w', Locked = true;
+    }
+    value(2; Delete)
+    {
+        Caption = 'd', Locked = true;
+    }
+    value(3; "Permanent Delete")
+    {
+        Caption = 'y', Locked = true;
+    }
+    value(4; List)
+    {
+        Caption = 'l', Locked = true;
+    }
+    value(5; Add)
+    {
+        Caption = 'a', Locked = true;
+    }
+    value(6; Create)
+    {
+        Caption = 'c', Locked = true;
+    }
+    value(7; Update)
+    {
+        Caption = 'u', Locked = true;
+    }
+    value(8; Process)
+    {
+        Caption = 'p', Locked = true;
+    }
 }

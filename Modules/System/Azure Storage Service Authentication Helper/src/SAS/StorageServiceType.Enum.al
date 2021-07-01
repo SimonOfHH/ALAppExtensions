@@ -14,18 +14,18 @@ enum 9062 "Storage Service Type"
 
     value(0; Blob)
     {
-        Caption = 'Blob';
+        Caption = 'b', Locked = true;
     }
     value(1; Queue)
     {
-        Caption = 'Queue';
+        Caption = 'q', Locked = true;
     }
     value(2; Table)
     {
-        Caption = 'Table';
+        Caption = 't', Locked = true;
     }
     value(3; File)
     {
-        Caption = 'File';
+        Caption = 'f', Locked = true;
     }
 }

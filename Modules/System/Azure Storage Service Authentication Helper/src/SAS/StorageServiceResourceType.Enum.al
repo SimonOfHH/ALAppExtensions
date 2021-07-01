@@ -14,14 +14,14 @@ enum 9063 "Storage Service Resource Type"
 
     value(0; Service)
     {
-        Caption = 'Service';
+        Caption = 's', Locked = true;
     }
     value(1; Container)
     {
-        Caption = 'Container';
+        Caption = 'c', Locked = true;
     }
     value(2; Object)
     {
-        Caption = 'Object';
+        Caption = 'o', Locked = true;
     }
 }

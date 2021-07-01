@@ -213,18 +213,10 @@ codeunit 9060 "Auth. Format Helper"
         Service: Enum "Storage Service Type";
         Builder: TextBuilder;
     begin
-        // TODO: Add Sorting for correct order
-        foreach Service in Services do
-            case Service of
-                Service::Blob:
-                    Builder.Append('b');
-                Service::File:
-                    Builder.Append('f');
-                Service::Queue:
-                    Builder.Append('q');
-                Service::Table:
-                    Builder.Append('t');
-            end;
+        foreach Service in Enum::"Storage Service Type".Ordinals() do
+            if Services.Contains(Service) then
+                Builder.Append(Format(Service));
+
         exit(Builder.ToText());
     end;
 
@@ -233,16 +225,10 @@ codeunit 9060 "Auth. Format Helper"
         Resource: Enum "Storage Service Resource Type";
         Builder: TextBuilder;
     begin
-        // TODO: Add Sorting for correct order
-        foreach Resource in Resources do
-            case Resource of
-                Resource::Service:
-                    Builder.Append('s');
-                Resource::Container:
-                    Builder.Append('c');
-                Resource::Object:
-                    Builder.Append('o');
-            end;
+        foreach Resource in Enum::"Storage Service Resource Type".Ordinals() do
+            if Resources.Contains(Resource) then
+                Builder.Append(Format(Resource));
+
         exit(Builder.ToText());
     end;
 
@@ -251,34 +237,10 @@ codeunit 9060 "Auth. Format Helper"
         Permission: Enum "Storage Service Permission";
         Builder: TextBuilder;
     begin
-        // TODO: Add Sorting for correct order
-        foreach Permission in Permissions do
-            case Permission of
-                Permission::Read:
-                    Builder.Append('r');
-                Permission::Write:
-                    Builder.Append('w');
-                Permission::Delete:
-                    Builder.Append('d');
-                Permission::PermantDelete:
-                    Builder.Append('y'); // TODO: Verify
-                Permission::List:
-                    Builder.Append('l');
-                Permission::Add:
-                    Builder.Append('a');
-                Permission::Create:
-                    Builder.Append('c');
-                Permission::Update:
-                    Builder.Append('u');
-                Permission::Process:
-                    Builder.Append('p');
-                Permission::VersionDeletion:
-                    Builder.Append('x');
-                Permission::BlobIndexReadWrite:
-                    Builder.Append('t');
-                Permission::BlobIndexFilter:
-                    Builder.Append('f');
-            end;
+        foreach Permission in Enum::"Storage Service Permission".Ordinals() do
+            if Permissions.Contains(Permission) then
+                Builder.Append(Format(Permission));
+
         exit(Builder.ToText());
     end;
 
