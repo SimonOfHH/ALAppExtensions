@@ -16,34 +16,42 @@ enum 9064 "Storage Service Permission"
     {
         Caption = 'r', Locked = true;
     }
-    value(1; Write)
-    {
-        Caption = 'w', Locked = true;
-    }
-    value(2; Delete)
-    {
-        Caption = 'd', Locked = true;
-    }
-    value(3; "Permanent Delete")
-    {
-        Caption = 'y', Locked = true;
-    }
-    value(4; List)
-    {
-        Caption = 'l', Locked = true;
-    }
-    value(5; Add)
+
+    value(1; Add)
     {
         Caption = 'a', Locked = true;
     }
-    value(6; Create)
+
+    value(2; Create)
     {
         Caption = 'c', Locked = true;
     }
+
+    value(3; Write)
+    {
+        Caption = 'w', Locked = true;
+    }
+
+    value(4; Delete)
+    {
+        Caption = 'd', Locked = true;
+    }
+
+    value(5; List)
+    {
+        Caption = 'l', Locked = true;
+    }
+
+    value(6; "Permanent Delete")
+    {
+        Caption = 'y', Locked = true;
+    }
+
     value(7; Update)
     {
         Caption = 'u', Locked = true;
     }
+
     value(8; Process)
     {
         Caption = 'p', Locked = true;
