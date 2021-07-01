@@ -13,7 +13,13 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
 
     procedure Authorize(Payload: Interface "Storage Service Payload")
     begin
-        // TODO
+        if SigningKey = '' then
+            Error(NoSigningKeyErr);
+
+        StorageAccountName := Payload.GetStorageAccountName();
+        ApiVersion := Payload.GetAPIVersion();
+
+        Payload.AddParameter('', GetSharedAccessSignature());
     end;
 
     /// <summary>
@@ -22,7 +28,7 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
     /// <param name="NewAccountName">The Name of the Azure Storage Account</param>
     procedure SetAccountName(NewAccountName: Text)
     begin
-        AccountName := NewAccountName;
+        StorageAccountName := NewAccountName;
     end;
 
     /// <summary>
@@ -110,7 +116,7 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
         Signature: Text;
         SharedAccessSignature: Text;
     begin
-        StringToSign := AuthFormatHelper.CreateSharedAccessSignatureStringToSign(AccountName, ApiVersion, StartDate, EndDate, Services, Resources, Permissions, Protocols, IPRange);
+        StringToSign := AuthFormatHelper.CreateSharedAccessSignatureStringToSign(StorageAccountName, ApiVersion, StartDate, EndDate, Services, Resources, Permissions, Protocols, IPRange);
         Signature := AuthFormatHelper.GetAccessKeyHashCode(StringToSign, SigningKey);
         SharedAccessSignature := AuthFormatHelper.CreateSasUrlString(ApiVersion, StartDate, EndDate, Services, Resources, Permissions, Protocols, IPRange, Signature);
         exit(SharedAccessSignature);
@@ -118,7 +124,7 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
 
     var
         AuthFormatHelper: Codeunit "Auth. Format Helper";
-        AccountName: Text;
+        StorageAccountName: Text;
         SigningKey: Text;
         StartDate: DateTime;
         EndDate: DateTime;
@@ -128,4 +134,5 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
         Permissions: List of [Enum "Storage Service Permission"];
         Protocols: List of [Text];
         IPRange: Text;
+        NoSigningKeyErr: Label 'Secret (Access Key) must be provided';
 }

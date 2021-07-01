@@ -12,5 +12,7 @@ interface "Storage Service Payload"
 
     procedure AddParameter(ParameterName: Text; ParameterValue: Text);
 
+    procedure GetAPIVersion(): Enum "Storage Service API Version";
+
     procedure GetStorageAccountName(): Text;
 }
