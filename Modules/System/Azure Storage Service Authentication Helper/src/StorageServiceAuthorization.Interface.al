@@ -4,9 +4,13 @@
 // ------------------------------------------------------------------------------------------------
 
 /// <summary>
-/// TODO
+/// Common interface for different authorization options.
 /// </summary>
 interface "Storage Service Authorization"
 {
-    procedure Authorize(Payload: Interface "Storage Service Payload");
+    /// <summary>
+    /// Authorizes an operation by providing the needed information in the operation payload.
+    /// </summary>
+    /// <param name="OperationPayload">The operation to authorize.</param>
+    procedure Authorize(OperationPayload: Interface "Storage Service Operation Payload");
 }

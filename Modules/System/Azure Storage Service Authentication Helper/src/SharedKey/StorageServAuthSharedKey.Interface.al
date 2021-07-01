@@ -15,6 +15,10 @@ interface "Storage Serv. Auth. Shared Key"
     /// <param name="NewHeaderValues">Dictionary containing HttpHeader-Identifier and -values</param>
     procedure SetHeaderValues(NewHeaderValues: Dictionary of [Text, Text]);
 
+    /// <summary>
+    /// Sets the secre
+    /// </summary>
+    /// <param name="NewSecret"></param>
     procedure SetSecret(NewSecret: Text);
 
     /// <summary>
