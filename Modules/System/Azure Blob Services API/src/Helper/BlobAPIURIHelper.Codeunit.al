@@ -25,7 +25,7 @@ codeunit 9046 "Blob API URI Helper"
     var
         FormatHelper: Codeunit "Blob API Format Helper";
         ConstructedUrl: Text;
-        BlobStorageBaseUrlLbl: Label 'https://%1.blob.core.windows.net', Comment = '%1 = Storage Account Name';
+        BlobStorageBaseUrlLbl: Label 'https://%1.blob.core.windows.net', Comment = '%1 = Storage Account Name', Locked = true;
     begin
         TestConstructUrlParameter(StorageAccountName, ContainerName, BlobName, Operation);
 
@@ -91,9 +91,9 @@ codeunit 9046 "Blob API URI Helper"
         FormatHelper: Codeunit "Blob API Format Helper";
         RestType: Text;
         RestTypeLbl: Label 'restype';
-        ContainerRestTypeLbl: Label 'container';
-        ServiceRestTypeLbl: Label 'service';
-        AccountRestTypeLbl: Label 'account';
+        ContainerRestTypeLbl: Label 'container', Locked = true;
+        ServiceRestTypeLbl: Label 'service', Locked = true;
+        AccountRestTypeLbl: Label 'account', Locked = true;
     begin
         // e.g. https://<StorageAccountName>.blob.core.windows.net/?restype=account&comp=properties
         case Operation of
@@ -117,28 +117,28 @@ codeunit 9046 "Blob API URI Helper"
     var
         FormatHelper: Codeunit "Blob API Format Helper";
         CompValue: Text;
-        CompIdentifierLbl: Label 'comp';
-        ListExtensionLbl: Label 'list';
-        LeaseExtensionLbl: Label 'lease';
-        CopyExtensionLbl: Label 'copy';
-        PropertiesExtensionLbl: Label 'properties';
-        MetadataExtensionLbl: Label 'metadata';
-        AclExtensionLbl: Label 'acl';
-        StatsExtensionLbl: Label 'stats';
-        TagsExtensionLbl: Label 'tags';
-        BlobsExtensionLbl: Label 'blobs';
-        ExpiryExtensionLbl: Label 'expiry';
-        SnapshotExtensionLbl: Label 'snapshot';
-        UndeleteExtensionLbl: Label 'undelete';
-        AppendBlockExtensionLbl: Label 'appendblock';
-        TierExtensionLbl: Label 'tier';
-        PageExtensionLbl: Label 'page';
-        PageListExtensionLbl: Label 'pagelist';
-        IncrementalCopyExtensionLbl: Label 'incrementalcopy';
-        BlockExtensionLbl: Label 'block';
-        BlockListExtensionLbl: Label 'blocklist';
-        UserDelegationKeyExtensionLbl: Label 'userdelegationkey';
-        QueryExtensionLbl: Label 'query';
+        CompIdentifierLbl: Label 'comp', Locked = true;
+        ListExtensionLbl: Label 'list', Locked = true;
+        LeaseExtensionLbl: Label 'lease', Locked = true;
+        CopyExtensionLbl: Label 'copy', Locked = true;
+        PropertiesExtensionLbl: Label 'properties', Locked = true;
+        MetadataExtensionLbl: Label 'metadata', Locked = true;
+        AclExtensionLbl: Label 'acl', Locked = true;
+        StatsExtensionLbl: Label 'stats', Locked = true;
+        TagsExtensionLbl: Label 'tags', Locked = true;
+        BlobsExtensionLbl: Label 'blobs', Locked = true;
+        ExpiryExtensionLbl: Label 'expiry', Locked = true;
+        SnapshotExtensionLbl: Label 'snapshot', Locked = true;
+        UndeleteExtensionLbl: Label 'undelete', Locked = true;
+        AppendBlockExtensionLbl: Label 'appendblock', Locked = true;
+        TierExtensionLbl: Label 'tier', Locked = true;
+        PageExtensionLbl: Label 'page', Locked = true;
+        PageListExtensionLbl: Label 'pagelist', Locked = true;
+        IncrementalCopyExtensionLbl: Label 'incrementalcopy', Locked = true;
+        BlockExtensionLbl: Label 'block', Locked = true;
+        BlockListExtensionLbl: Label 'blocklist', Locked = true;
+        UserDelegationKeyExtensionLbl: Label 'userdelegationkey', Locked = true;
+        QueryExtensionLbl: Label 'query', Locked = true;
     begin
         // e.g. https://<StorageAccountName>.blob.core.windows.net/?restype=account&comp=properties
         case Operation of
