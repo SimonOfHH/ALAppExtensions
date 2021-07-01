@@ -7,7 +7,7 @@
 /// Exposes functionality to handle the creation of a signature to sign requests to the Storage Services REST API
 /// More Information: https://docs.microsoft.com/en-us/rest/api/storageservices/authorize-with-shared-key
 /// </summary>
-codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Authorization"
+codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Authorization", "Storage Serv. Auth. Shared Key"
 {
     Access = Internal;
 
@@ -45,6 +45,18 @@ codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Autho
     procedure SetApiVersion(NewApiVersion: Enum "Storage service API Version")
     begin
         ApiVersion := NewApiVersion;
+    end;
+
+    procedure AsStorageServiceAuthorization(): Interface "Storage Service Authorization"
+    var
+        StorageServAuthSharedKey: Codeunit "Storage Serv. Auth. Shared Key";
+    begin
+        StorageServAuthSharedKey.SetSecret(Secret);
+        StorageServAuthSharedKey.SetApiVersion(ApiVersion);
+        StorageServAuthSharedKey.SetHeaderValues(HeaderValues);
+        // TODO add everything from the state
+
+        exit(StorageServAuthSharedKey);
     end;
 
     /// <summary>

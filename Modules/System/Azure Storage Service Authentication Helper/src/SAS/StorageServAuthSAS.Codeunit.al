@@ -7,7 +7,7 @@
 /// Exposes functionality to handle the creation of an Account SAS (Shared Access Signature)
 /// More Information: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas
 /// </summary>
-codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorization"
+codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorization", "Storage Serv. Auth. SAS"
 {
     Access = Internal;
 
@@ -22,13 +22,9 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
         Payload.AddParameter('', GetSharedAccessSignature());
     end;
 
-    /// <summary>
-    /// Sets the name of the Azure Storage Account
-    /// </summary>
-    /// <param name="NewAccountName">The Name of the Azure Storage Account</param>
-    procedure SetAccountName(NewAccountName: Text)
+    procedure SetStorageAccountName(NewStorageAccountName: Text)
     begin
-        StorageAccountName := NewAccountName;
+        StorageAccountName := NewStorageAccountName;
     end;
 
     /// <summary>
@@ -120,6 +116,20 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
         Signature := AuthFormatHelper.GetAccessKeyHashCode(StringToSign, SigningKey);
         SharedAccessSignature := AuthFormatHelper.CreateSasUrlString(ApiVersion, StartDate, EndDate, Services, Resources, Permissions, Protocols, IPRange, Signature);
         exit(SharedAccessSignature);
+    end;
+
+    procedure AsStorageServiceAuthorization(): Interface "Storage Service Authorization"
+    var
+        SASAuthotization: Codeunit "Storage Serv. Auth. SAS";
+    begin
+        SASAuthotization.SetStorageAccountName(StorageAccountName);
+        SASAuthotization.SetSigningKey(SigningKey);
+        SASAuthotization.SetDatePeriod(StartDate, EndDate);
+        SASAuthotization.SetVersion(ApiVersion);
+        SASAuthotization.SetIPrange(IPRange);
+        // TODO add everything from the state
+
+        exit(SASAuthotization);
     end;
 
     var

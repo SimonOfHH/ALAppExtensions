@@ -32,6 +32,10 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service Payload"
         exit(Authorization);
     end;
 
+    /// <summary>
+    /// Returns the API Version for this request
+    /// </summary>
+    /// <returns>The API Version</returns>
     procedure GetAPIVersion(): Enum "Storage Service API Version"
     begin
         exit(ApiVersion);
@@ -128,15 +132,6 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service Payload"
     procedure SetApiVersion(NewApiVersion: Enum "Storage Service API Version")
     begin
         ApiVersion := NewApiVersion;
-    end;
-
-    /// <summary>
-    /// Returns the API Version for this request
-    /// </summary>
-    /// <returns>The API Version</returns>
-    procedure GetApiVersion(): Enum "Storage Service API Version"
-    begin
-        exit(ApiVersion);
     end;
 
     /// <summary>

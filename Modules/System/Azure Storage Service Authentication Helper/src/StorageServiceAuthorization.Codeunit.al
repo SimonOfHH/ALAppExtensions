@@ -4,13 +4,13 @@
 // ------------------------------------------------------------------------------------------------
 
 /// <summary>
-/// TODO
+/// Exposes methods to create different kind of authorizations.
 /// </summary>
 codeunit 9063 "Storage Service Authorization"
 {
     Access = Public;
 
-    procedure CreateSaSAuthorization(SigningKey: Text): Interface "Storage Service Authorization"
+    procedure SAS(SigningKey: Text): Interface "Storage Serv. Auth. SAS"
     var
         StorageServAuthSAS: Codeunit "Storage Serv. Auth. SAS";
     begin
@@ -18,7 +18,7 @@ codeunit 9063 "Storage Service Authorization"
         exit(StorageServAuthSAS);
     end;
 
-    procedure CreateSharedKeyAuthorization(Secret: Text): Interface "Storage Service Authorization"
+    procedure SharedKey(Secret: Text): Interface "Storage Service Authorization"
     var
         StorageServAuthSharedKey: Codeunit "Storage Serv. Auth. Shared Key";
     begin
