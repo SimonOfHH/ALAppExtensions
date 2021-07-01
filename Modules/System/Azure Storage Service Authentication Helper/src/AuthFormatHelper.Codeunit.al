@@ -16,13 +16,22 @@ codeunit 9060 "Auth. Format Helper"
     end;
 
     procedure GetIso8601DateTime(MyDateTime: DateTime): Text
+    begin
+        exit(FormatDateTime(MyDateTime, 's')); // https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    end;
+
+    procedure GetRfc1123DateTime(MyDateTime: DateTime): Text
+    begin
+        exit(FormatDateTime(MyDateTime, 'R')); // https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings
+    end;
+
+    local procedure FormatDateTime(MyDateTime: DateTime; FormatSpecifier: Text): Text
     var
         DateTimeAsXmlString: Text;
+        DateTimeDotNet: DotNet DateTime;
     begin
         DateTimeAsXmlString := Format(MyDateTime, 0, 9); // Format as XML, e.g.: 2020-11-11T08:50:07.553Z
-        if DateTimeAsXmlString.Contains('.') then
-            DateTimeAsXmlString := DateTimeAsXmlString.Substring(1, DateTimeAsXmlString.LastIndexOf('.'));
-        exit(DateTimeAsXmlString);
+        exit(DateTimeDotNet.Parse(DateTimeAsXmlString).ToUniversalTime().ToString(FormatSpecifier));
     end;
 
     [NonDebuggable]

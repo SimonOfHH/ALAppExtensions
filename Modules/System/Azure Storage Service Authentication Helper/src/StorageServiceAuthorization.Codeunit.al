@@ -18,11 +18,11 @@ codeunit 9063 "Storage Service Authorization"
         exit(StorageServAuthSAS);
     end;
 
-    procedure SharedKey(Secret: Text): Interface "Storage Serv. Auth. Shared Key"
+    procedure SharedKey(SharedKey: Text): Interface "Storage Serv. Auth. Shared Key"
     var
         StorageServAuthSharedKey: Codeunit "Storage Serv. Auth. Shared Key";
     begin
-        StorageServAuthSharedKey.SetSharedKey(Secret);
+        StorageServAuthSharedKey.SetSharedKey(SharedKey);
         exit(StorageServAuthSharedKey);
     end;
 }
