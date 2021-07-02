@@ -11,7 +11,7 @@ codeunit 9062 "Storage Serv. Auth. SAS" implements "Storage Service Authorizatio
 {
     Access = Internal;
 
-    procedure Authorize(Payload: Interface "Storage Service Operation Payload")
+    procedure Authorize(Payload: Interface "Storage Service Client")
     begin
         if SigningKey = '' then
             Error(NoSigningKeyErr);

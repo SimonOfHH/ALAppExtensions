@@ -12,5 +12,5 @@ interface "Storage Service Authorization"
     /// Authorizes an operation by providing the needed information in the operation payload.
     /// </summary>
     /// <param name="OperationPayload">The operation to authorize.</param>
-    procedure Authorize(OperationPayload: Interface "Storage Service Operation Payload");
+    procedure Authorize(OperationPayload: Interface "Storage Service Client");
 }
