@@ -187,7 +187,7 @@ codeunit 9043 "Blob API Helper Library"
 
     procedure ValidateApiVersion(CurrApiVersion: Enum "Storage Service API Version"; TargetApiVersion: Enum "Storage Service API Version"; ThrowError: Boolean; ErrorMsg: Text): Boolean
     begin
-        if (CurrApiVersion.AsInteger() >= TargetVersion.AsInteger()) then
+        if (CurrApiVersion.AsInteger() >= TargetApiVersion.AsInteger()) then
             exit(true);
 
         if ThrowError then

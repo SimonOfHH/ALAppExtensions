@@ -53,41 +53,23 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service Client"
         OptionalHeaderValues: Dictionary of [Text, Text];
         OptionalUriParameters: Dictionary of [Text, Text];
 
-    // #region Initialize Requests
-    /// <summary>
-    /// Initializes the object to be used in an API operation
-    /// </summary>
-    /// <param name="NewStorageAccountName">The Storage Account to use</param>
-    procedure Initialize(NewStorageAccountName: Text; Authorization: Interface "Storage Service Authorization")
+    procedure Initialize(StorageAccount: Text; Container: Text; "Blob": Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
     begin
-        Initialize(NewStorageAccountName, Authorization, Enum::"Storage Service API Version"::"2017-04-17");
+        StorageAccountName := StorageAccount;
+        ApiVersion := APIVersion;
+        Authorization := Authorization;
+        ContainerName := Container;
+        BlobName := "Blob";
     end;
-
-    /// <summary>
-    /// Initializes the object to be used in an API operation
-    /// </summary>
-    /// <param name="NewStorageAccountName">The Storage Account to use</param>
-    /// <param name="NewContainerName">The name of the container in the Storage Account</param>
-    /// <param name="NewBlobName">The Name of the Blob</param>
-    /// <param name="NewApiVersion">The used API version</param>
-    procedure Initialize(NewStorageAccountName: Text; NewAuthorization: Interface "Storage Service Authorization"; NewApiVersion: Enum "Storage Service API Version")
-    begin
-        StorageAccountName := NewStorageAccountName;
-        ApiVersion := NewApiVersion;
-        Authorization := NewAuthorization;
-    end;
-    // #endregion Initialize Requests
-
-    // #endregion Initialize Authorization
 
     // #region Set/Get Globals
     /// <summary>
     /// Sets the Storage Account name for this request
     /// </summary>
-    /// <param name="NewStorageAccountName">The Storage Account name</param>
-    procedure SetStorageAccountName(NewStorageAccountName: Text)
+    /// <param name="StorageAccountName">The Storage Account name</param>
+    procedure SetStorageAccountName(StorageAccountName: Text)
     begin
-        StorageAccountName := NewStorageAccountName;
+        StorageAccountName := StorageAccountName;
     end;
 
     /// <summary>
