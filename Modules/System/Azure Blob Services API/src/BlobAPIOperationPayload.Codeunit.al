@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
-codeunit 9042 "Blob API Operation Payload" implements "Storage Service Client"
+codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Operation"
 {
     Access = Public;
 

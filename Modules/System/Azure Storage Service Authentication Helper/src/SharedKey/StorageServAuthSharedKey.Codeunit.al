@@ -11,10 +11,9 @@ codeunit 9061 "Storage Serv. Auth. Shared Key" implements "Storage Service Autho
 {
     Access = Internal;
 
-    procedure Authorize(OperationPayload: Interface "Storage Service Client")
+    procedure Authorize(OperationPayload: Interface "Storage Service REST Operation")
     begin
-        OperationPayload.AddHeader('x-ms-date', ''); // TODO add header value
-        OperationPayload.AddHeader('Authorization', ''); // TODO add header value
+        OperationPayload.AddHeader('Authorization', ''); // TODO add GetSharedKeySignature
     end;
 
     var
