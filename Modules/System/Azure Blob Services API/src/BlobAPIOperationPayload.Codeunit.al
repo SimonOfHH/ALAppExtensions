@@ -5,7 +5,7 @@
 
 codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Operation"
 {
-    Access = Public;
+    Access = Internal;
 
     procedure AddHeader("Key": Text; "Value": Text)
     begin
