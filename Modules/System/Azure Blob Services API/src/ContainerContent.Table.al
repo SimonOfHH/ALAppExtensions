@@ -5,6 +5,8 @@
 
 table 9041 "Container Content"
 {
+    Access = Public;
+    Extensible = false;
     DataClassification = CustomerContent;
     TableType = Temporary;
 
@@ -67,19 +69,22 @@ table 9041 "Container Content"
             Clustered = true;
         }
     }
+
+    // TODO Remove code from tables
+
     var
         OperationPayload: Codeunit "Blob API Operation Payload";
         StorageAccountName: Text;
         ContainerName: Text;
 
-    procedure SetBaseInfos(NewOperationPayload: Codeunit "Blob API Operation Payload")
+    internal procedure SetBaseInfos(NewOperationPayload: Codeunit "Blob API Operation Payload")
     begin
         StorageAccountName := OperationPayload.GetStorageAccountName();
         ContainerName := OperationPayload.GetContainerName();
         OperationPayload := NewOperationPayload;
     end;
 
-    procedure AddNewEntryFromNode(var Node: XmlNode; XPathName: Text)
+    internal procedure AddNewEntryFromNode(var Node: XmlNode; XPathName: Text)
     var
         HelperLibrary: Codeunit "Blob API Helper Library";
         NameFromXml: Text;
@@ -97,14 +102,14 @@ table 9041 "Container Content"
             Rec.AddNewEntry(NameFromXml, OuterXml, ChildNodes);
     end;
 
-    procedure AddNewEntry(NameFromXml: Text; OuterXml: Text)
+    internal procedure AddNewEntry(NameFromXml: Text; OuterXml: Text)
     var
         ChildNodes: XmlNodeList;
     begin
         AddNewEntry(NameFromXml, OuterXml, ChildNodes);
     end;
 
-    procedure AddNewEntry(NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
+    internal procedure AddNewEntry(NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
     var
         NextEntryNo: Integer;
         Outstr: OutStream;
@@ -220,7 +225,7 @@ table 9041 "Container Content"
     /// Use this function to retrieve the original name of the Blob (read from saved XmlNode)
     /// </summary>
     /// <returns>The Full name of the Blob, recovered from saved XmlNode</returns>
-    procedure GetFullNameFromXML(): Text
+    internal procedure GetFullNameFromXML(): Text
     var
         HelperLibrary: Codeunit "Blob API Helper Library";
         Node: XmlNode;
