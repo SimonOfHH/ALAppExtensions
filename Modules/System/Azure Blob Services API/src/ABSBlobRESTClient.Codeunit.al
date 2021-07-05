@@ -6,7 +6,7 @@
 /// <summary>
 /// Provides functionality to use operations on blobs in Azure BLOB Services.
 /// </summary>
-codeunit 9053 "ABS Blob Client"
+codeunit 9053 "ABS Blob REST Client"
 {
     Access = Public;
 

@@ -6,7 +6,7 @@
 /// <summary>
 /// Provides functionality to use operations on containers in Azure BLOB Services.
 /// </summary>
-codeunit 9052 "ABS Container Client"
+codeunit 9052 "ABS Container REST Client"
 {
     Access = Public;
 

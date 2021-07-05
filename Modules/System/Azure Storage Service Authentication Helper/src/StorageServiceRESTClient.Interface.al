@@ -6,7 +6,7 @@
 /// <summary>
 /// Defines a unified storage service client that provides means for authorization.
 /// </summary>
-interface "Storage Service Client"
+interface "Storage Service REST Client"
 {
     /// <summary>
     /// Adds a header to the strorage client.

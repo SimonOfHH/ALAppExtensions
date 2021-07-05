@@ -6,7 +6,7 @@
 /// <summary>
 /// Provides functionality to use operations on accounts in Azure BLOB Services.
 /// </summary>
-codeunit 9051 "ABS Account Client"
+codeunit 9051 "ABS Account REST Client"
 {
     Access = Public;
 
