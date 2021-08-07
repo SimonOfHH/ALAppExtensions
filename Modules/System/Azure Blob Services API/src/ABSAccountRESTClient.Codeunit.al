@@ -37,9 +37,62 @@ codeunit 9051 "ABS Account REST Client"
     /// </summary>
     /// <param name="Container">Collection of the result (temporary record).</param>
     procedure ListContainers(var Container: Record "Container"): Codeunit "Blob API Operation Response"
+    var
+        Optionals: Codeunit "ABS REST Headers & Parameters";
     begin
-        exit(BlobServicesApiImpl.ListContainers(Container));
+        exit(BlobServicesApiImpl.ListContainers(Container, Optionals));
     end;
+
+    /// <summary>
+    /// List all containers in specific Storage Account.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-containers2
+    /// </summary>
+    /// <param name="Container">Collection of the result (temporary record).</param>
+    procedure ListContainers(var Container: Record "Container"; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    begin
+        exit(BlobServicesApiImpl.ListContainers(Container, Optionals));
+    end;
+
+    /// <summary>
+    /// Creates a new Container in the Storage Account
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
+    /// </summary>
+    procedure CreateContainer(Container: Text): Codeunit "Blob API Operation Response"
+    var
+        Optionals: Codeunit "ABS REST Headers & Parameters";
+    begin
+        exit(BlobServicesApiImpl.CreateContainer(Container, Optionals));
+    end;
+
+    /// <summary>
+    /// Creates a new Container in the Storage Account
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
+    /// </summary>
+    procedure CreateContainer(Container: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    begin
+        exit(BlobServicesApiImpl.CreateContainer(Container, Optionals));
+    end;
+
+    /// <summary>
+    /// Delete a Container in the Storage Account
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
+    /// </summary>
+    procedure DeleteContainer(Container: Text): Codeunit "Blob API Operation Response"
+    var
+        Optionals: Codeunit "ABS REST Headers & Parameters";
+    begin
+        exit(BlobServicesApiImpl.DeleteContainer(Container, Optionals));
+    end;
+
+    /// <summary>
+    /// Delete a Container in the Storage Account
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
+    /// </summary>
+    procedure DeleteContainer(Container: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    begin
+        exit(BlobServicesApiImpl.DeleteContainer(Container, Optionals));
+    end;
+
 
     var
         BlobServicesApiImpl: Codeunit "Blob Services API Impl.";

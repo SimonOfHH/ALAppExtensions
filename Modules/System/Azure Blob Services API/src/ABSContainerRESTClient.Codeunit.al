@@ -34,24 +34,6 @@ codeunit 9052 "ABS Container REST Client"
     end;
 
     /// <summary>
-    /// Creates a new Container in the Storage Account
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
-    /// </summary>
-    procedure CreateContainer(Container: Text): Codeunit "Blob API Operation Response"
-    begin
-        exit(BlobServicesApiImpl.CreateContainer());
-    end;
-
-    /// <summary>
-    /// Delete a Container in the Storage Account
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
-    /// </summary>
-    procedure DeleteContainer(): Codeunit "Blob API Operation Response"
-    begin
-        exit(BlobServicesApiImpl.DeleteContainer());
-    end;
-
-    /// <summary>
     /// Lists the Blobs in a specific container
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-blobs
     /// </summary>    

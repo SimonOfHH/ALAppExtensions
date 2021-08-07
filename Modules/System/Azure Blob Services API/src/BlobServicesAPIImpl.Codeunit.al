@@ -41,7 +41,7 @@ codeunit 9041 "Blob Services API Impl."
     end;
 
     #region Account operations
-    procedure ListContainers(var Container: Record "Container"): Codeunit "Blob API Operation Response"
+    procedure ListContainers(var Container: Record "Container"; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         HelperLibrary: Codeunit "Blob API Helper Library";
@@ -62,22 +62,26 @@ codeunit 9041 "Blob Services API Impl."
     #endregion
 
     #region Container operations
-    procedure CreateContainer(): Codeunit "Blob API Operation Response"
+    procedure CreateContainer(Container: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::CreateContainer);
+        OperationPayload.SetContainerName(Container);
+
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(CreateContainerOperationNotSuccessfulErr, OperationPayload.GetContainerName()));
         exit(OperationResponse);
     end;
 
-    procedure DeleteContainer(): Codeunit "Blob API Operation Response"
+    procedure DeleteContainer(Container: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::DeleteContainer);
+        OperationPayload.SetContainerName(Container);
+
         OperationResponse := BlobAPIWebRequestHelper.DeleteOperation(OperationPayload, StrSubstNo(DeleteContainerOperationNotSuccessfulErr, OperationPayload.GetContainerName()));
 
         exit(OperationResponse);
