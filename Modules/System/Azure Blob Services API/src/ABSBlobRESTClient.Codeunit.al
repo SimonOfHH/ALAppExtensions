@@ -11,10 +11,30 @@ codeunit 9053 "ABS Blob REST Client"
     Access = Public;
 
     /// <summary>
-    /// Uploads (PUT) a File as a BlockBlob (with File Selection Dialog)
+    /// Initializes the Azure BLOB Storage BLOB client.
+    /// </summary>
+    /// <param name="StorageAccount">The name of Storage Account to use.</param>
+    /// <param name="Authorization">The authorization to use.</param>
+    procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization")
+    begin
+        BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, Enum::"Storage Service API Version"::"2017-04-17");
+    end;
+
+    /// <summary>
+    /// Initializes the Azure BLOB Storage BLOB client.
+    /// </summary>
+    /// <param name="StorageAccount">The name of Storage Account to use.</param>
+    /// <param name="Authorization">The authorization to use.</param>
+    /// <param name="APIVersion">The used API version to use.</param>
+    procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
+    begin
+        BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, APIVersion);
+    end;
+
+    /// <summary>
+    /// Uploads a file as a BlockBlob (with File Selection Dialog).
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
-    /// <param name="OperationPayload">A Request Object containing the necessary para#meters for the request.</param>    
     procedure PutBlobBlockBlobUI(): Codeunit "Blob API Operation Response"
     begin
         exit(BlobServicesApiImpl.PutBlobBlockBlobUI());
@@ -24,7 +44,6 @@ codeunit 9053 "ABS Blob REST Client"
     /// Uploads the content of an InStream as a BlockBlob
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
-    /// <param name="BlobName">The Name of the Blob to Upload.</param>
     /// <param name="SourceStream">The Content of the Blob as InStream.</param>
     procedure PutBlobBlockBlobStream(BlobName: Text; var SourceStream: InStream): Codeunit "Blob API Operation Response"
     begin
@@ -32,21 +51,19 @@ codeunit 9053 "ABS Blob REST Client"
     end;
 
     /// <summary>
-    /// Uploads (PUT) the content of a Text-Variable as a BlockBlob
+    /// Uploads text as a BlockBlob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
-    /// <param name="BlobName">The Name of the Blob to Upload.</param>
     /// <param name="SourceText">The Content of the Blob as Text.</param>
-    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobText(SourceText: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.PutBlobBlockBlobText(BlobName, SourceText));
+        exit(BlobServicesApiImpl.PutBlobBlockBlobText(SourceText));
     end;
 
     /// <summary>
-    /// Creates (PUT) a PageBlob
+    /// Creates a PageBlob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
-    /// <param name="BlobName">The Name of the Blob to Upload.</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
     procedure PutBlobPageBlob(ContentType: Text): Codeunit "Blob API Operation Response"
     begin

@@ -9,9 +9,7 @@ codeunit 9041 "Blob Services API Impl."
     Access = Internal;
 
     var
-        #region State
         OperationPayload: Codeunit "Blob API Operation Payload";
-        #endregion
 
         BlobAPIHttpContentHelper: Codeunit "Blob API HttpContent Helper";
         BlobAPIWebRequestHelper: Codeunit "Blob API Web Request Helper";
@@ -62,25 +60,25 @@ codeunit 9041 "Blob Services API Impl."
     #endregion
 
     #region Container operations
-    procedure CreateContainer(Container: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    procedure CreateContainer(ContainerName: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::CreateContainer);
-        OperationPayload.SetContainerName(Container);
+        OperationPayload.SetContainerName(ContainerName);
 
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(CreateContainerOperationNotSuccessfulErr, OperationPayload.GetContainerName()));
         exit(OperationResponse);
     end;
 
-    procedure DeleteContainer(Container: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    procedure DeleteContainer(ContainerName: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::DeleteContainer);
-        OperationPayload.SetContainerName(Container);
+        OperationPayload.SetContainerName(ContainerName);
 
         OperationResponse := BlobAPIWebRequestHelper.DeleteOperation(OperationPayload, StrSubstNo(DeleteContainerOperationNotSuccessfulErr, OperationPayload.GetContainerName()));
 
@@ -125,18 +123,19 @@ codeunit 9041 "Blob Services API Impl."
         SourceContent: Variant;
     begin
         SourceContent := SourceStream;
+
         OperationPayload.SetBlobName(BlobName);
+
         OperationResponse := PutBlobBlockBlob(SourceContent);
         exit(OperationResponse);
     end;
 
-    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobText(SourceText: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         SourceContent: Variant;
     begin
         SourceContent := SourceText;
-        OperationPayload.SetBlobName(BlobName);
         OperationResponse := PutBlobBlockBlob(SourceContent);
         exit(OperationResponse);
     end;

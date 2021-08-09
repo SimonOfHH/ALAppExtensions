@@ -14,20 +14,19 @@ codeunit 9052 "ABS Container REST Client"
     /// Initializes the Azure BLOB Storage container client.
     /// </summary>
     /// <param name="StorageAccount">The name of Storage Account to use.</param>
-    /// <param name="Container"></param>
+    /// <param name="Container">The name of the container to initialize the client with.</param>
     /// <param name="Authorization">The authorization to use.</param>
     procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization")
     begin
-        BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, Enum::"Storage Service API Version"::"2017-04-17");
+        BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, Enum::"Storage Service API Version"::"2020-08-04");
     end;
 
     /// <summary>
-    /// Initializes the object to be used in an API operation
+    /// Initializes the Azure BLOB Storage container client.
     /// </summary>
-    /// <param name="StorageAccount">The Storage Account to use</param>
-    /// <param name="NewContainerName">The name of the container in the Storage Account</param>
-    /// <param name="NewBlobName">The Name of the Blob</param>
-    /// <param name="ApiVersion">The used API version</param>
+    /// <param name="StorageAccount">The Storage Account to use.</param>
+    /// <param name="Container">The name of the container in the Storage Account.</param>
+    /// <param name="ApiVersion">The API version to use.</param>
     procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization"; ApiVersion: Enum "Storage Service API Version")
     begin
         BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, ApiVersion);

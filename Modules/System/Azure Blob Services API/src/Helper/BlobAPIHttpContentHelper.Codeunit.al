@@ -72,9 +72,12 @@ codeunit 9049 "Blob API HttpContent Helper"
     begin
         if ContentType = '' then
             ContentType := 'application/octet-stream';
+
         Content.GetHeaders(Headers);
+
         if not (OperationPayload.GetOperation() in [BlobServiceAPIOperation::PutPage]) then
             OperationPayload.AddHeader(Headers, 'Content-Type', ContentType);
+
         case BlobType of
             BlobType::PageBlob:
                 begin
@@ -84,6 +87,7 @@ codeunit 9049 "Blob API HttpContent Helper"
             else
                 OperationPayload.AddHeader(Headers, 'Content-Length', StrSubstNo(ContentLengthLbl, ContentLength));
         end;
+
         if not (OperationPayload.GetOperation() in [BlobServiceAPIOperation::PutBlock, BlobServiceAPIOperation::PutPage, BlobServiceAPIOperation::AppendBlock]) then
             OperationPayload.AddHeader(Headers, 'x-ms-blob-type', Format(BlobType));
     end;

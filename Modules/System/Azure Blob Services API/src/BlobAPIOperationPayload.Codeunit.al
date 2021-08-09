@@ -7,6 +7,7 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
 {
     Access = Internal;
 
+    #region Storage Service REST Operation
     procedure AddHeader("Key": Text; "Value": Text)
     begin
         if HeaderValues.ContainsKey("Key") then
@@ -41,6 +42,7 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
     begin
         exit(ApiVersion);
     end;
+    #endregion
 
     var
         Authorization: Interface "Storage Service Authorization";
@@ -53,13 +55,13 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
         OptionalHeaderValues: Dictionary of [Text, Text];
         OptionalUriParameters: Dictionary of [Text, Text];
 
-    procedure Initialize(StorageAccount: Text; Container: Text; "Blob": Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
+    procedure Initialize(StorageAccount: Text; Container: Text; BlobName: Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
     begin
         StorageAccountName := StorageAccount;
         ApiVersion := APIVersion;
         Authorization := Authorization;
         ContainerName := Container;
-        BlobName := "Blob";
+        BlobName := BlobName;
     end;
 
     // #region Set/Get Globals
