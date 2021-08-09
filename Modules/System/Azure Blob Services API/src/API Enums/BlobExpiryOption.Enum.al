@@ -3,8 +3,12 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
+/// <summary>
+/// See https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry#expiryoption
+/// </summary>
 enum 9045 "Blob Expiry Option"
 {
+    Access = Internal;
     Extensible = false;
 
     value(0; RelativeToCreation)

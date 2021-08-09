@@ -130,11 +130,13 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlobBlockBlobText(SourceText: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         SourceContent: Variant;
     begin
+        OperationPayload.SetBlobName(BlobName);
+
         SourceContent := SourceText;
         OperationResponse := PutBlobBlockBlob(SourceContent);
         exit(OperationResponse);
@@ -167,61 +169,66 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlobPageBlob(ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobPageBlob(BlobName: Text; ContentType: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::PutBlob);
+        OperationPayload.SetBlobName(BlobName);
+
         BlobAPIHttpContentHelper.AddBlobPutPageBlobContentHeaders(OperationPayload, 0, ContentType);
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(UploadBlobOperationNotSuccessfulErr, OperationPayload.GetBlobName(), OperationPayload.GetContainerName()));
+
         exit(OperationResponse);
     end;
 
-    procedure PutBlobAppendBlob(ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobAppendBlob(BlobName: Text; ContentType: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::PutBlob);
+        OperationPayload.SetBlobName(BlobName);
+
         BlobAPIHttpContentHelper.AddBlobPutAppendBlobContentHeaders(OperationPayload, ContentType);
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(UploadBlobOperationNotSuccessfulErr, OperationPayload.GetBlobName(), OperationPayload.GetContainerName()));
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockText(ContentAsText: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
     begin
-        OperationResponse := AppendBlockText(ContentAsText, 'text/plain; charset=UTF-8');
+        OperationResponse := AppendBlockText(BlobName, ContentAsText, 'text/plain; charset=UTF-8');
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockText(ContentAsText: Text; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text; ContentType: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
     begin
-        OperationResponse := AppendBlock(ContentType, ContentAsText);
+        OperationResponse := AppendBlock(BlobName, ContentType, ContentAsText);
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockStream(ContentAsStream: InStream): Codeunit "Blob API Operation Response"
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
     begin
-        OperationResponse := AppendBlockStream(ContentAsStream, 'application/octet-stream');
+        OperationResponse := AppendBlockStream(BlobName, ContentAsStream, 'application/octet-stream');
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockStream(ContentAsStream: InStream; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream; ContentType: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
     begin
-        OperationResponse := AppendBlock(ContentType, ContentAsStream);
+        OperationResponse := AppendBlock(BlobName, ContentType, ContentAsStream);
         exit(OperationResponse);
     end;
 
-    procedure AppendBlock(ContentType: Text; SourceContent: Variant): Codeunit "Blob API Operation Response"
+    procedure AppendBlock(BlobName: Text; ContentType: Text; SourceContent: Variant): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
@@ -230,6 +237,8 @@ codeunit 9041 "Blob Services API Impl."
         SourceText: Text;
     begin
         OperationPayload.SetOperation(Operation::AppendBlock);
+        OperationPayload.SetBlobName(BlobName);
+
         case true of
             SourceContent.IsInStream():
                 begin
@@ -260,75 +269,79 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure GetBlobAsFile(): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsFile(BlobName: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
-        BlobName: Text;
         TargetStream: InStream;
     begin
-        OperationResponse := GetBlobAsStream(TargetStream);
+        OperationResponse := GetBlobAsStream(BlobName, TargetStream);
+
         BlobName := OperationPayload.GetBlobName();
         DownloadFromStream(TargetStream, '', '', '', BlobName);
         exit(OperationResponse);
     end;
 
-    procedure GetBlobAsStream(var TargetStream: InStream): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsStream(BlobName: Text; var TargetStream: InStream): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::GetBlob);
+        OperationPayload.SetBlobName(BlobName);
+
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsStream(OperationPayload, TargetStream, StrSubstNo(GetBlobOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure GetBlobAsText(var TargetText: Text): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsText(BlobName: Text; var TargetText: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::GetBlob);
+        OperationPayload.SetBlobName(BlobName);
+
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, TargetText, StrSubstNo(GetBlobOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryRelativeToCreation(ExpiryTime: Integer): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryRelativeToCreation(BlobName: Text; ExpiryTime: Integer): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         ExpiryOption: Enum "Blob Expiry Option";
     begin
-        OperationResponse := SetBlobExpiry(ExpiryOption::RelativeToCreation, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
+        OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::RelativeToCreation, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryRelativeToNow(ExpiryTime: Integer): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryRelativeToNow(BlobName: Text; ExpiryTime: Integer): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         ExpiryOption: Enum "Blob Expiry Option";
     begin
-        OperationResponse := SetBlobExpiry(ExpiryOption::RelativeToNow, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
+        OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::RelativeToNow, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryAbsolute(ExpiryTime: DateTime): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryAbsolute(BlobName: Text; ExpiryTime: DateTime): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         ExpiryOption: Enum "Blob Expiry Option";
     begin
-        OperationResponse := SetBlobExpiry(ExpiryOption::Absolute, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
+        OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::Absolute, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryNever(): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryNever(BlobName: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         ExpiryOption: Enum "Blob Expiry Option";
     begin
-        OperationResponse := SetBlobExpiry(ExpiryOption::NeverExpire, '', StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
+        OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::NeverExpire, '', StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiry(ExpiryOption: Enum "Blob Expiry Option"; ExpiryTime: Variant; OperationNotSuccessfulErr: Text): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiry(BlobName: Text; ExpiryOption: Enum "Blob Expiry Option"; ExpiryTime: Variant; OperationNotSuccessfulErr: Text): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
@@ -338,6 +351,7 @@ codeunit 9041 "Blob Services API Impl."
         SpecifyDateTimeErr: Label 'You need to specify an DateTime Value for option %1', Comment = '%1 = Expiry Option';
     begin
         OperationPayload.SetOperation(Operation::SetBlobExpiry);
+        OperationPayload.SetBlobName(BlobName);
         OperationPayload.AddOptionalHeader('x-ms-expiry-option', Format(ExpiryOption));
 
         case ExpiryOption of
@@ -365,7 +379,7 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure GetBlobTags(var BlobTags: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure GetBlobTags(BlobName: Text; var BlobTags: XmlDocument): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         FormatHelper: Codeunit "Blob API Format Helper";
@@ -373,29 +387,33 @@ codeunit 9041 "Blob Services API Impl."
         ResponseText: Text;
     begin
         OperationPayload.SetOperation(Operation::GetBlobTags);
+        OperationPayload.SetBlobName(BlobName);
+
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, ResponseText, StrSubstNo(TagsOperationNotSuccessfulErr, 'get', 'Blob'));
         BlobTags := FormatHelper.TextToXmlDocument(ResponseText);
         exit(OperationResponse);
     end;
 
-    procedure SetBlobTags(Tags: Dictionary of [Text, Text]): Codeunit "Blob API Operation Response"
+    procedure SetBlobTags(BlobName: Text; Tags: Dictionary of [Text, Text]): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         FormatHelper: Codeunit "Blob API Format Helper";
         Document: XmlDocument;
     begin
         Document := FormatHelper.TagsDictionaryToXmlDocument(Tags);
-        OperationResponse := SetBlobTags(Document);
+        OperationResponse := SetBlobTags(BlobName, Document);
         exit(OperationResponse);
     end;
 
-    procedure SetBlobTags(Tags: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure SetBlobTags(BlobName: Text; Tags: XmlDocument): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Content: HttpContent;
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::SetBlobTags);
+        OperationPayload.SetBlobName(BlobName);
+
         BlobAPIHttpContentHelper.AddTagsContent(Content, OperationPayload, Tags);
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, Content, StrSubstNo(TagsOperationNotSuccessfulErr, 'set', 'Blob'));
         exit(OperationResponse);

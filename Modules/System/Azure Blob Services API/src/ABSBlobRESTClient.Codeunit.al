@@ -55,9 +55,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
     /// <param name="SourceText">The Content of the Blob as Text.</param>
-    procedure PutBlobBlockBlobText(SourceText: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.PutBlobBlockBlobText(SourceText));
+        exit(BlobServicesApiImpl.PutBlobBlockBlobText(BlobName, SourceText));
     end;
 
     /// <summary>
@@ -65,9 +65,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
-    procedure PutBlobPageBlob(ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobPageBlob(BlobName: Text; ContentType: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.PutBlobPageBlob(ContentType));
+        exit(BlobServicesApiImpl.PutBlobPageBlob(BlobName, ContentType));
     end;
 
     /// <summary>
@@ -75,9 +75,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// Uses 'application/octet-stream' as Content-Type
     /// </summary>
-    procedure PutBlobAppendBlobStream(): Codeunit "Blob API Operation Response"
+    procedure PutBlobAppendBlobStream(BlobName: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(PutBlobAppendBlob('application/octet-stream'));
+        exit(PutBlobAppendBlob(BlobName, 'application/octet-stream'));
     end;
 
     /// <summary>
@@ -85,18 +85,18 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// Uses 'text/plain; charset=UTF-8' as Content-Type
     /// </summary>
-    procedure PutBlobAppendBlobText(): Codeunit "Blob API Operation Response"
+    procedure PutBlobAppendBlobText(BlobName: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(PutBlobAppendBlob('text/plain; charset=UTF-8'));
+        exit(PutBlobAppendBlob(BlobName, 'text/plain; charset=UTF-8'));
     end;
     /// <summary>
     /// The Put Blob operation creates a new append blob
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
-    procedure PutBlobAppendBlob(ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobAppendBlob(BlobName: Text; ContentType: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.PutBlobAppendBlob(ContentType));
+        exit(BlobServicesApiImpl.PutBlobAppendBlob(BlobName, ContentType));
     end;
 
     /// <summary>
@@ -105,9 +105,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// Uses 'text/plain; charset=UTF-8' as Content-Type
     /// </summary>
     /// <param name="ContentAsText">Text-variable containing the content that should be added to the Blob</param>
-    procedure AppendBlockText(ContentAsText: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(AppendBlockText(ContentAsText, 'text/plain; charset=UTF-8'));
+        exit(AppendBlockText(BlobName, ContentAsText, 'text/plain; charset=UTF-8'));
     end;
 
     /// <summary>
@@ -116,9 +116,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// </summary>
     /// <param name="ContentAsText">Text-variable containing the content that should be added to the Blob</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
-    procedure AppendBlockText(ContentAsText: Text; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text; ContentType: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(AppendBlock(ContentType, ContentAsText));
+        exit(AppendBlock(BlobName, ContentType, ContentAsText));
     end;
 
     /// <summary>
@@ -127,9 +127,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// Uses 'application/octet-stream' as Content-Type
     /// </summary>
     /// <param name="ContentAsStream">InStream containing the content that should be added to the Blob</param>
-    procedure AppendBlockStream(ContentAsStream: InStream): Codeunit "Blob API Operation Response"
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream): Codeunit "Blob API Operation Response"
     begin
-        exit(AppendBlockStream(ContentAsStream, 'application/octet-stream'));
+        exit(AppendBlockStream(BlobName, ContentAsStream, 'application/octet-stream'));
     end;
 
     /// <summary>
@@ -138,9 +138,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// </summary>
     /// <param name="ContentAsStream">InStream containing the content that should be added to the Blob</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
-    procedure AppendBlockStream(ContentAsStream: InStream; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream; ContentType: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(AppendBlock(ContentType, ContentAsStream));
+        exit(AppendBlock(BlobName, ContentType, ContentAsStream));
     end;
 
     /// <summary>
@@ -149,9 +149,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// </summary>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
     /// <param name="SourceContent">Variant containing the content that should be added to the Blob</param>
-    procedure AppendBlock(ContentType: Text; SourceContent: Variant): Codeunit "Blob API Operation Response"
+    procedure AppendBlock(BlobName: Text; ContentType: Text; SourceContent: Variant): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.AppendBlock(ContentType, SourceContent));
+        exit(BlobServicesApiImpl.AppendBlock(BlobName, ContentType, SourceContent));
     end;
 
     /// <summary>
@@ -159,38 +159,38 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block-from-url
     /// </summary>
     /// <param name="SourceUri">Specifies the name of the source blob.</param>
-    procedure AppendBlockFromURL(SourceUri: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockFromURL(BlobName: Text; SourceUri: Text): Codeunit "Blob API Operation Response"
     begin
         exit(BlobServicesApiImpl.AppendBlockFromURL(SourceUri));
     end;
 
     /// <summary>
-    /// Receives (GET) a Blob as a File from a Container
+    /// Receives a Blob as a File from a Container.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
     /// </summary>
-    procedure GetBlobAsFile(): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsFile(BlobName: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.GetBlobAsFile());
+        exit(BlobServicesApiImpl.GetBlobAsFile(BlobName));
     end;
 
     /// <summary>
-    /// Receives (GET) a Blob as a InStream from a Container
+    /// Receives a Blob as a InStream from a Container.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
     /// </summary>
     /// <param name="TargetStream">The result InStream containg the content of the Blob.</param>
-    procedure GetBlobAsStream(var TargetStream: InStream): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsStream(BlobName: Text; var TargetStream: InStream): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.GetBlobAsStream(TargetStream));
+        exit(BlobServicesApiImpl.GetBlobAsStream(BlobName, TargetStream));
     end;
 
     /// <summary>
-    /// Receives (GET) a Blob as Text from a Container
+    /// Receives a Blob as Text from a Container.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
     /// </summary>
     /// <param name="TargetText">The result Text containg the content of the Blob.</param>
-    procedure GetBlobAsText(var TargetText: Text): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsText(BlobName: Text; var TargetText: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.GetBlobAsText(TargetText));
+        exit(BlobServicesApiImpl.GetBlobAsText(BlobName, TargetText));
     end;
     // #endregion Get Blob
 
@@ -201,9 +201,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
     /// </summary>    
     /// <param name="ExpiryTime">Number if miliseconds (Integer) until the expiration.</param>
-    procedure SetBlobExpiryRelativeToCreation(ExpiryTime: Integer): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryRelativeToCreation(BlobName: Text; ExpiryTime: Integer): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.SetBlobExpiryRelativeToCreation(ExpiryTime));
+        exit(BlobServicesApiImpl.SetBlobExpiryRelativeToCreation(BlobName, ExpiryTime));
     end;
 
     /// <summary>
@@ -212,9 +212,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
     /// </summary>    
     /// <param name="ExpiryTime">Number if miliseconds (Integer) until the expiration.</param>
-    procedure SetBlobExpiryRelativeToNow(ExpiryTime: Integer): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryRelativeToNow(BlobName: Text; ExpiryTime: Integer): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.SetBlobExpiryRelativeToNow(ExpiryTime));
+        exit(BlobServicesApiImpl.SetBlobExpiryRelativeToNow(BlobName, ExpiryTime));
     end;
 
     /// <summary>
@@ -223,9 +223,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
     /// </summary>    
     /// <param name="ExpiryTime">Absolute DateTime for the expiration.</param>
-    procedure SetBlobExpiryAbsolute(ExpiryTime: DateTime): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryAbsolute(BlobName: Text; ExpiryTime: DateTime): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.SetBlobExpiryAbsolute(ExpiryTime));
+        exit(BlobServicesApiImpl.SetBlobExpiryAbsolute(BlobName, ExpiryTime));
     end;
 
     /// <summary>
@@ -233,22 +233,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// Sets the file to never expire or removes the current expiry time, x-ms-expiry-time must not to be specified.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
     /// </summary>    
-    procedure SetBlobExpiryNever(): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryNever(BlobName: Text): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.SetBlobExpiryNever());
-    end;
-
-    /// <summary>
-    /// The Set Blob Expiry operation sets an expiry time on an existing blob. This operation is only allowed on Hierarchical Namespace enabled accounts
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
-    /// </summary>    
-    /// <param name="ExpiryOption">The type of expiration that should be set.</param>
-    /// <param name="ExpiryTime">Variant containing Nothing, number if miliseconds (Integer) or the absolute DateTime for the expiration.</param>
-    /// <param name="OperationNotSuccessfulErr">The error message that should be thrown when the request fails.</param>
-    procedure SetBlobExpiry(ExpiryOption: Enum "Blob Expiry Option"; ExpiryTime: Variant;
-                                                OperationNotSuccessfulErr: Text): Codeunit "Blob API Operation Response"
-    begin
-        exit(BlobServicesApiImpl.SetBlobExpiry(ExpiryOption, ExpiryTime, OperationNotSuccessfulErr));
+        exit(BlobServicesApiImpl.SetBlobExpiryNever(BlobName));
     end;
     // #endregion Set Blob Expiry
 
@@ -259,9 +246,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob-tags
     /// </summary>    
     /// <param name="BlobTags">A XmlDocument which contains the Tags currently set on the Blob.</param>    
-    procedure GetBlobTags(var BlobTags: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure GetBlobTags(BlobName: Text; var BlobTags: XmlDocument): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.GetBlobTags(BlobTags));
+        exit(BlobServicesApiImpl.GetBlobTags(BlobName, BlobTags));
     end;
 
     // #region Set Blob Tags
@@ -270,9 +257,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-tags
     /// </summary>    
     /// <param name="Tags">A Dictionary of [Text, Text] which contains the Tags you want to set.</param>    
-    procedure SetBlobTags(Tags: Dictionary of [Text, Text]): Codeunit "Blob API Operation Response"
+    procedure SetBlobTags(BlobName: Text; Tags: Dictionary of [Text, Text]): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.SetBlobTags(Tags));
+        exit(BlobServicesApiImpl.SetBlobTags(BlobName, Tags));
     end;
 
     /// <summary>
@@ -280,9 +267,9 @@ codeunit 9053 "ABS Blob REST Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-tags
     /// </summary>    
     /// <param name="Tags">A Dictionary of [Text, Text] which contains the Tags you want to set.</param>    
-    procedure SetBlobTags(Tags: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure SetBlobTags(BlobName: Text; Tags: XmlDocument): Codeunit "Blob API Operation Response"
     begin
-        exit(BlobServicesApiImpl.SetBlobTags(Tags));
+        exit(BlobServicesApiImpl.SetBlobTags(BlobName, Tags));
     end;
     // #endregion Set Blob Tags
 
