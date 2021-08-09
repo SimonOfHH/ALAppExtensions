@@ -173,14 +173,12 @@ codeunit 9045 "Blob API Web Request Helper"
     var
         BlobAPIHttpContentHelper: Codeunit "Blob API HttpContent Helper";
         BlobAPIHttpHeaderHelper: Codeunit "Blob API HttpHeader Helper";
-        Authorization: Interface "Storage Service Authorization";
     begin
         // Prepare HttpRequestMessage
         RequestMsg.Method(Format(HttpRequestType));
         if BlobAPIHttpContentHelper.ContentSet(Content) or BlobAPIHttpHeaderHelper.HandleContentHeaders(Content, OperationPayload) then
             RequestMsg.Content := Content;
 
-        Authorization.Authorize(OperationPayload);
         RequestMsg.SetRequestUri(OperationPayload.ConstructUri());
     end;
 
@@ -192,10 +190,14 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         // Send Request    
         Client.Send(RequestMsg, Response);
+
         Response.Content.ReadAs(DebugText);
+
         if not Response.IsSuccessStatusCode then
             Error(HttpResponseInfoErr, OperationNotSuccessfulErr, Response.HttpStatusCode, Response.ReasonPhrase);
+
         OperationResponse.SetHttpResponse(Response);
+
         exit(OperationResponse);
     end;
     // #endregion Helper functions

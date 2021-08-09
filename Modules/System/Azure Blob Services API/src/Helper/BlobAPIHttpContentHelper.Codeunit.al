@@ -8,7 +8,7 @@ codeunit 9049 "Blob API HttpContent Helper"
     Access = Internal;
 
     var
-        ContentLengthLbl: Label '%1', Comment = '%1 = Length';
+        ContentLengthLbl: Label '%1', Comment = '%1 = Length', Locked = true;
 
     procedure AddBlobPutBlockBlobContentHeaders(var Content: HttpContent; OperationPayload: Codeunit "Blob API Operation Payload"; var SourceStream: InStream)
     var
