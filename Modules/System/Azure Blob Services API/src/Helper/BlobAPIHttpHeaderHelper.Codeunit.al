@@ -22,7 +22,7 @@ codeunit 9048 "Blob API HttpHeader Helper"
         OperationPayload.AddHeader('x-ms-version', Format(OperationPayload.GetApiVersion()));
         // Add to all requests <<
         HeadersDictionary := OperationPayload.GetSortedHeadersDictionary();
-        OperationPayload.SetHeaderValues(HeadersDictionary);
+        OperationPayload.SetHeaders(HeadersDictionary);
         foreach HeaderKey in HeadersDictionary.Keys do
             if not IsContentHeader(HeaderKey) then
                 OperationPayload.AddHeader(Headers, HeaderKey, HeadersDictionary.Get(HeaderKey));
@@ -37,11 +37,13 @@ codeunit 9048 "Blob API HttpHeader Helper"
     begin
         Content.GetHeaders(Headers);
         HeadersDictionary := OperationPayload.GetSortedHeadersDictionary();
+
         foreach HeaderKey in HeadersDictionary.Keys do
             if IsContentHeader(HeaderKey) then begin
                 OperationPayload.AddHeader(Headers, HeaderKey, HeadersDictionary.Get(HeaderKey));
                 ContainsContentHeader := true;
             end;
+
         exit(ContainsContentHeader);
     end;
 

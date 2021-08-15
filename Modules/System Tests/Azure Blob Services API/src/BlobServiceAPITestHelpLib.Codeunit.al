@@ -1,33 +1,12 @@
 codeunit 88150 "Blob Service API Test Help Lib"
 {
-    trigger OnRun()
-    begin
-
-    end;
+    Access = Internal;
 
     var
         Any: Codeunit Any;
         StorageAccountNameLbl: Label 'devstoreaccount1'; // Using Azurite Storage Emulator
         AccessKeyLbl: Label 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw=='; // Using Azurite Storage Emulator
         SasTokenLbl: Label '<TODO>'; // TODO: What SAS to use with Azurite?
-
-    procedure InitializeRequestFromContext(TestContext: Codeunit "Blob Service API Test Context"; var OperationPayload: Codeunit "Blob API Operation Payload")
-    begin
-        InitializeRequestFromContext(TestContext, OperationPayload, '');
-    end;
-
-    procedure InitializeRequestFromContext(TestContext: Codeunit "Blob Service API Test Context"; var OperationPayload: Codeunit "Blob API Operation Payload"; ContainerName: Text)
-    begin
-        InitializeRequestFromContext(TestContext, OperationPayload, ContainerName, '');
-    end;
-
-    procedure InitializeRequestFromContext(TestContext: Codeunit "Blob Service API Test Context"; var OperationPayload: Codeunit "Blob API Operation Payload"; ContainerName: Text; BlobName: Text)
-    begin
-        Clear(OperationPayload);
-        OperationPayload.InitializeRequest(TestContext.GetStorageAccountName(), ContainerName, BlobName);
-        OperationPayload.InitializeAuthorization(TestContext.GetAuthType(), TestContext.GetSecret());
-        OperationPayload.SetApiVersion(TestContext.GetApiVersion());
-    end;
 
     procedure GetStorageAccountName(): Text
     begin

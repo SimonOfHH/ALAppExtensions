@@ -4,8 +4,8 @@
 // ------------------------------------------------------------------------------------------------
 
 /// <summary>
-/// Defines the possible permissions for account SAS
-/// More Information: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas#account-sas-permissions-by-operation
+/// Defines the possible permissions for account SAS.
+/// See: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas#account-sas-permissions-by-operation
 /// </summary>
 enum 9064 "Storage Service Permission"
 {

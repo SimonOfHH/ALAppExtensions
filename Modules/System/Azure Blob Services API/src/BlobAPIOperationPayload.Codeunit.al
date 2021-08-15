@@ -3,46 +3,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
-codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Operation"
+codeunit 9042 "Blob API Operation Payload"
 {
     Access = Internal;
-
-    #region Storage Service REST Operation
-    procedure AddHeader("Key": Text; "Value": Text)
-    begin
-        if HeaderValues.ContainsKey("Key") then
-            HeaderValues.Remove("Key");
-        HeaderValues.Add("Key", "Value");
-    end;
-
-    procedure AddParameter(ParameterName: Text; ParameterValue: Text)
-    begin
-        // TODO
-    end;
-
-    /// <summary>
-    /// Returns the Storage Account name for this request
-    /// </summary>
-    /// <returns>The Storage Account name</returns>
-    procedure GetStorageAccountName(): Text
-    begin
-        // TODO
-    end;
-
-    procedure GetAuthorization(): Interface "Storage Service Authorization"
-    begin
-        exit(Authorization);
-    end;
-
-    /// <summary>
-    /// Returns the API Version for this request
-    /// </summary>
-    /// <returns>The API Version</returns>
-    procedure GetAPIVersion(): Enum "Storage Service API Version"
-    begin
-        exit(ApiVersion);
-    end;
-    #endregion
 
     var
         Authorization: Interface "Storage Service Authorization";
@@ -52,77 +15,18 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
         BlobName: Text;
         Operation: Enum "Blob Service API Operation";
         HeaderValues: Dictionary of [Text, Text];
-        OptionalHeaderValues: Dictionary of [Text, Text];
-        OptionalUriParameters: Dictionary of [Text, Text];
+        UriParameters: Dictionary of [Text, Text];
 
-    procedure Initialize(StorageAccount: Text; Container: Text; BlobName: Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
+    procedure GetAuthorization(): Interface "Storage Service Authorization"
     begin
-        StorageAccountName := StorageAccount;
-        ApiVersion := APIVersion;
-        Authorization := Authorization;
-        ContainerName := Container;
-        BlobName := BlobName;
+        exit(Authorization);
     end;
 
-    // #region Set/Get Globals
-    /// <summary>
-    /// Sets the Storage Account name for this request
-    /// </summary>
-    /// <param name="StorageAccountName">The Storage Account name</param>
-    procedure SetStorageAccountName(StorageAccountName: Text)
+    procedure SetAuthorization(StorageServiceAuthorization: Interface "Storage Service Authorization")
     begin
-        StorageAccountName := StorageAccountName;
+        Authorization := StorageServiceAuthorization;
     end;
 
-    /// <summary>
-    /// Sets the Container name for this request
-    /// </summary>
-    /// <param name="NewContainerName">The Container name</param>
-    procedure SetContainerName(NewContainerName: Text)
-    begin
-        ContainerName := NewContainerName;
-    end;
-
-    /// <summary>
-    /// Returns the Container name for this request
-    /// </summary>
-    /// <returns>The Container name</returns>
-    procedure GetContainerName(): Text
-    begin
-        exit(ContainerName);
-    end;
-
-    /// <summary>
-    /// Sets the Blob name for this request
-    /// </summary>
-    /// <param name="NewBlobName">The Blob name</param>
-    procedure SetBlobName(NewBlobName: Text)
-    begin
-        BlobName := NewBlobName;
-    end;
-
-    /// <summary>
-    /// Returns the Blob name for this request
-    /// </summary>
-    /// <returns>The Blob name</returns>
-    procedure GetBlobName(): Text
-    begin
-        exit(BlobName);
-    end;
-
-    /// <summary>
-    /// Sets the API Version for this request
-    /// </summary>
-    /// <param name="NewApiVersion">The API Version</param>
-    procedure SetApiVersion(NewApiVersion: Enum "Storage Service API Version")
-    begin
-        ApiVersion := NewApiVersion;
-    end;
-
-    /// <summary>
-    /// Sets the Operation for this request
-    /// </summary>
-    /// <param name="NewOperation">The Operation</param>
     procedure SetOperation(NewOperation: Enum "Blob Service API Operation")
     var
         HelperLibrary: Codeunit "Blob API Helper Library";
@@ -143,23 +47,80 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
         end
     end;
 
-    /// <summary>
-    /// Returns the Operation for this request
-    /// </summary>
-    /// <returns>The Operation</returns>
+    procedure GetApiVersion(): Enum "Storage Service API Version"
+    begin
+        exit(ApiVersion);
+    end;
+
+    procedure SetApiVersion(StorageServiceApiVersion: Enum "Storage Service API Version");
+    begin
+        ApiVersion := StorageServiceApiVersion;
+    end;
+
+    procedure GetStorageAccountName(): Text
+    begin
+        exit(StorageAccountName);
+    end;
+
+    procedure SetStorageAccountName(StorageAccount: Text);
+    begin
+        StorageAccountName := StorageAccount;
+    end;
+
+    procedure GetContainerName(): Text
+    begin
+        exit(ContainerName);
+    end;
+
+    procedure SetContainerName(Container: Text);
+    begin
+        ContainerName := Container;
+    end;
+
+    procedure GetBlobName(): Text
+    begin
+        exit(BlobName);
+    end;
+
+    procedure SetBlobName("Blob": Text);
+    begin
+        BlobName := "Blob";
+    end;
+
     procedure GetOperation(): Enum "Blob Service API Operation"
     begin
         exit(Operation);
     end;
 
-
-    internal procedure SetHeaderValues(NewHeaderValues: Dictionary of [Text, Text])
+    procedure GetHeaders(): Dictionary of [Text, Text];
     begin
-        HeaderValues := NewHeaderValues;
+        exit(HeaderValues);
     end;
-    // #endregion Set/Get Globals
 
-    // #region Uri generation
+    procedure SetHeaders(Headers: Dictionary of [Text, Text])
+    begin
+        HeaderValues := Headers;
+    end;
+
+    procedure AddHeader(HeaderKey: Text; HeaderValue: Text)
+    begin
+        HeaderValues.Remove(HeaderKey);
+
+        HeaderValues.Add(HeaderKey, HeaderValue);
+    end;
+
+    procedure Initialize(StorageAccount: Text; Container: Text; BlobName: Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
+    begin
+        StorageAccountName := StorageAccount;
+        ApiVersion := APIVersion;
+        Authorization := Authorization;
+        ContainerName := Container;
+        BlobName := BlobName;
+
+        Clear(HeaderValues);
+        Clear(UriParameters);
+    end;
+
     /// <summary>
     /// Creates the Uri for this object, based on given values
     /// </summary>
@@ -168,26 +129,9 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
     var
         URIHelper: Codeunit "Blob API URI Helper";
     begin
-        URIHelper.SetOptionalUriParameter(OptionalUriParameters);
+        URIHelper.SetOptionalUriParameter(UriParameters);
         exit(URIHelper.ConstructUri(StorageAccountName, ContainerName, BlobName, Operation));
     end;
-    // #endregion Uri generation
-
-    // #region Shared Key Signature Generation
-    /// <summary>
-    /// Creates the SharedKey signature for this object, based on given values
-    /// </summary>
-    /// <param name="HttpRequestType">Enum "Http Request Type" specifying the type for this API Operation</param>
-    /// <returns>The SharedKey signature (as Text) for this API Operation, which is added to the "Authorization"-header</returns>
-    internal procedure GetSharedKeySignature(HttpRequestType: Enum "Http Request Type"): Text
-    var
-        ReqAuthAccessKey: Codeunit "Storage Serv. Auth. Shared Key";
-    begin
-        ReqAuthAccessKey.SetHeaderValues(HeaderValues);
-        ReqAuthAccessKey.SetApiVersion(ApiVersion);
-        exit(ReqAuthAccessKey.GetSharedKeySignature(HttpRequestType, StorageAccountName, ConstructUri()));
-    end;
-    // #endregion Shared Key Signature Generation
 
     /// <summary>
     /// Adds an entry to the internally used Header-Dictionary and to a HttpHeaders-variable at the same time
@@ -195,6 +139,7 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
     /// <param name="Headers">HttpHeaders that should have the specified Header-value</param>
     /// <param name="Key">Identifier for the Header</param>
     /// <param name="Value">Value for the Header</param>
+    // TODO is this one needed
     procedure AddHeader(var Headers: HttpHeaders; "Key": Text; "Value": Text)
     begin
         AddHeader("Key", "Value");
@@ -218,35 +163,12 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
     end;
 
     /// <summary>
-    /// Adds an entry to the internally used OptionalHeader-Dictionary
-    /// </summary>
-    /// <param name="Key">Identifier for the Header</param>
-    /// <param name="Value">Value for the Header</param>
-    procedure AddOptionalHeader("Key": Text; "Value": Text)
-    begin
-        if OptionalHeaderValues.ContainsKey("Key") then
-            OptionalHeaderValues.Remove("Key");
-        OptionalHeaderValues.Add("Key", "Value");
-    end;
-
-    /// <summary>
-    /// Retrieves a value from the internally used OptionalHeader-Dictionary
-    /// </summary>
-    /// <param name="HeaderKey">Identifier for the Header</param>
-    /// <param name="HeaderValue">Value for the Header (contains the result)</param>
-    /// <returns>Boolean indicating if the value exists</returns>
-    procedure GetOptionalHeaderValue(HeaderKey: Text; var HeaderValue: Text): Boolean
-    begin
-        exit(OptionalHeaderValues.Get(HeaderKey, HeaderValue));
-    end;
-
-    /// <summary>
     /// Creates a sorted Dictionary containg all Headers and OptionalHeaderValues from this object.
     /// </summary>
     /// <returns>Sorted Dictionary of [Text, Text] containg all Headers and OptionalHeaderValues from this object.</returns>
     internal procedure GetSortedHeadersDictionary() NewHeaders: Dictionary of [Text, Text]
     var
-        SortedDictionary: DotNet SortedDictionary2;
+        SortedDictionary: DotNet GenericSortedDictionary2;
         SortedDictionaryEntry: DotNet GenericKeyValuePair2;
         HeaderKey: Text;
     begin
@@ -257,27 +179,13 @@ codeunit 9042 "Blob API Operation Payload" implements "Storage Service REST Oper
         foreach HeaderKey in HeaderValues.Keys do
             SortedDictionary.Add(HeaderKey, HeaderValues.Get(HeaderKey));
 
-        foreach HeaderKey in OptionalHeaderValues.Keys do begin
-            if SortedDictionary.ContainsKey(HeaderKey) then
-                SortedDictionary.Remove(HeaderKey);
-            SortedDictionary.Add(HeaderKey, OptionalHeaderValues.Get(HeaderKey));
-        end;
-
         foreach SortedDictionaryEntry in SortedDictionary do
             NewHeaders.Add(SortedDictionaryEntry."Key", SortedDictionaryEntry.Value);
     end;
 
-    // #region Optional Uri Parameters
-    /// <summary>
-    /// Adds an entry to the internally used OptionalUriParameters-Dictionary
-    /// </summary>
-    /// <param name="Key">Identifier for the Parameter</param>
-    /// <param name="Value">Value for the Parameter</param>
-    procedure AddOptionalUriParameter("Key": Text; "Value": Text)
+    procedure AddUriParameter(ParameterKey: Text; ParameterValue: Text)
     begin
-        if OptionalUriParameters.ContainsKey("Key") then
-            OptionalUriParameters.Remove("Key");
-        OptionalUriParameters.Add("Key", "Value");
+        UriParameters.Remove(ParameterKey);
+        UriParameters.Add(ParameterKey, ParameterValue);
     end;
-    // #endregion Optional Uri Parameters
 }

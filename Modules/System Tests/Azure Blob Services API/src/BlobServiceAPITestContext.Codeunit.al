@@ -1,21 +1,32 @@
+// ------------------------------------------------------------------------------------------------
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See License.txt in the project root for license information.
+// ------------------------------------------------------------------------------------------------
+
 codeunit 88155 "Blob Service API Test Context"
 {
+    Access = Internal;
+
     procedure SetSharedKeyAuth()
+    var
+        StorageServiceAuthorization: Codeunit "Storage Service Authorization";
     begin
-        SetAuthType(AuthType::AccessKey);
+        SetAuthType(StorageServiceAuthorization.SharedKey(AccessKey).AsStorageServiceAuthorization());
     end;
 
     procedure SetSasTokenAuth()
+    var
+        StorageServiceAuthorization: Codeunit "Storage Service Authorization";
     begin
-        SetAuthType(AuthType::SasToken);
+        SetAuthType(StorageServiceAuthorization.SAS(SasToken).AsStorageServiceAuthorization());
     end;
 
-    procedure SetAuthType(NewAuthType: Enum "Storage Service Authorization Type")
+    procedure SetAuthType(NewAuthType: Interface "Storage Service Authorization")
     begin
         AuthType := NewAuthType;
     end;
 
-    procedure GetAuthType(): Enum "Storage Service Authorization Type"
+    procedure GetAuthType(): Interface "Storage Service Authorization"
     begin
         exit(AuthType);
     end;
@@ -50,14 +61,6 @@ codeunit 88155 "Blob Service API Test Context"
         exit(SasToken);
     end;
 
-    procedure GetSecret(): Text
-    begin
-        if AuthType = AuthType::SasToken then
-            exit(SasToken);
-        if AuthType = AuthType::AccessKey then
-            exit(AccessKey);
-    end;
-
     procedure SetStorageAccountName(NewStorageAccountName: Text)
     begin
         StorageAccountName := NewStorageAccountName;
@@ -86,7 +89,7 @@ codeunit 88155 "Blob Service API Test Context"
 
     var
         HelperLibrary: Codeunit "Blob Service API Test Help Lib";
-        AuthType: Enum "Storage Service Authorization Type";
+        AuthType: Interface "Storage Service Authorization";
         ApiVersion: Enum "Storage Service API Version";
         StorageAccountName: Text;
         AccessKey: Text;

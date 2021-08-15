@@ -163,16 +163,24 @@ codeunit 9045 "Blob API Web Request Helper"
     end;
 
     local procedure PrepareRequestMsg(var OperationPayload: Codeunit "Blob API Operation Payload"; HttpRequestType: Enum "Http Request Type") RequestMsg: HttpRequestMessage
+    var
+        Authorization: Interface "Storage Service Authorization";
     begin
         // Prepare HttpRequestMessage
         RequestMsg.Method(Format(HttpRequestType));
         RequestMsg.SetRequestUri(OperationPayload.ConstructUri());
+
+        if OperationPayload.GetStorageAccountName() <> 'devstoreaccount1' then begin
+            Authorization := OperationPayload.GetAuthorization();
+            Authorization.Authorize(RequestMsg, OperationPayload.GetStorageAccountName());
+        end;
     end;
 
     local procedure PrepareRequestMsg(var OperationPayload: Codeunit "Blob API Operation Payload"; HttpRequestType: Enum "Http Request Type"; Content: HttpContent) RequestMsg: HttpRequestMessage
     var
         BlobAPIHttpContentHelper: Codeunit "Blob API HttpContent Helper";
         BlobAPIHttpHeaderHelper: Codeunit "Blob API HttpHeader Helper";
+        Authorization: Interface "Storage Service Authorization";
     begin
         // Prepare HttpRequestMessage
         RequestMsg.Method(Format(HttpRequestType));
@@ -180,6 +188,11 @@ codeunit 9045 "Blob API Web Request Helper"
             RequestMsg.Content := Content;
 
         RequestMsg.SetRequestUri(OperationPayload.ConstructUri());
+
+        if OperationPayload.GetStorageAccountName() <> 'devstoreaccount1' then begin
+            Authorization := OperationPayload.GetAuthorization();
+            Authorization.Authorize(RequestMsg, OperationPayload.GetStorageAccountName());
+        end;
     end;
 
     local procedure SendRequest(var Client: HttpClient; RequestMsg: HttpRequestMessage; OperationNotSuccessfulErr: Text): Codeunit "Blob API Operation Response"

@@ -4,8 +4,8 @@
 // ------------------------------------------------------------------------------------------------
 
 /// <summary>
-/// Defines the possible resource types for account SAS
-/// More Information: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas#specifying-account-sas-parameters
+/// Defines the possible resource types for account SAS.
+/// See: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas#specifying-account-sas-parameters
 /// </summary>
 enum 9063 "Storage Service Resource Type"
 {

@@ -38,7 +38,6 @@ codeunit 9041 "Blob Services API Impl."
         OperationPayload.Initialize(StorageAccountName, ContainerName, BlobName, Authorization, ApiVersion);
     end;
 
-    #region Account operations
     procedure ListContainers(var Container: Record "Container"; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
@@ -57,7 +56,6 @@ codeunit 9041 "Blob Services API Impl."
 
         exit(OperationResponse);
     end;
-    #endregion
 
     #region Container operations
     procedure CreateContainer(ContainerName: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
@@ -264,7 +262,7 @@ codeunit 9041 "Blob Services API Impl."
     begin
         OperationPayload.SetOperation(Operation::AppendBlockFromURL);
         OperationPayload.AddHeader('Content-Length', '0');
-        OperationPayload.AddOptionalHeader('x-ms-copy-source', SourceUri);
+        OperationPayload.AddHeader('x-ms-copy-source', SourceUri);
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, Content, StrSubstNo(AppendBlockFromUrlOperationNotSuccessfulErr, SourceUri, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
@@ -352,7 +350,7 @@ codeunit 9041 "Blob Services API Impl."
     begin
         OperationPayload.SetOperation(Operation::SetBlobExpiry);
         OperationPayload.SetBlobName(BlobName);
-        OperationPayload.AddOptionalHeader('x-ms-expiry-option', Format(ExpiryOption));
+        OperationPayload.AddHeader('x-ms-expiry-option', Format(ExpiryOption));
 
         case ExpiryOption of
             ExpiryOption::RelativeToCreation, ExpiryOption::RelativeToNow:
@@ -367,12 +365,12 @@ codeunit 9041 "Blob Services API Impl."
                 ExpiryTime.IsInteger():
                     begin
                         IntegerValue := ExpiryTime;
-                        OperationPayload.AddOptionalHeader('x-ms-expiry-time', Format(IntegerValue));
+                        OperationPayload.AddHeader('x-ms-expiry-time', Format(IntegerValue));
                     end;
                 ExpiryTime.IsDateTime():
                     begin
                         DateTimeValue := ExpiryTime;
-                        OperationPayload.AddOptionalHeader('x-ms-expiry-time', BlobAPIFormatHelper.GetRfc1123DateTime((DateTimeValue)));
+                        OperationPayload.AddHeader('x-ms-expiry-time', BlobAPIFormatHelper.GetRfc1123DateTime((DateTimeValue)));
                     end;
             end;
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, OperationNotSuccessfulErr);
@@ -436,7 +434,7 @@ codeunit 9041 "Blob Services API Impl."
         ResponseText: Text;
     begin
         OperationPayload.SetOperation(Operation::FindBlobByTags);
-        OperationPayload.AddOptionalUriParameter('where', SearchExpression);
+        OperationPayload.AddUriParameter('where', SearchExpression);
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, ResponseText, FindBlobsByTagsOperationNotSuccessfulErr);
         FoundBlobs := FormatHelper.TextToXmlDocument(ResponseText);
         exit(OperationResponse);
@@ -470,10 +468,10 @@ codeunit 9041 "Blob Services API Impl."
 
     begin
         OperationPayload.SetOperation(Operation::CopyBlob);
-        OperationPayload.AddOptionalHeader('x-ms-copy-source', SourceName);
+        OperationPayload.AddHeader('x-ms-copy-source', SourceName);
 
         if not IsNullGuid(LeaseId) then
-            OperationPayload.AddOptionalHeader('x-ms-lease-id', BlobAPIFormatHelper.RemoveCurlyBracketsFromString(Format(LeaseId).ToLower()));
+            OperationPayload.AddHeader('x-ms-lease-id', BlobAPIFormatHelper.RemoveCurlyBracketsFromString(Format(LeaseId).ToLower()));
 
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(CopyOperationNotSuccessfulErr, SourceName, OperationPayload.GetBlobName()));
         exit(OperationResponse);
@@ -485,8 +483,8 @@ codeunit 9041 "Blob Services API Impl."
         Operation: Enum "Blob Service API Operation";
     begin
         OperationPayload.SetOperation(Operation::CopyBlobFromUrl);
-        OperationPayload.AddOptionalHeader('x-ms-copy-source', SourceUri);
-        OperationPayload.AddOptionalHeader('x-ms-requires-sync', 'true');
+        OperationPayload.AddHeader('x-ms-copy-source', SourceUri);
+        OperationPayload.AddHeader('x-ms-requires-sync', 'true');
 
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, CopyOperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -510,7 +508,7 @@ codeunit 9041 "Blob Services API Impl."
         SourceText: Text;
     begin
         OperationPayload.SetOperation(Operation::PutBlock);
-        OperationPayload.AddOptionalUriParameter('blockid', BlockId);
+        OperationPayload.AddUriParameter('blockid', BlockId);
 
         case true of
             SourceContent.IsInStream():
@@ -557,7 +555,7 @@ codeunit 9041 "Blob Services API Impl."
         ResponseText: Text;
     begin
         OperationPayload.SetOperation(Operation::GetBlockList);
-        OperationPayload.AddOptionalUriParameter('blocklisttype', Format(BlockListType));
+        OperationPayload.AddUriParameter('blocklisttype', Format(BlockListType));
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, ResponseText, StrSubstNo(BlockListOperationNotSuccessfulErr, OperationPayload.GetBlobName(), 'get'));
         BlockList := FormatHelper.TextToXmlDocument(ResponseText);
         exit(OperationResponse);
@@ -595,8 +593,8 @@ codeunit 9041 "Blob Services API Impl."
         Content: HttpContent;
     begin
         OperationPayload.SetOperation(Operation::PutBlockFromURL);
-        OperationPayload.AddOptionalHeader('x-ms-copy-source', SourceUri);
-        OperationPayload.AddOptionalUriParameter('blockid', BlockId);
+        OperationPayload.AddHeader('x-ms-copy-source', SourceUri);
+        OperationPayload.AddUriParameter('blockid', BlockId);
         OperationPayload.AddHeader('Content-Length', '0');
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, Content, StrSubstNo(PutBlockFromUrlOperationNotSuccessfulErr, SourceUri, OperationPayload.GetBlobName()));
         exit(OperationResponse);

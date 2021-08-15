@@ -9,8 +9,9 @@
 interface "Storage Service Authorization"
 {
     /// <summary>
-    /// Authorizes an operation by providing the needed information in the operation payload.
+    /// Authorizes an HTTP request by providing the needed authorization information to it.
     /// </summary>
-    /// <param name="OperationPayload">The operation to authorize.</param>
-    procedure Authorize(OperationPayload: Interface "Storage Service REST Operation");
+    /// <param name="HttpRequest">The HTTP request to authorize.</param>
+    /// <param name="StorageAccount">The name of the storage account to authorize against.</param>
+    procedure Authorize(var HttpRequest: HttpRequestMessage; StorageAccount: Text);
 }
