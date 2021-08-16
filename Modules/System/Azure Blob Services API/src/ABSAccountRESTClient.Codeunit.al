@@ -17,7 +17,7 @@ codeunit 9051 "ABS Account REST Client"
     /// <param name="Authorization">The authorization to use.</param>
     procedure Initialize(StorageAccount: Text; Authorization: Interface "Storage Service Authorization")
     begin
-        BlobServicesApiImpl.Initialize(StorageAccount, '', '', Authorization, Enum::"Storage Service API Version"::"2017-04-17");
+        BlobServicesApiImpl.Initialize(StorageAccount, '', '', Authorization, Enum::"Storage Service API Version"::"2017-04-17"); // TODO figure out the default version
     end;
 
     /// <summary>

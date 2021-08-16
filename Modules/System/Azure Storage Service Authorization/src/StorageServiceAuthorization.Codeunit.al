@@ -20,6 +20,7 @@ codeunit 9062 "Storage Service Authorization"
     /// <param name="SignedPermissions">Specifies the signed permissions for the account SAS. Permissions are only valid if they match the specified signed resource type; otherwise they are ignored.</param>
     /// <param name="SignedExpiry">The time at which the shared access signature becomes invalid.</param>
     /// <returns>An account SAS authorization.</returns>
+    [NonDebuggable]
     procedure CreateAccountSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
     var
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
@@ -38,6 +39,7 @@ codeunit 9062 "Storage Service Authorization"
     /// <param name="SignedExpiry">The time at which the shared access signature becomes invalid.</param>
     /// <param name="OptionalParams">See table "Stor. Serv. SAS Parameters".</param>
     /// <returns>An account SAS authorization.</returns>
+    [NonDebuggable]
     procedure CreateAccountSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"];
                                                                     SignedPermissions: List of [Enum "Storage Service Permission"];
                                                                     SignedExpiry: DateTime;
@@ -54,6 +56,7 @@ codeunit 9062 "Storage Service Authorization"
     /// </summary>
     /// <param name="SharedKey">The shared key to use.</param>
     /// <returns>A Shared Key authorization.</returns>
+    [NonDebuggable]
     procedure CreateSharedKey(SharedKey: Text): Interface "Storage Service Authorization"
     var
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
@@ -68,6 +71,7 @@ codeunit 9062 "Storage Service Authorization"
     /// <param name="SharedKey">The shared key to use.</param>
     /// <param name="ApiVersion">The API version to use.</param>
     /// <returns>A Shared Key authorization.</returns>
+    [NonDebuggable]
     procedure CreateSharedKey(SharedKey: Text; ApiVersion: Enum "Storage Service API Version"): Interface "Storage Service Authorization"
     var
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";

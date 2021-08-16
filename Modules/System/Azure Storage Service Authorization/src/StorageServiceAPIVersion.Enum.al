@@ -7,6 +7,7 @@
 /// Defines the available API versions.
 /// See: https://docs.microsoft.com/en-us/rest/api/storageservices/previous-azure-storage-service-versions
 /// </summary>
+// TODO clean up a bit
 enum 9060 "Storage Service API Version"
 {
     Access = Public;
@@ -50,14 +51,14 @@ enum 9060 "Storage Service API Version"
     }
     value(9; "2020-04-08")
     {
-        Caption = '2020-02-10', Locked = true;
+        Caption = '2020-04-08', Locked = true;
     }
     value(10; "2020-06-12")
     {
-        Caption = '2020-02-10', Locked = true;
+        Caption = '2020-06-12', Locked = true;
     }
     value(11; "2020-08-04")
     {
-        Caption = '2020-02-10', Locked = true;
+        Caption = '2020-08-04', Locked = true;
     }
 }

@@ -9,7 +9,7 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
 
     procedure Authorize(var HttpRequest: HttpRequestMessage; StorageAccount: Text)
     begin
-        // TODO 
+        // TODO finish
         // AddParameter('', GetSharedAccessSignature());
     end;
 
@@ -18,6 +18,7 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         StorageAccountName := NewStorageAccountName;
     end;
 
+    [NonDebuggable]
     procedure SetSigningKey(NewSigningKey: Text)
     begin
         SigningKey := NewSigningKey;
@@ -183,6 +184,7 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
     var
         AuthFormatHelper: Codeunit "Auth. Format Helper";
         StorageAccountName: Text;
+        [NonDebuggable]
         SigningKey: Text;
         StartDate: DateTime;
         EndDate: DateTime;

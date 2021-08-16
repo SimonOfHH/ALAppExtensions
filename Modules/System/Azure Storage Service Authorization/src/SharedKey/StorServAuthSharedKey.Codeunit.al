@@ -21,9 +21,10 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         Headers.Add('Authorization', GetSharedKeySignature(HttpRequest, StorageAccount));
     end;
 
-    procedure SetSharedKey(NewSharedKey: Text)
+    [NonDebuggable]
+    procedure SetSharedKey(SharedKey: Text)
     begin
-        Secret := NewSharedKey;
+        Secret := SharedKey;
     end;
 
     procedure SetApiVersion(NewApiVersion: Enum "Storage service API Version")
@@ -107,7 +108,7 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         AzureStorageServiceHeaders.Add('x-ms-lease-state');
         AzureStorageServiceHeaders.Add('x-ms-lease-id');
         AzureStorageServiceHeaders.Add('x-ms-lease-id');
-        // TODO add more ;( ...
+        // TODO add more ;( ... try to use .Net instead
 
         foreach HeaderKey in AzureStorageServiceHeaders do
             if Headers.GetValues(HeaderKey, HeaderValue) then begin
@@ -182,7 +183,7 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         Split: List of [Text];
     begin
         Split := QueryString.Split('=');
-        if Split.Count <> 2 then
+        if Split.Count() <> 2 then
             Error('This should not happen'); // TODO: Make better error
         CurrIdentifier := Split.Get(1);
         CurrValue := Split.Get(2);

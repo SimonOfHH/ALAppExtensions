@@ -49,7 +49,7 @@ table 9062 "Stor. Serv. SAS Parameters"
         {
             DataClassification = SystemMetadata;
             OptionMembers = "https &http","https";
-            OptionCaption = '"https,http",http', Locked = true; // TODO this will probably not work
+            OptionCaption = '"https,http",https', Locked = true; // TODO this will probably not work
         }
     }
 }

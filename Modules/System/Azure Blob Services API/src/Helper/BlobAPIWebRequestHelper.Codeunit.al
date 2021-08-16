@@ -189,7 +189,7 @@ codeunit 9045 "Blob API Web Request Helper"
 
         RequestMsg.SetRequestUri(OperationPayload.ConstructUri());
 
-        if OperationPayload.GetStorageAccountName() <> 'devstoreaccount1' then begin
+        if OperationPayload.GetStorageAccountName() <> 'devstoreaccount1' then begin // TODO do we need this?
             Authorization := OperationPayload.GetAuthorization();
             Authorization.Authorize(RequestMsg, OperationPayload.GetStorageAccountName());
         end;
