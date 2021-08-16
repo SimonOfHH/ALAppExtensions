@@ -150,6 +150,12 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         Builder.Append('&');
         Builder.Append(StrSubstNo(KeyValueLbl, 'spr', ProtocolsToString(Protocols)));
         Builder.Append('&');
+
+        if IPRange <> '' then begin
+            Builder.Append('&');
+            Builder.Append(StrSubstNo(KeyValueLbl, 'sip', IPRange));
+        end;
+
         Builder.Append(StrSubstNo(KeyValueLbl, 'sig', Uri.EscapeDataString(Signature)));
         exit(Builder.ToText());
     end;
