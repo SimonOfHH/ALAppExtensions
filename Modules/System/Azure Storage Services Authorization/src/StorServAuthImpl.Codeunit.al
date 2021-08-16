@@ -8,34 +8,30 @@ codeunit 9063 "Stor. Serv. Auth. Impl."
     Access = Internal;
 
     [NonDebuggable]
-    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
+    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedResources: List of [Enum "Storage Service Resource Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
     var
         OptionalParams: Record "Stor. Serv. SAS Parameters";
     begin
         OptionalParams.Init();
-        exit(CreateSAS(SigningKey, SignedVersion, SignedServices, SignedPermissions, SignedExpiry, OptionalParams));
+        exit(CreateSAS(SigningKey, SignedVersion, SignedServices, SignedResources, SignedPermissions, SignedExpiry, OptionalParams));
     end;
 
     [NonDebuggable]
-    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime; OptionalParams: Record "Stor. Serv. SAS Parameters"): Interface "Storage Service Authorization"
+    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedResources: List of [Enum "Storage Service Resource Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime; OptionalParams: Record "Stor. Serv. SAS Parameters"): Interface "Storage Service Authorization"
     var
         StorServAuthSAS: Codeunit "Stor. Serv. Auth. SAS";
     begin
         StorServAuthSAS.SetSigningKey(SigningKey);
         StorServAuthSAS.SetVersion(SignedVersion);
         StorServAuthSAS.SetSignedServices(SignedServices);
+        StorServAuthSAS.SetResources(SignedResources);
         StorServAuthSAS.SetSignedPermissions(SignedPermissions);
         StorServAuthSAS.SetSignedExpiry(SignedExpiry);
 
         // Set optional parameters
         StorServAuthSAS.SetVersion(OptionalParams.ApiVersion);
-
-        if OptionalParams.SignedStart <> 0DT then
-            StorServAuthSAS.SetSignedStart(OptionalParams.SignedStart);
-
-        if OptionalParams.SignedIp <> '' then
-            StorServAuthSAS.SetIPrange(OptionalParams.SignedIp);
-
+        StorServAuthSAS.SetSignedStart(CurrentDateTime());
+        StorServAuthSAS.SetIPrange(OptionalParams.SignedIp);
         StorServAuthSAS.SetProtocol(Format(OptionalParams.SignedProtocol));
 
         exit(StorServAuthSAS);

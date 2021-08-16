@@ -16,13 +16,13 @@ codeunit 132917 "Stor. Serv. Shared Key Test"
         AuthorizationValue: array[10] of Text;
     begin
         // [Given] A storage account and an HTTP request with random URI
-        StorageAccount := Any.AlphanumericText(15);
+        StorageAccount := Any.AlphabeticText(5);
         Uri := GenerateRandomUri(StorageAccount);
         HttpRequest.SetRequestUri(Uri);
         HttpRequest.Method('GET');
 
         // [When] Authorizing the HTTP request using Shared Key authorization
-        SharedKeyAuthorization := StorageServiceAuthorization.CreateSharedKey(Any.AlphabeticText(10));
+        SharedKeyAuthorization := StorageServiceAuthorization.CreateSharedKey('8jOLRYYU9UOaxhW1yeVUbA==');
         SharedKeyAuthorization.Authorize(HttpRequest, StorageAccount);
 
         // [Then] The Authorization header is present on the HTTP request and nothing else has changed
@@ -38,7 +38,7 @@ codeunit 132917 "Stor. Serv. Shared Key Test"
 
     local procedure GenerateRandomUri(StorageAccount: Text): Text
     begin
-        exit(StrSubstNo('%1.%2.com/%3=%4&%5', StorageAccount, Any.AlphabeticText(10), Any.AlphanumericText(10), Any.AlphanumericText(10), Any.AlphanumericText(10)));
+        exit(StrSubstNo('https://%1.blob.windows.net/%2/?%3=%4&5=%6', StorageAccount, Any.AlphabeticText(5), Any.AlphanumericText(5), Any.AlphanumericText(5), Any.AlphanumericText(5), Any.AlphanumericText(5)));
     end;
 
     var

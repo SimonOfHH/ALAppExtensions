@@ -8,9 +8,25 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
     Access = Internal;
 
     procedure Authorize(var HttpRequest: HttpRequestMessage; StorageAccount: Text)
+    var
+        Uri: Codeunit Uri;
+        UriBuilder: Codeunit "Uri Builder";
+        UriText, QueryText : Text;
     begin
-        // TODO finish
-        // AddParameter('', GetSharedAccessSignature());
+        StorageAccountName := StorageAccount;
+        UriText := HttpRequest.GetRequestUri();
+
+        UriBuilder.Init(UriText);
+        QueryText := UriBuilder.GetQuery();
+
+        QueryText := DelChr(QueryText, '<', '?'); // remove ? from the query
+
+        QueryText += GetSharedAccessSignature();
+        UriBuilder.SetQuery(QueryText);
+
+        UriBuilder.GetUri(Uri);
+
+        HttpRequest.SetRequestUri(Uri.GetAbsoluteUri());
     end;
 
     procedure SetStorageAccountName(NewStorageAccountName: Text)
@@ -26,6 +42,9 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
 
     procedure SetSignedStart(SignedStart: DateTime)
     begin
+        if SignedStart = 0DT then
+            SignedStart := CurrentDateTime();
+
         StartDate := SignedStart;
     end;
 
@@ -49,9 +68,9 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         Services := SignedServices;
     end;
 
-    procedure AddResource(ResourceType: Enum "Storage Service Resource Type")
+    procedure SetResources(SignedResources: List of [Enum "Storage Service Resource Type"])
     begin
-        Resources.Add(ResourceType);
+        Resources := SignedResources;
     end;
 
     procedure SetSignedPermissions(SignedPermissions: List of [Enum "Storage Service Permission"])
@@ -73,6 +92,7 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         StringToSign := CreateSharedAccessSignatureStringToSign(StorageAccountName, ApiVersion, StartDate, EndDate, Services, Resources, Permissions, Protocols, IPRange);
         Signature := AuthFormatHelper.GetAccessKeyHashCode(StringToSign, SigningKey);
         SharedAccessSignature := CreateSasUrlString(ApiVersion, StartDate, EndDate, Services, Resources, Permissions, Protocols, IPRange, Signature);
+
         exit(SharedAccessSignature);
     end;
 
@@ -135,7 +155,6 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         Builder: TextBuilder;
         KeyValueLbl: Label '%1=%2', Comment = '%1 = Key; %2 = Value';
     begin
-        Builder.Append('?');
         Builder.Append(StrSubstNo(KeyValueLbl, 'sv', VersionToString(ApiVersion)));
         Builder.Append('&');
         Builder.Append(StrSubstNo(KeyValueLbl, 'ss', ServicesToString(Services)));
@@ -152,11 +171,12 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         Builder.Append('&');
 
         if IPRange <> '' then begin
-            Builder.Append('&');
             Builder.Append(StrSubstNo(KeyValueLbl, 'sip', IPRange));
+            Builder.Append('&');
         end;
 
         Builder.Append(StrSubstNo(KeyValueLbl, 'sig', Uri.EscapeDataString(Signature)));
+
         exit(Builder.ToText());
     end;
 
