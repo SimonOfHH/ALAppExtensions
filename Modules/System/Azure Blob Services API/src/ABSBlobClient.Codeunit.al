@@ -6,7 +6,7 @@
 /// <summary>
 /// Provides functionality to use operations on blobs in Azure BLOB Services.
 /// </summary>
-codeunit 9053 "ABS Blob REST Client"
+codeunit 9053 "ABS Blob Client"
 {
     Access = Public;
 
@@ -16,8 +16,10 @@ codeunit 9053 "ABS Blob REST Client"
     /// <param name="StorageAccount">The name of Storage Account to use.</param>
     /// <param name="Authorization">The authorization to use.</param>
     procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization")
+    var
+        StorageServiceAuthorization: Codeunit "Storage Service Authorization";
     begin
-        BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, Enum::"Storage Service API Version"::"2017-04-17");
+        BlobServicesApiImpl.Initialize(StorageAccount, Container, '', Authorization, StorageServiceAuthorization.GetDefaultAPIVersion());
     end;
 
     /// <summary>
@@ -192,9 +194,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.GetBlobAsText(BlobName, TargetText));
     end;
-    // #endregion Get Blob
 
-    // #region Set Blob Expiry
     /// <summary>
     /// The Set Blob Expiry operation sets an expiry time on an existing blob. This operation is only allowed on Hierarchical Namespace enabled accounts
     /// Sets the expiry time relative to the file creation time, x-ms-expiry-time must be specified as the number of milliseconds to elapse from creation time.
@@ -237,10 +237,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.SetBlobExpiryNever(BlobName));
     end;
-    // #endregion Set Blob Expiry
 
-
-    // #region Get Blob Tags
     /// <summary>
     /// The Get Blob Tags operation returns all user-defined tags for the specified blob, version, or snapshot.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob-tags
@@ -251,7 +248,6 @@ codeunit 9053 "ABS Blob REST Client"
         exit(BlobServicesApiImpl.GetBlobTags(BlobName, BlobTags));
     end;
 
-    // #region Set Blob Tags
     /// <summary>
     /// The Set Blob Tags operation sets user-defined tags for the specified blob as one or more key-value pairs.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-tags
@@ -271,9 +267,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.SetBlobTags(BlobName, Tags));
     end;
-    // #endregion Set Blob Tags
 
-    // #region Find Blob by Tags
     /// <summary>
     /// The Find Blobs by Tags operation finds all blobs in the storage account whose tags match a given search expression.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/find-blobs-by-tags
@@ -295,9 +289,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.FindBlobsByTags(SearchExpression, FoundBlobs));
     end;
-    // #endregion Find Blob by Tags
 
-    // #region Delete Blob
     /// <summary>
     /// The Delete Blob operation marks the specified blob or snapshot for deletion. The blob is later deleted during garbage collection.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-blob
@@ -306,9 +298,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.DeleteBlob());
     end;
-    // #endregion Delete Blob
 
-    // #region Undelete Blob
     /// <summary>
     /// The Undelete Blob operation restores the contents and metadata of a soft deleted blob and any associated soft deleted snapshots (version 2017-07-29 or later)
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/undelete-blob
@@ -317,9 +307,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.UndeleteBlob());
     end;
-    // #endregion Undelete Blob
 
-    // #region Copy Blob
     /// <summary>
     /// The Copy Blob operation copies a blob to a destination within the storage account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/copy-blob
@@ -342,9 +330,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.CopyBlob(SourceName, LeaseId));
     end;
-    // #endregion Copy Blob
 
-    // #region Copy Blob from URL
     /// <summary>
     /// The Copy Blob From URL operation copies a blob to a destination within the storage account synchronously for source blob sizes up to 256 MiB
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url
@@ -354,9 +340,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.CopyBlobFromURL(SourceUri));
     end;
-    // #endregion Copy Blob from URL
 
-    // #region Put Block
     /// <summary>
     /// The Put Block operation creates a new block to be committed as part of a blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block
@@ -376,9 +360,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.PutBlock(SourceContent, BlockId));
     end;
-    // #endregion Put Block
 
-    // #region Get Block List
     /// <summary>
     /// The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-block-list
@@ -413,9 +395,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.GetBlockList(BlockListType, BlockList));
     end;
-    // #endregion Get Block List
 
-    // #region Put Block List
     /// <summary>
     /// The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block-list
@@ -426,6 +406,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.PutBlockList(CommitedBlocks, UncommitedBlocks));
     end;
+
     /// <summary>
     /// The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block-list
@@ -434,9 +415,7 @@ codeunit 9053 "ABS Blob REST Client"
     begin
         exit(BlobServicesApiImpl.PutBlockList(BlockList));
     end;
-    // #endregion Put Block List
 
-    // #region Put Block From URL
     /// <summary>
     /// The Put Block From URL operation creates a new block to be committed as part of a blob where the contents are read from a URL.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block-from-url

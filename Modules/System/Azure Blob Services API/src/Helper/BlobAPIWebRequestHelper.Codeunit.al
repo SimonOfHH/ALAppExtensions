@@ -48,7 +48,7 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         HandleHeaders(Enum::"Http Request Type"::GET, Client, OperationPayload);
 
-        RequestMsg := PrepareRequestMsg(OperationPayload, Enum::"Http Request Type"::GET);
+        PrepareRequestMsg(RequestMsg, OperationPayload, Enum::"Http Request Type"::GET);
 
         OperationResponse := SendRequest(Client, RequestMsg, OperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -64,7 +64,7 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         HandleHeaders(Enum::"Http Request Type"::HEAD, Client, OperationPayload);
 
-        RequestMsg := PrepareRequestMsg(OperationPayload, Enum::"Http Request Type"::HEAD);
+        PrepareRequestMsg(RequestMsg, OperationPayload, Enum::"Http Request Type"::HEAD);
 
         OperationResponse := SendRequest(Client, RequestMsg, OperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -89,7 +89,7 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         HandleHeaders(Enum::"Http Request Type"::PUT, Client, OperationPayload);
 
-        RequestMsg := PrepareRequestMsg(OperationPayload, Enum::"Http Request Type"::PUT, Content);
+        PrepareRequestMsg(RequestMsg, OperationPayload, Enum::"Http Request Type"::PUT, Content);
 
         OperationResponse := SendRequest(Client, RequestMsg, OperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -105,7 +105,7 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         HandleHeaders(Enum::"Http Request Type"::DELETE, Client, OperationPayload);
 
-        RequestMsg := PrepareRequestMsg(OperationPayload, Enum::"Http Request Type"::DELETE);
+        PrepareRequestMsg(RequestMsg, OperationPayload, Enum::"Http Request Type"::DELETE);
 
         OperationResponse := SendRequest(Client, RequestMsg, OperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -130,7 +130,7 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         HandleHeaders(Enum::"Http Request Type"::POST, Client, OperationPayload);
 
-        RequestMsg := PrepareRequestMsg(OperationPayload, Enum::"Http Request Type"::POST, Content);
+        PrepareRequestMsg(RequestMsg, OperationPayload, Enum::"Http Request Type"::POST, Content);
 
         OperationResponse := SendRequest(Client, RequestMsg, OperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -147,7 +147,7 @@ codeunit 9045 "Blob API Web Request Helper"
     begin
         HandleHeaders(Enum::"Http Request Type"::OPTIONS, Client, OperationPayload);
 
-        RequestMsg := PrepareRequestMsg(OperationPayload, Enum::"Http Request Type"::OPTIONS);
+        PrepareRequestMsg(RequestMsg, OperationPayload, Enum::"Http Request Type"::OPTIONS);
 
         OperationResponse := SendRequest(Client, RequestMsg, OperationNotSuccessfulErr);
         exit(OperationResponse);
@@ -162,36 +162,42 @@ codeunit 9045 "Blob API Web Request Helper"
         BlobAPIHttpHeaderHelper.HandleHeaders(HttpRequestType, Client, OperationPayload);
     end;
 
-    local procedure PrepareRequestMsg(var OperationPayload: Codeunit "Blob API Operation Payload"; HttpRequestType: Enum "Http Request Type") RequestMsg: HttpRequestMessage
+    local procedure PrepareRequestMsg(var RequestMsg: HttpRequestMessage; OperationPayload: Codeunit "Blob API Operation Payload"; HttpRequestType: Enum "Http Request Type")
     var
         Authorization: Interface "Storage Service Authorization";
     begin
-        // Prepare HttpRequestMessage
         RequestMsg.Method(Format(HttpRequestType));
         RequestMsg.SetRequestUri(OperationPayload.ConstructUri());
+        TransferHeaders(OperationPayload, RequestMsg);
 
-        if OperationPayload.GetStorageAccountName() <> 'devstoreaccount1' then begin
-            Authorization := OperationPayload.GetAuthorization();
-            Authorization.Authorize(RequestMsg, OperationPayload.GetStorageAccountName());
-        end;
+        Authorization := OperationPayload.GetAuthorization();
+        Authorization.Authorize(RequestMsg, OperationPayload.GetStorageAccountName());
     end;
 
-    local procedure PrepareRequestMsg(var OperationPayload: Codeunit "Blob API Operation Payload"; HttpRequestType: Enum "Http Request Type"; Content: HttpContent) RequestMsg: HttpRequestMessage
+    local procedure PrepareRequestMsg(var RequestMsg: HttpRequestMessage; var OperationPayload: Codeunit "Blob API Operation Payload"; HttpRequestType: Enum "Http Request Type"; Content: HttpContent)
     var
         BlobAPIHttpContentHelper: Codeunit "Blob API HttpContent Helper";
         BlobAPIHttpHeaderHelper: Codeunit "Blob API HttpHeader Helper";
-        Authorization: Interface "Storage Service Authorization";
     begin
         // Prepare HttpRequestMessage
-        RequestMsg.Method(Format(HttpRequestType));
         if BlobAPIHttpContentHelper.ContentSet(Content) or BlobAPIHttpHeaderHelper.HandleContentHeaders(Content, OperationPayload) then
             RequestMsg.Content := Content;
 
-        RequestMsg.SetRequestUri(OperationPayload.ConstructUri());
+        PrepareRequestMsg(RequestMsg, OperationPayload, HttpRequestType);
+    end;
 
-        if OperationPayload.GetStorageAccountName() <> 'devstoreaccount1' then begin // TODO do we need this?
-            Authorization := OperationPayload.GetAuthorization();
-            Authorization.Authorize(RequestMsg, OperationPayload.GetStorageAccountName());
+    local procedure TransferHeaders(var OperationPayload: Codeunit "Blob API Operation Payload"; var RequestMessage: HttpRequestMessage)
+    var
+        RequestHeaders: HttpHeaders;
+        Headers: Dictionary of [Text, Text];
+        HeaderKey, HeaderValue : Text;
+    begin
+        RequestMessage.GetHeaders(RequestHeaders);
+        Headers := OperationPayload.GetSortedHeadersDictionary();
+
+        foreach HeaderKey in Headers.Keys do begin
+            Headers.Get(HeaderKey, HeaderValue);
+            RequestHeaders.Add(HeaderKey, HeaderValue);
         end;
     end;
 

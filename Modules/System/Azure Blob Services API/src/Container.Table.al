@@ -3,6 +3,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
+/// <summary>
+/// TODO doc
+/// </summary>
 table 9041 "Container"
 {
     Access = Public;
@@ -12,12 +15,7 @@ table 9041 "Container"
 
     fields
     {
-        field(1; "Entry No."; Integer)
-        {
-            DataClassification = CustomerContent;
-            Caption = 'Entry No.';
-        }
-        field(10; Name; Text[250])
+        field(1; Name; Text[250])
         {
             DataClassification = CustomerContent;
             Caption = 'Name';
@@ -71,7 +69,7 @@ table 9041 "Container"
 
     keys
     {
-        key(PK; "Entry No.")
+        key(PK; Name)
         {
             Clustered = true;
         }
@@ -118,27 +116,17 @@ table 9041 "Container"
 
     internal procedure AddNewEntry(NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
     var
-        NextEntryNo: Integer;
         Outstr: OutStream;
     begin
-        NextEntryNo := GetNextEntryNo();
-
         Rec.Init();
-        Rec."Entry No." := NextEntryNo;
+
         Rec.Name := CopyStr(NameFromXml, 1, 250);
         SetPropertyFields(ChildNodes);
         Rec."XML Value".CreateOutStream(Outstr);
         Outstr.Write(OuterXml);
         //Rec.URI := HelperLibrary.ConstructUrl(StorageAccountName, OperationPayload, Operation::ListContainerContents, ContainerName, NameFromXml);
-        Rec.Insert(true);
-    end;
 
-    local procedure GetNextEntryNo(): Integer
-    begin
-        if Rec.FindLast() then
-            exit(Rec."Entry No." + 1)
-        else
-            exit(1);
+        Rec.Insert(true);
     end;
 
     local procedure SetPropertyFields(ChildNodes: XmlNodeList)

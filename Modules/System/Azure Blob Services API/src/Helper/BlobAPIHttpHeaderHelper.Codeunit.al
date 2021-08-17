@@ -15,12 +15,14 @@ codeunit 9048 "Blob API HttpHeader Helper"
         HeadersDictionary: Dictionary of [Text, Text];
         HeaderKey: Text;
     begin
-        Headers := Client.DefaultRequestHeaders;
+        Headers := Client.DefaultRequestHeaders();
+
         // Add to all requests >>
         UsedDateTimeText := FormatHelper.GetRfc1123DateTime(CurrentDateTime());
         OperationPayload.AddHeader('x-ms-date', UsedDateTimeText);
         OperationPayload.AddHeader('x-ms-version', Format(OperationPayload.GetApiVersion()));
         // Add to all requests <<
+
         HeadersDictionary := OperationPayload.GetSortedHeadersDictionary();
         OperationPayload.SetHeaders(HeadersDictionary);
         foreach HeaderKey in HeadersDictionary.Keys do

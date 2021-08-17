@@ -6,7 +6,7 @@
 /// <summary>
 /// Holder for the optional Azure Blob Storage HTTP headers and URL parameters.
 /// </summary>
-codeunit 9047 "ABS REST Headers & Parameters"
+codeunit 9047 "ABS Optional Parameters"
 {
     Access = Public;
 
@@ -192,15 +192,6 @@ codeunit 9047 "ABS REST Headers & Parameters"
     procedure CopySourceName("Value": Text)
     begin
         SetHeader('x-ms-copy-source', "Value");
-    end;
-
-    /// <summary>
-    /// Sets the value for 'x-ms-access-tier' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Enum "Blob Access Tier" value specifying the HttpHeader value</param>
-    procedure AccessTier("Value": Enum "Blob Access Tier")
-    begin
-        SetHeader('x-ms-access-tier', Format("Value"));
     end;
 
     /// <summary>

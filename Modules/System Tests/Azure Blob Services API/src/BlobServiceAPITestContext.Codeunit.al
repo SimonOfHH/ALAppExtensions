@@ -11,14 +11,14 @@ codeunit 88155 "Blob Service API Test Context"
     var
         StorageServiceAuthorization: Codeunit "Storage Service Authorization";
     begin
-        SetAuthType(StorageServiceAuthorization.SharedKey(AccessKey).AsStorageServiceAuthorization());
+        SetAuthType(StorageServiceAuthorization.CreateSharedKey(HelperLibrary.GetAccessKey()));
     end;
 
     procedure SetSasTokenAuth()
-    var
-        StorageServiceAuthorization: Codeunit "Storage Service Authorization";
+    // var
+    //     StorageServiceAuthorization: Codeunit "Storage Service Authorization";
     begin
-        SetAuthType(StorageServiceAuthorization.SAS(SasToken).AsStorageServiceAuthorization());
+        //SetAuthType(StorageServiceAuthorization.SAS(SasToken).AsStorageServiceAuthorization());
     end;
 
     procedure SetAuthType(NewAuthType: Interface "Storage Service Authorization")
@@ -88,7 +88,7 @@ codeunit 88155 "Blob Service API Test Context"
     end;
 
     var
-        HelperLibrary: Codeunit "Blob Service API Test Help Lib";
+        HelperLibrary: Codeunit "ABS Test Library";
         AuthType: Interface "Storage Service Authorization";
         ApiVersion: Enum "Storage Service API Version";
         StorageAccountName: Text;

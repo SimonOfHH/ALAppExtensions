@@ -38,7 +38,7 @@ codeunit 9041 "Blob Services API Impl."
         OperationPayload.Initialize(StorageAccountName, ContainerName, BlobName, Authorization, ApiVersion);
     end;
 
-    procedure ListContainers(var Container: Record "Container"; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    procedure ListContainers(var Container: Record "Container"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         HelperLibrary: Codeunit "Blob API Helper Library";
@@ -58,7 +58,7 @@ codeunit 9041 "Blob Services API Impl."
     end;
 
     #region Container operations
-    procedure CreateContainer(ContainerName: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    procedure CreateContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
@@ -70,7 +70,7 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure DeleteContainer(ContainerName: Text; Optionals: Codeunit "ABS REST Headers & Parameters"): Codeunit "Blob API Operation Response"
+    procedure DeleteContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         Operation: Enum "Blob Service API Operation";
@@ -83,7 +83,7 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure ListBlobs(var ContainerContent: Record "Container Content"): Codeunit "Blob API Operation Response"
+    procedure ListBlobs(ContainerName: Text; var ContainerContent: Record "Container Content"): Codeunit "Blob API Operation Response"
     var
         OperationResponse: Codeunit "Blob API Operation Response";
         HelperLibrary: Codeunit "Blob API Helper Library";
@@ -92,6 +92,7 @@ codeunit 9041 "Blob Services API Impl."
         NodeList: XmlNodeList;
     begin
         OperationPayload.SetOperation(Operation::ListBlobs);
+        OperationPayload.SetContainerName(ContainerName);
 
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, ResponseText, StrSubstNo(ListBlobsContainercOperationNotSuccessfulErr, OperationPayload.GetContainerName()));
 

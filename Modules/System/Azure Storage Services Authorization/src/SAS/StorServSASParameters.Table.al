@@ -22,7 +22,7 @@ table 9062 "Stor. Serv. SAS Parameters"
         field(1; ApiVersion; Enum "Storage Service API Version")
         {
             DataClassification = SystemMetadata;
-            InitValue = "2020-08-04"; // TODO check if this is okay
+            InitValue = "2020-10-02";
         }
 
         /// <summary>

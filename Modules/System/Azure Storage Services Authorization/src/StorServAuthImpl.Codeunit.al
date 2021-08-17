@@ -47,4 +47,9 @@ codeunit 9063 "Stor. Serv. Auth. Impl."
 
         exit(StorServAuthSharedKey);
     end;
+
+    procedure GetDefaultAPIVersion(): Enum "Storage Service API Version"
+    begin
+        exit(Enum::"Storage Service API Version"::"2020-10-02");
+    end;
 }

@@ -97,9 +97,7 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         CanonicalizedHeaders: Text;
         KeyValuePairLbl: Label '%1:%2', Comment = '%1 = Key; %2 = Value';
     begin
-        // "Headers" needs to be a sorted dictionary
-        // TODO there is not way to get all headers :(
-
+        // TODO uptake Keys() property when it's available in the HttpHeaders object
         AzureStorageServiceHeaders.Add('x-ms-expiry-time');
         AzureStorageServiceHeaders.Add('x-ms-sku-name');
         AzureStorageServiceHeaders.Add('x-ms-account-kind');
@@ -108,7 +106,8 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         AzureStorageServiceHeaders.Add('x-ms-lease-state');
         AzureStorageServiceHeaders.Add('x-ms-lease-id');
         AzureStorageServiceHeaders.Add('x-ms-lease-id');
-        // TODO add more ;( ... try to use .Net instead
+        AzureStorageServiceHeaders.Add('x-ms-date');
+        AzureStorageServiceHeaders.Add('x-ms-version');
 
         foreach HeaderKey in AzureStorageServiceHeaders do
             if Headers.GetValues(HeaderKey, HeaderValue) then begin

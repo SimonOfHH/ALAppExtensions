@@ -62,7 +62,7 @@ codeunit 9062 "Storage Service Authorization"
     var
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
     begin
-        exit(StorServAuthImpl.SharedKey(SharedKey, Enum::"Storage Service API Version"::"2020-08-04"));
+        exit(StorServAuthImpl.SharedKey(SharedKey, GetDefaultAPIVersion()));
     end;
 
     /// <summary>
@@ -78,5 +78,16 @@ codeunit 9062 "Storage Service Authorization"
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
     begin
         exit(StorServAuthImpl.SharedKey(SharedKey, ApiVersion));
+    end;
+
+    /// <summary>
+    /// Get the default Storage Service API Version.
+    /// </summary>
+    /// <returns>The default Storage Service API Version</returns>
+    procedure GetDefaultAPIVersion(): Enum "Storage Service API Version"
+    var
+        StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
+    begin
+        exit(StorServAuthImpl.GetDefaultAPIVersion());
     end;
 }

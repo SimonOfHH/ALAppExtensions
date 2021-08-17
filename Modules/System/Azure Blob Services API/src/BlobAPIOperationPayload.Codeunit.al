@@ -32,16 +32,15 @@ codeunit 9042 "Blob API Operation Payload"
         HelperLibrary: Codeunit "Blob API Helper Library";
     begin
         Operation := NewOperation;
-        // Only API Versions after 2017-04-17 are considered
         case Operation of
             Operation::GetAccountInformation:
-                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2018-03-28", NewOperation, true);
+                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2020-10-02", NewOperation, true);
             Operation::SetBlobExpiry:
-                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2020-02-10", NewOperation, true);
+                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2020-10-02", NewOperation, true);
             Operation::UndeleteBlob:
-                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2017-07-29", NewOperation, true);
+                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2020-10-02", NewOperation, true);
             Operation::PutBlockFromURL:
-                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2018-03-28", NewOperation, true);
+                HelperLibrary.ValidateApiVersion(ApiVersion, ApiVersion::"2020-10-02", NewOperation, true);
             Operation::GetUserDelegationKey:
                 Error('Only works with Azure AD authentication, which is not implemented yet'); // TODO: Make real error
         end
@@ -109,11 +108,11 @@ codeunit 9042 "Blob API Operation Payload"
         HeaderValues.Add(HeaderKey, HeaderValue);
     end;
 
-    procedure Initialize(StorageAccount: Text; Container: Text; BlobName: Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
+    procedure Initialize(StorageAccount: Text; Container: Text; BlobName: Text; StorageServiceAuthorization: Interface "Storage Service Authorization"; StorageServiceAPIVersion: Enum "Storage Service API Version")
     begin
         StorageAccountName := StorageAccount;
-        ApiVersion := APIVersion;
-        Authorization := Authorization;
+        ApiVersion := StorageServiceAPIVersion;
+        Authorization := StorageServiceAuthorization;
         ContainerName := Container;
         BlobName := BlobName;
 
