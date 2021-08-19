@@ -48,30 +48,36 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         exit(StrSubstNo(SignaturePlaceHolderLbl, StorageAccount, Signature));
     end;
 
-    local procedure CreateSharedKeyStringToSign(HttpRequest: HttpRequestMessage; StorageAccount: Text): Text
+    local procedure CreateSharedKeyStringToSign(Request: HttpRequestMessage; StorageAccount: Text): Text
     var
-        Headers: HttpHeaders;
+        RequestHeaders, ContentHeaders : HttpHeaders;
         StringToSign: Text;
     begin
-        // TODO: Add Handling-structure for different API-versions
-        HttpRequest.GetHeaders(Headers);
+        Request.GetHeaders(RequestHeaders);
+        if TryGetContentHeaders(Request, ContentHeaders) then;
 
-        StringToSign += HttpRequest.Method() + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Content-Encoding') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Content-Language') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Content-Length') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Content-MD5') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Content-Type') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Date') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'If-Modified-Since') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'If-Match') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'If-None-Match') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'If-Unmodified-Since') + NewLine();
-        StringToSign += GetHeaderValueOrEmpty(Headers, 'Range') + NewLine();
-        StringToSign += GetCanonicalizedHeaders(Headers) + NewLine();
-        StringToSign += GetCanonicalizedResource(StorageAccount, HttpRequest.GetRequestUri());
+        StringToSign += Request.Method() + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(ContentHeaders, 'Content-Encoding') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(ContentHeaders, 'Content-Language') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(ContentHeaders, 'Content-Length') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(ContentHeaders, 'Content-MD5') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(ContentHeaders, 'Content-Type') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(RequestHeaders, 'Date') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(RequestHeaders, 'If-Modified-Since') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(RequestHeaders, 'If-Match') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(RequestHeaders, 'If-None-Match') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(RequestHeaders, 'If-Unmodified-Since') + NewLine();
+        StringToSign += GetHeaderValueOrEmpty(RequestHeaders, 'Range') + NewLine();
+        StringToSign += GetCanonicalizedHeaders(RequestHeaders) + NewLine();
+        StringToSign += GetCanonicalizedResource(StorageAccount, Request.GetRequestUri());
 
         exit(StringToSign);
+    end;
+
+    [TryFunction]
+    local procedure TryGetContentHeaders(var Request: HttpRequestMessage; var RequestHeaders: HttpHeaders)
+    begin
+        Request.Content.GetHeaders(RequestHeaders);
     end;
 
     local procedure GetHeaderValueOrEmpty(Headers: HttpHeaders; HeaderKey: Text): Text
@@ -82,7 +88,7 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
             exit('');
 
         if HeaderKey = 'Content-Length' then
-            if ReturnValue[1] = '0' then // TODO: In version 2014-02-14 and earlier, the content length was included even if zero.  
+            if ReturnValue[1] = '0' then
                 exit('');
 
         exit(ReturnValue[1]);
@@ -98,15 +104,36 @@ codeunit 9064 "Stor. Serv. Auth. Shared Key" implements "Storage Service Authori
         KeyValuePairLbl: Label '%1:%2', Comment = '%1 = Key; %2 = Value';
     begin
         // TODO uptake Keys() property when it's available in the HttpHeaders object
-        AzureStorageServiceHeaders.Add('x-ms-expiry-time');
-        AzureStorageServiceHeaders.Add('x-ms-sku-name');
+        AzureStorageServiceHeaders.Add('x-ms-access-tier');
         AzureStorageServiceHeaders.Add('x-ms-account-kind');
+        AzureStorageServiceHeaders.Add('x-ms-blob-content-length');
+        AzureStorageServiceHeaders.Add('x-ms-blob-public-access');
+        AzureStorageServiceHeaders.Add('x-ms-blob-type');
+        AzureStorageServiceHeaders.Add('x-ms-client-request-id');
+        AzureStorageServiceHeaders.Add('x-ms-copy-action');
         AzureStorageServiceHeaders.Add('x-ms-copy-id');
-        AzureStorageServiceHeaders.Add('x-ms-snapshot');
-        AzureStorageServiceHeaders.Add('x-ms-lease-state');
-        AzureStorageServiceHeaders.Add('x-ms-lease-id');
-        AzureStorageServiceHeaders.Add('x-ms-lease-id');
+        AzureStorageServiceHeaders.Add('x-ms-copy-source');
         AzureStorageServiceHeaders.Add('x-ms-date');
+        AzureStorageServiceHeaders.Add('x-ms-expiry-time');
+        AzureStorageServiceHeaders.Add('x-ms-expiry-option');
+        AzureStorageServiceHeaders.Add('x-ms-expiry-time');
+        AzureStorageServiceHeaders.Add('x-ms-lease-action');
+        AzureStorageServiceHeaders.Add('x-ms-lease-break-period');
+        AzureStorageServiceHeaders.Add('x-ms-lease-duration');
+        AzureStorageServiceHeaders.Add('x-ms-lease-id');
+        AzureStorageServiceHeaders.Add('x-ms-lease-state');
+        AzureStorageServiceHeaders.Add('x-ms-page-write');
+        AzureStorageServiceHeaders.Add('x-ms-proposed-lease-id');
+        AzureStorageServiceHeaders.Add('x-ms-range');
+        AzureStorageServiceHeaders.Add('x-ms-rehydrate-priority');
+        AzureStorageServiceHeaders.Add('x-ms-requires-sync');
+        AzureStorageServiceHeaders.Add('x-ms-sku-name');
+        AzureStorageServiceHeaders.Add('x-ms-snapshot');
+        AzureStorageServiceHeaders.Add('x-ms-source-if-unmodified-since');
+        AzureStorageServiceHeaders.Add('x-ms-source-if-match');
+        AzureStorageServiceHeaders.Add('x-ms-source-if-none-match');
+        AzureStorageServiceHeaders.Add('x-ms-source-range');
+        AzureStorageServiceHeaders.Add('x-ms-tags');
         AzureStorageServiceHeaders.Add('x-ms-version');
 
         foreach HeaderKey in AzureStorageServiceHeaders do

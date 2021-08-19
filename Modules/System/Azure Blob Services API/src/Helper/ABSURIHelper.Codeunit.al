@@ -3,40 +3,34 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
-codeunit 9046 "Blob API URI Helper"
+codeunit 9046 "ABS URI Helper"
 {
     Access = Internal;
 
     var
         OptionalUriParameters: Dictionary of [Text, Text];
+        BlobStorageBaseUrlLbl: Label 'https://%1.blob.core.windows.net', Comment = '%1 = Storage Account Name', Locked = true;
 
     procedure SetOptionalUriParameter(NewOptionalUriParameters: Dictionary of [Text, Text])
     begin
         OptionalUriParameters := NewOptionalUriParameters;
     end;
 
-    // #region Uri generation
-    procedure ConstructUri(var OperationPayload: Codeunit "Blob API Operation Payload"): Text
-    begin
-        exit(ConstructUri(OperationPayload.GetStorageAccountName(), OperationPayload.GetContainerName(), OperationPayload.GetBlobName(), OperationPayload.GetOperation()));
-    end;
-
-    procedure ConstructUri(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "Blob Service API Operation"): Text
+    procedure ConstructUri(StorageBaseUrl: Text; StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "ABS Operation"): Text
     var
-        FormatHelper: Codeunit "Blob API Format Helper";
+        FormatHelper: Codeunit "ABS Format Helper";
         ConstructedUrl: Text;
-        BlobStorageBaseUrlLbl: Label 'https://%1.blob.core.windows.net', Comment = '%1 = Storage Account Name', Locked = true;
     begin
         TestConstructUrlParameter(StorageAccountName, ContainerName, BlobName, Operation);
 
         // e.g. https://<StorageAccountName>-secondary.blob.core.windows.net/?restype=service&comp=stats
-        if (Operation = Operation::GetBlobServiceStats) and (StorageAccountName <> 'devstoreaccount1') then
+        if Operation = Operation::GetBlobServiceStats then
             StorageAccountName := StorageAccountName + '-secondary';
-        ConstructedUrl := StrSubstNo(BlobStorageBaseUrlLbl, StorageAccountName);
 
-        // If using Azure Storage Emulator (indicated by Account Name "devstoreaccount1") then use a different Uri
-        if StorageAccountName = 'devstoreaccount1' then
-            ConstructedUrl := 'http://127.0.0.1:10000/devstoreaccount1';
+        if StorageBaseUrl = '' then
+            StorageBaseUrl := BlobStorageBaseUrlLbl;
+
+        ConstructedUrl := StrSubstNo(StorageBaseUrl, StorageAccountName);
 
         AppendContainerIfNecessary(ConstructedUrl, ContainerName, Operation);
         AppendBlobIfNecessary(ConstructedUrl, BlobName, Operation);
@@ -46,14 +40,16 @@ codeunit 9046 "Blob API URI Helper"
         // e.g. https://<StorageAccountName>.blob.core.windows.net/<Container>/<BlobName>?comp=copy&coppyid=<Id>
         if Operation = Operation::AbortCopyBlob then
             FormatHelper.AppendToUri(ConstructedUrl, 'copyid', RetrieveFromOptionalUriParameters('copyid'));
+
         if Operation in [Operation::Putblock, Operation::PutBlockFromURL] then
             FormatHelper.AppendToUri(ConstructedUrl, 'blockid', RetrieveFromOptionalUriParameters('blockid'));
 
         AddOptionalUriParameters(ConstructedUrl);
+
         exit(ConstructedUrl);
     end;
 
-    local procedure AppendContainerIfNecessary(var ConstructedUrl: Text; ContainerName: Text; Operation: Enum "Blob Service API Operation")
+    local procedure AppendContainerIfNecessary(var ConstructedUrl: Text; ContainerName: Text; Operation: Enum "ABS Operation")
     begin
         // e.g. https://<StorageAccountName>.blob.core.windows.net/<ContainerName>?restype=container
         if not (Operation in [Operation::DeleteContainer, Operation::ListBlobs, Operation::CreateContainer,
@@ -70,7 +66,7 @@ codeunit 9046 "Blob API URI Helper"
         ConstructedUrl += ContainerName;
     end;
 
-    local procedure AppendBlobIfNecessary(var ConstructedUrl: Text; BlobName: Text; Operation: Enum "Blob Service API Operation")
+    local procedure AppendBlobIfNecessary(var ConstructedUrl: Text; BlobName: Text; Operation: Enum "ABS Operation")
     begin
         // e.g. https://<StorageAccountName>.blob.core.windows.net/<Container>/<BlobName>
         if not (Operation in [Operation::GetBlob, Operation::PutBlob, Operation::DeleteBlob, Operation::CopyBlob, Operation::CopyBlobFromUrl, Operation::LeaseBlob,
@@ -86,9 +82,9 @@ codeunit 9046 "Blob API URI Helper"
         ConstructedUrl += BlobName;
     end;
 
-    local procedure AppendRestTypeIfNecessary(var ConstructedUrl: Text; Operation: Enum "Blob Service API Operation")
+    local procedure AppendRestTypeIfNecessary(var ConstructedUrl: Text; Operation: Enum "ABS Operation")
     var
-        FormatHelper: Codeunit "Blob API Format Helper";
+        FormatHelper: Codeunit "ABS Format Helper";
         RestType: Text;
         RestTypeLbl: Label 'restype';
         ContainerRestTypeLbl: Label 'container', Locked = true;
@@ -113,9 +109,9 @@ codeunit 9046 "Blob API URI Helper"
         FormatHelper.AppendToUri(ConstructedUrl, RestTypeLbl, RestType);
     end;
 
-    local procedure AppendCompValueIfNecessary(var ConstructedUrl: Text; Operation: Enum "Blob Service API Operation")
+    local procedure AppendCompValueIfNecessary(var ConstructedUrl: Text; Operation: Enum "ABS Operation")
     var
-        FormatHelper: Codeunit "Blob API Format Helper";
+        FormatHelper: Codeunit "ABS Format Helper";
         CompValue: Text;
         CompIdentifierLbl: Label 'comp', Locked = true;
         ListExtensionLbl: Label 'list', Locked = true;
@@ -205,7 +201,7 @@ codeunit 9046 "Blob API URI Helper"
 
     local procedure AddOptionalUriParameters(var Uri: Text)
     var
-        FormatHelper: Codeunit "Blob API Format Helper";
+        FormatHelper: Codeunit "ABS Format Helper";
         ParameterIdentifier: Text;
         ParameterValue: Text;
     begin
@@ -219,7 +215,7 @@ codeunit 9046 "Blob API URI Helper"
             end;
     end;
 
-    local procedure TestConstructUrlParameter(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "Blob Service API Operation")
+    local procedure TestConstructUrlParameter(StorageAccountName: Text; ContainerName: Text; BlobName: Text; Operation: Enum "ABS Operation")
     var
         ValueCanNotBeEmptyErr: Label '%1 can not be empty', Comment = '%1 = Variable Name';
         StorageAccountNameLbl: Label 'Storage Account Name';

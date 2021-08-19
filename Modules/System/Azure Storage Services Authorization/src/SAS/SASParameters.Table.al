@@ -7,7 +7,7 @@
 /// Optional parameters for Shared Access Signature authorization for Azure Storage Services.
 /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas
 /// </summary>
-table 9062 "Stor. Serv. SAS Parameters"
+table 9064 "SAS Parameters"
 {
     Access = Public;
     Extensible = false;

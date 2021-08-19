@@ -6,11 +6,12 @@ An access key is one possible way to authenticate requests against the API. See 
 #### Examle
 
 ```
-    procedure GetSharedKeyAuthorization(MySharedKey: Text): Interface "Storage Service Authorization"
+    [NonDebuggable]
+    procedure GetSharedKeyAuthorization(): Interface "Storage Service Authorization"
     var
         StorageServiceAuthorization: Codeunit "Storage Service Authorization";
     begin
-        exit(StorageServiceAuthorization.SharedKey(MySharedKey).AsStorageServiceAuthorization());
+        exit(StorageServiceAuthorization.CreateSharedKey('<my shared key>'));
     end;
 ```
 
@@ -19,10 +20,28 @@ A SAS (Shared Access Signature) is one possible way to authenticate requests aga
 
 #### Examle
 ```
-    procedure GetSASAuthorization(MySharedKey: Text): Interface "Storage Service Authorization"
+    [NonDebuggable]
+    procedure GetSASAuthorization(): Interface "Storage Service Authorization"
     var
         StorageServiceAuthorization: Codeunit "Storage Service Authorization";
+        Services: List of [Enum "SAS Service Type"];
+        Resources: List of [Enum "SAS Resource Type"];
+        Permissions: List of [Enum "SAS Permission"];
+        Expiry: DateTime;
     begin
-        exit(StorageServiceAuthorization.SharedKey(MySharedKey).AsStorageServiceAuthorization());
+        Services.Add(Enum::"SAS Service Type"::Blob);
+        Services.Add(Enum::"SAS Service Type"::File);
+
+        Resources.Add(Enum::"SAS Resource Type"::Object);
+
+        Permissions.Add(Enum::"SAS Permission"::List);
+        Expiry := CurrentDateTime() + 5;
+
+        exit(StorageServiceAuthorization.CreateAccountSAS('<signing key',
+                                                        StorageServiceAuthorization.GetDefaultAPIVersion(),
+                                                        Services,
+                                                        Resources,
+                                                        Permissions,
+                                                        Expiry));
     end;
 ```

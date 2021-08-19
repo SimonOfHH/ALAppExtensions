@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
-codeunit 9044 "Blob API Format Helper"
+codeunit 9044 "ABS Format Helper"
 {
     Access = Internal;
 

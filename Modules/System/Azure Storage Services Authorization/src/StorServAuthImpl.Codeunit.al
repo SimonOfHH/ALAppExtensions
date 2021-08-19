@@ -8,16 +8,16 @@ codeunit 9063 "Stor. Serv. Auth. Impl."
     Access = Internal;
 
     [NonDebuggable]
-    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedResources: List of [Enum "Storage Service Resource Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
+    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "SAS Service Type"]; SignedResources: List of [Enum "SAS Resource Type"]; SignedPermissions: List of [Enum "SAS Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
     var
-        OptionalParams: Record "Stor. Serv. SAS Parameters";
+        OptionalParams: Record "SAS Parameters";
     begin
         OptionalParams.Init();
         exit(CreateSAS(SigningKey, SignedVersion, SignedServices, SignedResources, SignedPermissions, SignedExpiry, OptionalParams));
     end;
 
     [NonDebuggable]
-    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedResources: List of [Enum "Storage Service Resource Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime; OptionalParams: Record "Stor. Serv. SAS Parameters"): Interface "Storage Service Authorization"
+    procedure CreateSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "SAS Service Type"]; SignedResources: List of [Enum "SAS Resource Type"]; SignedPermissions: List of [Enum "SAS Permission"]; SignedExpiry: DateTime; OptionalParams: Record "SAS Parameters"): Interface "Storage Service Authorization"
     var
         StorServAuthSAS: Codeunit "Stor. Serv. Auth. SAS";
     begin

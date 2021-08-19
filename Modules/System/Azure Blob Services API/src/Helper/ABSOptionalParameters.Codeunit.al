@@ -30,60 +30,6 @@ codeunit 9047 "ABS Optional Parameters"
     end;
 
     /// <summary>
-    /// Sets the value for 'x-ms-lease-action' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Text value specifying the lease action</param>
-    procedure LeaseAction("Value": Enum "Lease Action")
-    begin
-        SetHeader('x-ms-lease-action', Format("Value"));
-    end;
-
-    /// <summary>
-    /// Sets the value for 'x-ms-lease-break-period' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Integer value specifying the duration in seconds before a break operation is actually executed</param>
-    procedure LeaseBreakPeriod("Value": Integer)
-    var
-        LeaseActionValue: Enum "Lease Action";
-    begin
-        LeaseActionValue := LeaseAction();
-        if LeaseActionValue <> LeaseActionValue::break then
-            Error(InvalidCombinationErr, 'x-ms-lease-break-period', 'x-ms-lease-action', 'break');
-
-        SetHeader('x-ms-lease-break-period', Format("Value"));
-    end;
-
-    /// <summary>
-    /// Sets the value for 'x-ms-lease-duration' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Integer value specifying the duration in seconds of a lease. Can be -1 (infinite) or between 15 and 60 seconds.</param>
-    procedure LeaseDuration("Value": Integer)
-    var
-        LeaseActionValue: Enum "Lease Action";
-    begin
-        LeaseActionValue := LeaseAction();
-        if LeaseActionValue <> LeaseActionValue::acquire then
-            Error(InvalidCombinationErr, 'x-ms-lease-duration', 'x-ms-lease-action', 'acquire');
-
-        SetHeader('x-ms-lease-duration', Format("Value"));
-    end;
-
-    /// <summary>
-    /// Sets the value for 'x-ms-proposed-lease-id' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Text value specifying proposed LeaseId</param>
-    procedure ProposedLeaseId("Value": Text)
-    var
-        LeaseActionValue: Enum "Lease Action";
-    begin
-        LeaseActionValue := LeaseAction();
-        if LeaseActionValue in [LeaseActionValue::acquire, LeaseActionValue::change] then
-            Error(InvalidCombinationTwoValuesErr, 'x-ms-lease-break-period', 'x-ms-lease-action', 'acquire', 'change');
-
-        SetHeader('x-ms-proposed-lease-id', "Value");
-    end;
-
-    /// <summary>
     /// Sets the value for 'Origin' HttpHeader for a request.
     /// </summary>
     /// <param name="Value">Text value specifying the HttpHeader value</param>
@@ -123,7 +69,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// Sets the value for 'x-ms-blob-public-access' HttpHeader for a request.
     /// </summary>
     /// <param name="Value">Enum "Blob Public Access" value specifying the HttpHeader value</param>
-    procedure BlobPublicAccess("Value": Enum "Blob Public Access")
+    procedure BlobPublicAccess("Value": Enum "ABS Blob Public Access")
     begin
         SetHeader('x-ms-blob-public-access', Format("Value"));
     end;
@@ -198,25 +144,16 @@ codeunit 9047 "ABS Optional Parameters"
     /// Sets the value for 'x-ms-rehydrate-priority' HttpHeader for a request.
     /// </summary>
     /// <param name="Value">Enum "Rehydrate Priority" value specifying the HttpHeader value</param>
-    procedure RehydratePriority("Value": Enum "Rehydrate Priority")
+    procedure RehydratePriority("Value": Enum "ABS Rehydrate Priority")
     begin
         SetHeader('x-ms-rehydrate-priority', Format("Value"));
-    end;
-
-    /// <summary>
-    /// Sets the value for 'x-ms-copy-action' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Enum "Copy Action" value specifying the HttpHeader value</param>
-    procedure CopyAction("Value": Enum "Copy Action")
-    begin
-        SetHeader('x-ms-copy-action', Format("Value")); // Valid value is 'abort'
     end;
 
     /// <summary>
     /// Sets the value for 'x-ms-expiry-option' HttpHeader for a request.
     /// </summary>
     /// <param name="Value">Enum "Blob Expiry Option" value specifying the HttpHeader value</param>
-    procedure BlobExpiryOption("Value": Enum "Blob Expiry Option")
+    procedure BlobExpiryOption("Value": Enum "ABS Blob Expiry Option")
     begin
         SetHeader('x-ms-expiry-option', Format("Value")); // Valid values are RelativeToCreation/RelativeToNow/Absolute/NeverExpire
     end;
@@ -243,18 +180,9 @@ codeunit 9047 "ABS Optional Parameters"
     /// Sets the value for 'x-ms-access-tier' HttpHeader for a request.
     /// </summary>
     /// <param name="Value">Enum "Blob Access Tier" value specifying the HttpHeader value</param>
-    procedure BlobAccessTier("Value": Enum "Blob Access Tier")
+    procedure BlobAccessTier("Value": Enum "ABS Blob Access Tier")
     begin
         SetHeader('x-ms-access-tier', Format("Value"));
-    end;
-
-    /// <summary>
-    /// Sets the value for 'x-ms-page-write' HttpHeader for a request.
-    /// </summary>
-    /// <param name="Value">Enum "PageBlob Write Option" value specifying the HttpHeader value</param>
-    procedure PageWriteOption("Value": Enum "PageBlob Write Option")
-    begin
-        SetHeader('x-ms-page-write', Format("Value"));
     end;
 
     /// <summary>
@@ -296,19 +224,6 @@ codeunit 9047 "ABS Optional Parameters"
             ValueText := 'false';
 
         SetHeader('x-ms-requires-sync', ValueText);
-    end;
-
-    local procedure LeaseAction(): Enum "Lease Action"
-    var
-        LeaseActionAsText: Text;
-        LeaseActionValue: Enum "Lease Action";
-    begin
-        if not Headers.Get('x-ms-lease-action', LeaseActionAsText) then
-            Error(NeedToSpecifyHeaderErr, 'x-ms-lease-action');
-
-        Evaluate(LeaseActionValue, LeaseActionAsText);
-
-        exit(LeaseActionValue);
     end;
 
     local procedure SetHeader(Header: Text; HeaderValue: Text)
@@ -400,15 +315,6 @@ codeunit 9047 "ABS Optional Parameters"
         SetParameter('blockid', "Value");
     end;
 
-    /// <summary>
-    /// Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together.
-    /// </summary>
-    /// <param name="Value">Valid values are committed, uncommitted, or all</param>
-    procedure BlockListType("Value": Enum "Block List Type")
-    begin
-        SetParameter('blocklisttype', Format("Value"));
-    end;
-
     local procedure SetParameter(Header: Text; HeaderValue: Text)
     begin
         Parameters.Remove(Header);
@@ -419,15 +325,10 @@ codeunit 9047 "ABS Optional Parameters"
     begin
         exit(Parameters);
     end;
-
     #endregion
 
     var
-        BlobAPIFormatHelper: Codeunit "Blob API Format Helper";
+        BlobAPIFormatHelper: Codeunit "ABS Format Helper";
         Headers: Dictionary of [Text, Text];
         Parameters: Dictionary of [Text, Text];
-        NeedToSpecifyHeaderErr: Label 'You need to specify the "%1"-Header to use this function.', Comment = '%1 = Header Name';
-        InvalidCombinationErr: Label 'Invalid combination: "%1" can only be set if "%2" is "%3"', Comment = '%1 = Header Name, %2 = Lease Action Header Name, %3 = Lease Action';
-        InvalidCombinationTwoValuesErr: Label 'Invalid combination: "%1" can only be set if "%2" is "%3" or "%4"', Comment = '%1 = Header Name, %2 = Lease Action Header Name, %3 = Lease Action, %4 = Lease Action 2';
-
 }

@@ -3,7 +3,7 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
-enum 9040 "Blob Service API Operation"
+enum 9048 "ABS Operation"
 {
     Access = Internal;
     Extensible = false;

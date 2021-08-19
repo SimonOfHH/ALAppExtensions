@@ -21,7 +21,7 @@ codeunit 9062 "Storage Service Authorization"
     /// <param name="SignedExpiry">The time at which the shared access signature becomes invalid.</param>
     /// <returns>An account SAS authorization.</returns>
     [NonDebuggable]
-    procedure CreateAccountSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"]; SignedResources: List of [Enum "Storage Service Resource Type"]; SignedPermissions: List of [Enum "Storage Service Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
+    procedure CreateAccountSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "SAS Service Type"]; SignedResources: List of [Enum "SAS Resource Type"]; SignedPermissions: List of [Enum "SAS Permission"]; SignedExpiry: DateTime): Interface "Storage Service Authorization"
     var
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
     begin
@@ -40,11 +40,11 @@ codeunit 9062 "Storage Service Authorization"
     /// <param name="OptionalParams">See table "Stor. Serv. SAS Parameters".</param>
     /// <returns>An account SAS authorization.</returns>
     [NonDebuggable]
-    procedure CreateAccountSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "Storage Service Type"];
-                                                                    SignedResources: List of [Enum "Storage Service Resource Type"];
-                                                                    SignedPermissions: List of [Enum "Storage Service Permission"];
+    procedure CreateAccountSAS(SigningKey: Text; SignedVersion: Enum "Storage Service API Version"; SignedServices: List of [Enum "SAS Service Type"];
+                                                                    SignedResources: List of [Enum "SAS Resource Type"];
+                                                                    SignedPermissions: List of [Enum "SAS Permission"];
                                                                     SignedExpiry: DateTime;
-                                                                    OptionalParams: Record "Stor. Serv. SAS Parameters"): Interface "Storage Service Authorization"
+                                                                    OptionalParams: Record "SAS Parameters"): Interface "Storage Service Authorization"
     var
         StorServAuthImpl: Codeunit "Stor. Serv. Auth. Impl.";
     begin

@@ -12,9 +12,9 @@ codeunit 132918 "Stor. Serv. Account SAS Test"
     var
         SASAuthorization: Interface "Storage Service Authorization";
         AccountKey, Uri, NewUri : Text;
-        Permissions: List of [Enum "Storage Service Permission"];
-        Services: List of [Enum "Storage Service Type"];
-        Resources: List of [Enum "Storage Service Resource Type"];
+        Permissions: List of [Enum "SAS Permission"];
+        Services: List of [Enum "SAS Service Type"];
+        Resources: List of [Enum "SAS Resource Type"];
         ExpiryDate: DateTime;
     begin
         // [Given] A storage account and an HTTP request with random URI
@@ -26,12 +26,12 @@ codeunit 132918 "Stor. Serv. Account SAS Test"
         HttpRequest.Method('GET');
 
         // [When] Authorizing the HTTP request using Account SAS authorization
-        Services.Add(Enum::"Storage Service Type"::Blob);
-        Resources.Add(Enum::"Storage Service Resource Type"::Container);
-        Permissions.Add(Enum::"Storage Service Permission"::Read);
-        Permissions.Add(Enum::"Storage Service Permission"::Write);
+        Services.Add(Enum::"SAS Service Type"::Blob);
+        Resources.Add(Enum::"SAS Resource Type"::Container);
+        Permissions.Add(Enum::"SAS Permission"::Read);
+        Permissions.Add(Enum::"SAS Permission"::Write);
 
-        SASAuthorization := StorageServiceAuthorization.CreateAccountSAS(AccountKey, Enum::"Storage Service API Version"::"2020-08-04", Services, Resources, Permissions, ExpiryDate);
+        SASAuthorization := StorageServiceAuthorization.CreateAccountSAS(AccountKey, Enum::"Storage Service API Version"::"2020-10-02", Services, Resources, Permissions, ExpiryDate);
         SASAuthorization.Authorize(HttpRequest, StorageAccount);
 
         // [Then] The Authorization header is present on the HTTP request and nothing else has changed

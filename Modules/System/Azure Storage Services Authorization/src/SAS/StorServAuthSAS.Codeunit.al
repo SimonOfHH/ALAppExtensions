@@ -63,17 +63,17 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         ApiVersion := NewAPIVersion;
     end;
 
-    procedure SetSignedServices(SignedServices: List of [Enum "Storage Service Type"])
+    procedure SetSignedServices(SignedServices: List of [Enum "SAS Service Type"])
     begin
         Services := SignedServices;
     end;
 
-    procedure SetResources(SignedResources: List of [Enum "Storage Service Resource Type"])
+    procedure SetResources(SignedResources: List of [Enum "SAS Resource Type"])
     begin
         Resources := SignedResources;
     end;
 
-    procedure SetSignedPermissions(SignedPermissions: List of [Enum "Storage Service Permission"])
+    procedure SetSignedPermissions(SignedPermissions: List of [Enum "SAS Permission"])
     begin
         Permissions := SignedPermissions;
     end;
@@ -96,7 +96,7 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         exit(SharedAccessSignature);
     end;
 
-    local procedure CreateSharedAccessSignatureStringToSign(AccountName: Text; ApiVersion: Enum "Storage Service API Version"; StartDate: DateTime; EndDate: DateTime; Services: List of [Enum "Storage Service Type"]; Resources: List of [Enum "Storage Service Resource Type"]; Permissions: List of [Enum "Storage Service Permission"]; Protocols: List of [Text]; IPRange: Text): Text
+    local procedure CreateSharedAccessSignatureStringToSign(AccountName: Text; ApiVersion: Enum "Storage Service API Version"; StartDate: DateTime; EndDate: DateTime; Services: List of [Enum "SAS Service Type"]; Resources: List of [Enum "SAS Resource Type"]; Permissions: List of [Enum "SAS Permission"]; Protocols: List of [Text]; IPRange: Text): Text
     var
         StringToSign: Text;
     begin
@@ -112,12 +112,12 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         exit(StringToSign);
     end;
 
-    local procedure PermissionsToString(Permissions: List of [Enum "Storage Service Permission"]): Text
+    local procedure PermissionsToString(Permissions: List of [Enum "SAS Permission"]): Text
     var
-        Permission: Enum "Storage Service Permission";
+        Permission: Enum "SAS Permission";
         Builder: TextBuilder;
     begin
-        foreach Permission in Enum::"Storage Service Permission".Ordinals() do
+        foreach Permission in Enum::"SAS Permission".Ordinals() do
             if Permissions.Contains(Permission) then
                 Builder.Append(Format(Permission));
 
@@ -137,19 +137,19 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         exit(Builder.ToText());
     end;
 
-    local procedure ServicesToString(Services: List of [Enum "Storage Service Type"]): Text
+    local procedure ServicesToString(Services: List of [Enum "SAS Service Type"]): Text
     var
-        Service: Enum "Storage Service Type";
+        Service: Enum "SAS Service Type";
         Builder: TextBuilder;
     begin
-        foreach Service in Enum::"Storage Service Type".Ordinals() do
+        foreach Service in Enum::"SAS Service Type".Ordinals() do
             if Services.Contains(Service) then
                 Builder.Append(Format(Service));
 
         exit(Builder.ToText());
     end;
 
-    procedure CreateSasUrlString(ApiVersion: Enum "Storage Service API Version"; StartDate: DateTime; EndDate: DateTime; Services: List of [Enum "Storage Service Type"]; Resources: List of [Enum "Storage Service Resource Type"]; Permissions: List of [Enum "Storage Service Permission"]; Protocols: List of [Text]; IPRange: Text; Signature: Text): Text
+    procedure CreateSasUrlString(ApiVersion: Enum "Storage Service API Version"; StartDate: DateTime; EndDate: DateTime; Services: List of [Enum "SAS Service Type"]; Resources: List of [Enum "SAS Resource Type"]; Permissions: List of [Enum "SAS Permission"]; Protocols: List of [Text]; IPRange: Text; Signature: Text): Text
     var
         Uri: Codeunit Uri;
         Builder: TextBuilder;
@@ -190,12 +190,12 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         exit(AuthFormatHelper.GetIso8601DateTime(MyDateTime));
     end;
 
-    local procedure ResourcesToString(Resources: List of [Enum "Storage Service Resource Type"]): Text
+    local procedure ResourcesToString(Resources: List of [Enum "SAS Resource Type"]): Text
     var
-        Resource: Enum "Storage Service Resource Type";
+        Resource: Enum "SAS Resource Type";
         Builder: TextBuilder;
     begin
-        foreach Resource in Enum::"Storage Service Resource Type".Ordinals() do
+        foreach Resource in Enum::"SAS Resource Type".Ordinals() do
             if Resources.Contains(Resource) then
                 Builder.Append(Format(Resource));
 
@@ -215,9 +215,9 @@ codeunit 9061 "Stor. Serv. Auth. SAS" implements "Storage Service Authorization"
         StartDate: DateTime;
         EndDate: DateTime;
         ApiVersion: Enum "Storage Service API Version";
-        Services: List of [Enum "Storage Service Type"];
-        Resources: List of [Enum "Storage Service Resource Type"];
-        Permissions: List of [Enum "Storage Service Permission"];
+        Services: List of [Enum "SAS Service Type"];
+        Resources: List of [Enum "SAS Resource Type"];
+        Permissions: List of [Enum "SAS Permission"];
         Protocols: List of [Text];
         IPRange: Text;
 }

@@ -4,27 +4,24 @@
 // ------------------------------------------------------------------------------------------------
 
 /// <summary>
-/// See https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry#expiryoption
+/// Defines the possible resource types for account SAS.
+/// See: https://docs.microsoft.com/en-us/rest/api/storageservices/create-account-sas#specifying-account-sas-parameters
 /// </summary>
-enum 9045 "Blob Expiry Option"
+enum 9063 "SAS Resource Type"
 {
-    Access = Internal;
+    Access = Public;
     Extensible = false;
 
-    value(0; RelativeToCreation)
+    value(0; Service)
     {
-        Caption = 'RelativeToCreation';
+        Caption = 's', Locked = true;
     }
-    value(1; RelativeToNow)
+    value(1; Container)
     {
-        Caption = 'RelativeToNow';
+        Caption = 'c', Locked = true;
     }
-    value(2; Absolute)
+    value(2; Object)
     {
-        Caption = 'Absolute';
-    }
-    value(3; NeverExpire)
-    {
-        Caption = 'NeverExpire';
+        Caption = 'o', Locked = true;
     }
 }

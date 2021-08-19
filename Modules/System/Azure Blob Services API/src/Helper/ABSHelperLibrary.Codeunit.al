@@ -3,12 +3,12 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 // ------------------------------------------------------------------------------------------------
 
-codeunit 9043 "Blob API Helper Library"
+codeunit 9043 "ABS Helper Library"
 {
     Access = Internal;
 
     // #region Container-specific Helper
-    procedure ContainerNodeListTotempRecord(NodeList: XmlNodeList; var Container: Record "Container")
+    procedure ContainerNodeListTotempRecord(NodeList: XmlNodeList; var Container: Record "ABS Container")
     begin
         NodeListToTempRecord(NodeList, './/Name', Container);
     end;
@@ -86,12 +86,12 @@ codeunit 9043 "Blob API Helper Library"
 
     procedure BlobNodeListToTempRecord(NodeList: XmlNodeList)
     var
-        ContainerContent: Record "Container Content";
+        ContainerContent: Record "ABS Container Content";
     begin
         BlobNodeListToTempRecord(NodeList, ContainerContent);
     end;
 
-    procedure BlobNodeListToTempRecord(NodeList: XmlNodeList; var ContainerContent: Record "Container Content")
+    procedure BlobNodeListToTempRecord(NodeList: XmlNodeList; var ContainerContent: Record "ABS Container Content")
     begin
         NodeListToTempRecord(NodeList, './/Name', ContainerContent);
     end;
@@ -138,28 +138,32 @@ codeunit 9043 "Blob API Helper Library"
         exit(Value);
     end;
 
-    local procedure NodeListToTempRecord(NodeList: XmlNodeList; XPathName: Text; var ContainerContent: Record "Container Content")
+    local procedure NodeListToTempRecord(NodeList: XmlNodeList; XPathName: Text; var ContainerContent: Record "ABS Container Content")
     var
+        ContainerContentHelper: Codeunit "ABS Container Content Helper";
         Node: XmlNode;
     begin
         ContainerContent.DeleteAll();
+        ContainerContentHelper.SetContainerContent(ContainerContent);
 
         if NodeList.Count = 0 then
             exit;
         foreach Node in NodeList do
-            ContainerContent.AddNewEntryFromNode(Node, XPathName);
+            ContainerContentHelper.AddNewEntryFromNode(Node, XPathName);
     end;
 
-    local procedure NodeListToTempRecord(NodeList: XmlNodeList; XPathName: Text; var Container: Record "Container")
+    local procedure NodeListToTempRecord(NodeList: XmlNodeList; XPathName: Text; var Container: Record "ABS Container")
     var
+        ContainerHelper: Codeunit "ABS Container Helper";
         Node: XmlNode;
     begin
         Container.DeleteAll();
+        ContainerHelper.SetContainer(Container);
 
         if NodeList.Count = 0 then
             exit;
         foreach Node in NodeList do
-            Container.AddNewEntryFromNode(Node, XPathName);
+            ContainerHelper.AddNewEntryFromNode(Node, XPathName);
     end;
     // #endregion
 
@@ -178,7 +182,7 @@ codeunit 9043 "Blob API Helper Library"
     end;
     // #endregion
 
-    procedure ValidateApiVersion(CurrApiVersion: Enum "Storage Service API Version"; TargetApiVersion: Enum "Storage Service API Version"; CurrOperation: Enum "Blob Service API Operation"; ThrowError: Boolean): Boolean
+    procedure ValidateApiVersion(CurrApiVersion: Enum "Storage Service API Version"; TargetApiVersion: Enum "Storage Service API Version"; CurrOperation: Enum "ABS Operation"; ThrowError: Boolean): Boolean
     var
         IncompatibleVersionsErr: Label 'Operation "%1" is only available after API Version %2, but you selected %3.', Comment = '%1 = Operation; %2 = Target API Version; %3 = Curr. API Version';
     begin

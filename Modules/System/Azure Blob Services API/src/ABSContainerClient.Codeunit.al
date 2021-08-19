@@ -33,11 +33,22 @@ codeunit 9052 "ABS Container Client"
     end;
 
     /// <summary>
+    /// The base URL to use when constructing the final URI.
+    /// If not set, the base URL is https://%1.blob.core.windows.net where %1 is the storage account name. 
+    /// </summary>
+    /// <remarks>Use %1 as a placeholder for the storage account name.</remarks>
+    /// <param name="BaseUrl">A valid URL string</param>
+    procedure SetBaseUrl(BaseUrl: Text)
+    begin
+        BlobServicesApiImpl.SetBaseUrl(BaseUrl);
+    end;
+
+    /// <summary>
     /// List all containers in specific Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-containers2
     /// </summary>
     /// <param name="Container">Collection of the result (temporary record).</param>
-    procedure ListContainers(var Containers: Record "Container"): Codeunit "Blob API Operation Response"
+    procedure ListContainers(var Containers: Record "ABS Container"): Codeunit "ABS Operation Response"
     var
         OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
@@ -49,7 +60,7 @@ codeunit 9052 "ABS Container Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-containers2
     /// </summary>
     /// <param name="Container">Collection of the result (temporary record).</param>
-    procedure ListContainers(var Containers: Record "Container"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
+    procedure ListContainers(var Containers: Record "ABS Container"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.ListContainers(Containers, OptionalParameters));
     end;
@@ -58,7 +69,7 @@ codeunit 9052 "ABS Container Client"
     /// Creates a new container in the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
     /// </summary>
-    procedure CreateContainer(ContainerName: Text): Codeunit "Blob API Operation Response"
+    procedure CreateContainer(ContainerName: Text): Codeunit "ABS Operation Response"
     var
         OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
@@ -69,7 +80,7 @@ codeunit 9052 "ABS Container Client"
     /// Creates a new container in the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
     /// </summary>
-    procedure CreateContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
+    procedure CreateContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.CreateContainer(ContainerName, OptionalParameters));
     end;
@@ -78,7 +89,7 @@ codeunit 9052 "ABS Container Client"
     /// Deletes a container from the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
     /// </summary>
-    procedure DeleteContainer(ContainerName: Text): Codeunit "Blob API Operation Response"
+    procedure DeleteContainer(ContainerName: Text): Codeunit "ABS Operation Response"
     var
         OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
@@ -89,22 +100,11 @@ codeunit 9052 "ABS Container Client"
     /// Deletes a container from the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
     /// </summary>
-    procedure DeleteContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
+    procedure DeleteContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.DeleteContainer(ContainerName, OptionalParameters));
     end;
 
-    /// <summary>
-    /// Lists the blobs in a specific container.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-blobs
-    /// </summary>
-    /// <param name="ContainerName">The name of the container</param>    
-    /// <param name="ContainerContent">Collection of the result (temporary record).</param>
-    procedure ListBlobs(ContainerName: Text; var ContainerContent: Record "Container Content"): Codeunit "Blob API Operation Response"
-    begin
-        exit(BlobServicesApiImpl.ListBlobs(ContainerName, ContainerContent));
-    end;
-
     var
-        BlobServicesApiImpl: Codeunit "Blob Services API Impl.";
+        BlobServicesApiImpl: Codeunit "ABS Client Impl.";
 }

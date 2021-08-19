@@ -4,16 +4,15 @@
 // ------------------------------------------------------------------------------------------------
 
 // See: https://docs.microsoft.com/en-us/rest/api/storageservices/blob-service-rest-api
-codeunit 9041 "Blob Services API Impl."
+codeunit 9051 "ABS Client Impl."
 {
     Access = Internal;
 
     var
-        OperationPayload: Codeunit "Blob API Operation Payload";
-
-        BlobAPIHttpContentHelper: Codeunit "Blob API HttpContent Helper";
-        BlobAPIWebRequestHelper: Codeunit "Blob API Web Request Helper";
-        BlobAPIFormatHelper: Codeunit "Blob API Format Helper";
+        OperationPayload: Codeunit "ABS Operation Payload";
+        BlobAPIHttpContentHelper: Codeunit "ABS HttpContent Helper";
+        BlobAPIWebRequestHelper: Codeunit "ABS Web Request Helper";
+        BlobAPIFormatHelper: Codeunit "ABS Format Helper";
 
         #region Labels
         ListContainercOperationNotSuccessfulErr: Label 'Could not list container.';
@@ -38,11 +37,17 @@ codeunit 9041 "Blob Services API Impl."
         OperationPayload.Initialize(StorageAccountName, ContainerName, BlobName, Authorization, ApiVersion);
     end;
 
-    procedure ListContainers(var Container: Record "Container"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
+    procedure SetBaseUrl(BaseUrl: Text)
+    begin
+        OperationPayload.SetBaseUrl(BaseUrl);
+    end;
+
+    procedure ListContainers(var Container: Record "ABS Container"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        HelperLibrary: Codeunit "Blob API Helper Library";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        HelperLibrary: Codeunit "ABS Helper Library";
+        ContainerHelper: Codeunit "ABS Container Helper";
+        Operation: Enum "ABS Operation";
         ResponseText: Text;
         NodeList: XmlNodeList;
     begin
@@ -51,17 +56,18 @@ codeunit 9041 "Blob Services API Impl."
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, ResponseText, ListContainercOperationNotSuccessfulErr);
 
         NodeList := HelperLibrary.CreateContainerNodeListFromResponse(ResponseText);
-        Container.SetBaseInfos(OperationPayload);
+        ContainerHelper.SetContainer(Container);
+        ContainerHelper.SetBaseInfos(OperationPayload);
         HelperLibrary.ContainerNodeListTotempRecord(NodeList, Container);
 
         exit(OperationResponse);
     end;
 
     #region Container operations
-    procedure CreateContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
+    procedure CreateContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::CreateContainer);
         OperationPayload.SetContainerName(ContainerName);
@@ -70,10 +76,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure DeleteContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "Blob API Operation Response"
+    procedure DeleteContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::DeleteContainer);
         OperationPayload.SetContainerName(ContainerName);
@@ -83,21 +89,22 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure ListBlobs(ContainerName: Text; var ContainerContent: Record "Container Content"): Codeunit "Blob API Operation Response"
+    procedure ListBlobs(var ContainerContent: Record "ABS Container Content"): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        HelperLibrary: Codeunit "Blob API Helper Library";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        HelperLibrary: Codeunit "ABS Helper Library";
+        ContainerContentHelper: Codeunit "ABS Container Content Helper";
+        Operation: Enum "ABS Operation";
         ResponseText: Text;
         NodeList: XmlNodeList;
     begin
         OperationPayload.SetOperation(Operation::ListBlobs);
-        OperationPayload.SetContainerName(ContainerName);
 
         OperationResponse := BlobAPIWebRequestHelper.GetOperationAsText(OperationPayload, ResponseText, StrSubstNo(ListBlobsContainercOperationNotSuccessfulErr, OperationPayload.GetContainerName()));
 
         NodeList := HelperLibrary.CreateBlobNodeListFromResponse(ResponseText);
-        ContainerContent.SetBaseInfos(OperationPayload);
+        ContainerContentHelper.SetContainerContent(ContainerContent);
+        ContainerContentHelper.SetBaseInfos(OperationPayload);
         HelperLibrary.BlobNodeListToTempRecord(NodeList, ContainerContent);
 
         exit(OperationResponse);
@@ -105,9 +112,9 @@ codeunit 9041 "Blob Services API Impl."
     #endregion
 
     #region Blob operations
-    procedure PutBlobBlockBlobUI(): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobUI(): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
         Filename: Text;
         SourceStream: InStream;
     begin
@@ -116,9 +123,9 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlobBlockBlobStream(BlobName: Text; var SourceStream: InStream): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobStream(BlobName: Text; var SourceStream: InStream): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
         SourceContent: Variant;
     begin
         SourceContent := SourceStream;
@@ -129,9 +136,9 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
         SourceContent: Variant;
     begin
         OperationPayload.SetBlobName(BlobName);
@@ -141,10 +148,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    local procedure PutBlobBlockBlob(var SourceContent: Variant): Codeunit "Blob API Operation Response"
+    local procedure PutBlobBlockBlob(var SourceContent: Variant): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         Content: HttpContent;
         SourceStream: InStream;
         SourceText: Text;
@@ -168,10 +175,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlobPageBlob(BlobName: Text; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobPageBlob(BlobName: Text; ContentType: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::PutBlob);
         OperationPayload.SetBlobName(BlobName);
@@ -182,10 +189,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlobAppendBlob(BlobName: Text; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlobAppendBlob(BlobName: Text; ContentType: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::PutBlob);
         OperationPayload.SetBlobName(BlobName);
@@ -195,42 +202,42 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockText(BlobName: Text; ContentAsText: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
     begin
         OperationResponse := AppendBlockText(BlobName, ContentAsText, 'text/plain; charset=UTF-8');
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockText(BlobName: Text; ContentAsText: Text; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text; ContentType: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
     begin
         OperationResponse := AppendBlock(BlobName, ContentType, ContentAsText);
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream): Codeunit "Blob API Operation Response"
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
     begin
         OperationResponse := AppendBlockStream(BlobName, ContentAsStream, 'application/octet-stream');
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream; ContentType: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream; ContentType: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
     begin
         OperationResponse := AppendBlock(BlobName, ContentType, ContentAsStream);
         exit(OperationResponse);
     end;
 
-    procedure AppendBlock(BlobName: Text; ContentType: Text; SourceContent: Variant): Codeunit "Blob API Operation Response"
+    procedure AppendBlock(BlobName: Text; ContentType: Text; SourceContent: Variant): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         Content: HttpContent;
         SourceStream: InStream;
         SourceText: Text;
@@ -255,22 +262,22 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure AppendBlockFromURL(SourceUri: Text): Codeunit "Blob API Operation Response"
+    procedure AppendBlockFromURL(SourceUri: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         Content: HttpContent;
     begin
         OperationPayload.SetOperation(Operation::AppendBlockFromURL);
-        OperationPayload.AddHeader('Content-Length', '0');
-        OperationPayload.AddHeader('x-ms-copy-source', SourceUri);
+        OperationPayload.AddContentHeader('Content-Length', '0');
+        OperationPayload.AddRequestHeader('x-ms-copy-source', SourceUri);
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, Content, StrSubstNo(AppendBlockFromUrlOperationNotSuccessfulErr, SourceUri, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure GetBlobAsFile(BlobName: Text): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsFile(BlobName: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
         TargetStream: InStream;
     begin
         OperationResponse := GetBlobAsStream(BlobName, TargetStream);
@@ -280,10 +287,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure GetBlobAsStream(BlobName: Text; var TargetStream: InStream): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsStream(BlobName: Text; var TargetStream: InStream): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::GetBlob);
         OperationPayload.SetBlobName(BlobName);
@@ -292,10 +299,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure GetBlobAsText(BlobName: Text; var TargetText: Text): Codeunit "Blob API Operation Response"
+    procedure GetBlobAsText(BlobName: Text; var TargetText: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::GetBlob);
         OperationPayload.SetBlobName(BlobName);
@@ -304,46 +311,47 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryRelativeToCreation(BlobName: Text; ExpiryTime: Integer): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryRelativeToCreation(BlobName: Text; ExpiryTime: Integer): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        ExpiryOption: Enum "Blob Expiry Option";
+        OperationResponse: Codeunit "ABS Operation Response";
+        ExpiryOption: Enum "ABS Blob Expiry Option";
     begin
         OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::RelativeToCreation, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryRelativeToNow(BlobName: Text; ExpiryTime: Integer): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryRelativeToNow(BlobName: Text; ExpiryTime: Integer): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        ExpiryOption: Enum "Blob Expiry Option";
+        OperationResponse: Codeunit "ABS Operation Response";
+        ExpiryOption: Enum "ABS Blob Expiry Option";
     begin
         OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::RelativeToNow, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryAbsolute(BlobName: Text; ExpiryTime: DateTime): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryAbsolute(BlobName: Text; ExpiryTime: DateTime): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        ExpiryOption: Enum "Blob Expiry Option";
+        OperationResponse: Codeunit "ABS Operation Response";
+        ExpiryOption: Enum "ABS Blob Expiry Option";
     begin
         OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::Absolute, ExpiryTime, StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiryNever(BlobName: Text): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiryNever(BlobName: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        ExpiryOption: Enum "Blob Expiry Option";
+        OperationResponse: Codeunit "ABS Operation Response";
+        ExpiryOption: Enum "ABS Blob Expiry Option";
     begin
         OperationResponse := SetBlobExpiry(BlobName, ExpiryOption::NeverExpire, '', StrSubstNo(ExpiryOperationNotSuccessfulErr, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure SetBlobExpiry(BlobName: Text; ExpiryOption: Enum "Blob Expiry Option"; ExpiryTime: Variant; OperationNotSuccessfulErr: Text): Codeunit "Blob API Operation Response"
+    procedure SetBlobExpiry(BlobName: Text; ExpiryOption: Enum "ABS Blob Expiry Option"; ExpiryTime: Variant;
+                                                              OperationNotSuccessfulErr: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         DateTimeValue: DateTime;
         IntegerValue: Integer;
         SpecifyMilisecondsErr: Label 'You need to specify an Integer Value (number of miliseconds) for option %1', Comment = '%1 = Expiry Option';
@@ -351,7 +359,7 @@ codeunit 9041 "Blob Services API Impl."
     begin
         OperationPayload.SetOperation(Operation::SetBlobExpiry);
         OperationPayload.SetBlobName(BlobName);
-        OperationPayload.AddHeader('x-ms-expiry-option', Format(ExpiryOption));
+        OperationPayload.AddRequestHeader('x-ms-expiry-option', Format(ExpiryOption));
 
         case ExpiryOption of
             ExpiryOption::RelativeToCreation, ExpiryOption::RelativeToNow:
@@ -366,23 +374,23 @@ codeunit 9041 "Blob Services API Impl."
                 ExpiryTime.IsInteger():
                     begin
                         IntegerValue := ExpiryTime;
-                        OperationPayload.AddHeader('x-ms-expiry-time', Format(IntegerValue));
+                        OperationPayload.AddRequestHeader('x-ms-expiry-time', Format(IntegerValue));
                     end;
                 ExpiryTime.IsDateTime():
                     begin
                         DateTimeValue := ExpiryTime;
-                        OperationPayload.AddHeader('x-ms-expiry-time', BlobAPIFormatHelper.GetRfc1123DateTime((DateTimeValue)));
+                        OperationPayload.AddRequestHeader('x-ms-expiry-time', BlobAPIFormatHelper.GetRfc1123DateTime((DateTimeValue)));
                     end;
             end;
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, OperationNotSuccessfulErr);
         exit(OperationResponse);
     end;
 
-    procedure GetBlobTags(BlobName: Text; var BlobTags: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure GetBlobTags(BlobName: Text; var BlobTags: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
+        Operation: Enum "ABS Operation";
         ResponseText: Text;
     begin
         OperationPayload.SetOperation(Operation::GetBlobTags);
@@ -393,10 +401,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure SetBlobTags(BlobName: Text; Tags: Dictionary of [Text, Text]): Codeunit "Blob API Operation Response"
+    procedure SetBlobTags(BlobName: Text; Tags: Dictionary of [Text, Text]): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
         Document: XmlDocument;
     begin
         Document := FormatHelper.TagsDictionaryToXmlDocument(Tags);
@@ -404,11 +412,11 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure SetBlobTags(BlobName: Text; Tags: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure SetBlobTags(BlobName: Text; Tags: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
+        OperationResponse: Codeunit "ABS Operation Response";
         Content: HttpContent;
-        Operation: Enum "Blob Service API Operation";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::SetBlobTags);
         OperationPayload.SetBlobName(BlobName);
@@ -418,20 +426,20 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure FindBlobsByTags(SearchTags: Dictionary of [Text, Text]; var FoundBlobs: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure FindBlobsByTags(SearchTags: Dictionary of [Text, Text]; var FoundBlobs: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
     begin
         OperationResponse := FindBlobsByTags(FormatHelper.TagsDictionaryToSearchExpression(SearchTags), FoundBlobs);
         exit(OperationResponse);
     end;
 
-    procedure FindBlobsByTags(SearchExpression: Text; var FoundBlobs: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure FindBlobsByTags(SearchExpression: Text; var FoundBlobs: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
+        Operation: Enum "ABS Operation";
         ResponseText: Text;
     begin
         OperationPayload.SetOperation(Operation::FindBlobByTags);
@@ -441,20 +449,20 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure DeleteBlob(): Codeunit "Blob API Operation Response"
+    procedure DeleteBlob(): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::DeleteBlob);
         OperationResponse := BlobAPIWebRequestHelper.DeleteOperation(OperationPayload, StrSubstNo(DeleteBlobOperationNotSuccessfulErr, OperationPayload.GetBlobName(), OperationPayload.GetContainerName(), 'Delete'));
         exit(OperationResponse);
     end;
 
-    procedure UndeleteBlob(): Codeunit "Blob API Operation Response"
+    procedure UndeleteBlob(): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::UndeleteBlob);
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(DeleteBlobOperationNotSuccessfulErr, OperationPayload.GetBlobName(), OperationPayload.GetContainerName(), 'Undelete'));
@@ -462,48 +470,48 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure CopyBlob(SourceName: Text; LeaseId: Guid): Codeunit "Blob API Operation Response"
+    procedure CopyBlob(SourceName: Text; LeaseId: Guid): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
 
     begin
         OperationPayload.SetOperation(Operation::CopyBlob);
-        OperationPayload.AddHeader('x-ms-copy-source', SourceName);
+        OperationPayload.AddRequestHeader('x-ms-copy-source', SourceName);
 
         if not IsNullGuid(LeaseId) then
-            OperationPayload.AddHeader('x-ms-lease-id', BlobAPIFormatHelper.RemoveCurlyBracketsFromString(Format(LeaseId).ToLower()));
+            OperationPayload.AddRequestHeader('x-ms-lease-id', BlobAPIFormatHelper.RemoveCurlyBracketsFromString(Format(LeaseId).ToLower()));
 
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, StrSubstNo(CopyOperationNotSuccessfulErr, SourceName, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
 
-    procedure CopyBlobFromURL(SourceUri: Text): Codeunit "Blob API Operation Response"
+    procedure CopyBlobFromURL(SourceUri: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
     begin
         OperationPayload.SetOperation(Operation::CopyBlobFromUrl);
-        OperationPayload.AddHeader('x-ms-copy-source', SourceUri);
-        OperationPayload.AddHeader('x-ms-requires-sync', 'true');
+        OperationPayload.AddRequestHeader('x-ms-copy-source', SourceUri);
+        OperationPayload.AddRequestHeader('x-ms-requires-sync', 'true');
 
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, CopyOperationNotSuccessfulErr);
         exit(OperationResponse);
     end;
 
-    procedure PutBlock(SourceContent: Variant): Codeunit "Blob API Operation Response"
+    procedure PutBlock(SourceContent: Variant): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
     begin
         OperationResponse := PutBlock(SourceContent, FormatHelper.GetBase64BlockId());
         exit(OperationResponse);
     end;
 
-    procedure PutBlock(SourceContent: Variant; BlockId: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlock(SourceContent: Variant; BlockId: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         Content: HttpContent;
         SourceStream: InStream;
         SourceText: Text;
@@ -528,10 +536,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure GetBlockList(BlockListType: Enum "Block List Type"; var CommitedBlocks: Dictionary of [Text, Integer]; var UncommitedBlocks: Dictionary of [Text, Integer]): Codeunit "Blob API Operation Response"
+    procedure GetBlockList(BlockListType: Enum "ABS Block List Type"; var CommitedBlocks: Dictionary of [Text, Integer]; var UncommitedBlocks: Dictionary of [Text, Integer]): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        HelperLibrary: Codeunit "Blob API Helper Library";
+        OperationResponse: Codeunit "ABS Operation Response";
+        HelperLibrary: Codeunit "ABS Helper Library";
         Document: XmlDocument;
     begin
         OperationResponse := GetBlockList(BlockListType, Document);
@@ -539,20 +547,20 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure GetBlockList(var BlockList: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure GetBlockList(var BlockList: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        BlockListType: Enum "Block List Type";
+        OperationResponse: Codeunit "ABS Operation Response";
+        BlockListType: Enum "ABS Block List Type";
     begin
         OperationResponse := GetBlockList(BlockListType::committed, BlockList); // default API value is "committed"
         exit(OperationResponse);
     end;
 
-    procedure GetBlockList(BlockListType: Enum "Block List Type"; var BlockList: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure GetBlockList(BlockListType: Enum "ABS Block List Type"; var BlockList: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
+        Operation: Enum "ABS Operation";
         ResponseText: Text;
     begin
         OperationPayload.SetOperation(Operation::GetBlockList);
@@ -562,10 +570,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlockList(CommitedBlocks: Dictionary of [Text, Integer]; UncommitedBlocks: Dictionary of [Text, Integer]): Codeunit "Blob API Operation Response"
+    procedure PutBlockList(CommitedBlocks: Dictionary of [Text, Integer]; UncommitedBlocks: Dictionary of [Text, Integer]): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        FormatHelper: Codeunit "Blob API Format Helper";
+        OperationResponse: Codeunit "ABS Operation Response";
+        FormatHelper: Codeunit "ABS Format Helper";
         BlockList: Dictionary of [Text, Text];
         BlockListAsXml: XmlDocument;
     begin
@@ -575,10 +583,10 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlockList(BlockList: XmlDocument): Codeunit "Blob API Operation Response"
+    procedure PutBlockList(BlockList: XmlDocument): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         Content: HttpContent;
     begin
         OperationPayload.SetOperation(Operation::PutBlockList);
@@ -587,16 +595,16 @@ codeunit 9041 "Blob Services API Impl."
         exit(OperationResponse);
     end;
 
-    procedure PutBlockFromURL(SourceUri: Text; BlockId: Text): Codeunit "Blob API Operation Response"
+    procedure PutBlockFromURL(SourceUri: Text; BlockId: Text): Codeunit "ABS Operation Response"
     var
-        OperationResponse: Codeunit "Blob API Operation Response";
-        Operation: Enum "Blob Service API Operation";
+        OperationResponse: Codeunit "ABS Operation Response";
+        Operation: Enum "ABS Operation";
         Content: HttpContent;
     begin
         OperationPayload.SetOperation(Operation::PutBlockFromURL);
-        OperationPayload.AddHeader('x-ms-copy-source', SourceUri);
+        OperationPayload.AddRequestHeader('x-ms-copy-source', SourceUri);
         OperationPayload.AddUriParameter('blockid', BlockId);
-        OperationPayload.AddHeader('Content-Length', '0');
+        OperationPayload.AddContentHeader('Content-Length', '0');
         OperationResponse := BlobAPIWebRequestHelper.PutOperation(OperationPayload, Content, StrSubstNo(PutBlockFromUrlOperationNotSuccessfulErr, SourceUri, OperationPayload.GetBlobName()));
         exit(OperationResponse);
     end;
