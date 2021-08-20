@@ -40,73 +40,23 @@ codeunit 9050 "ABS Operation Response"
     end;
 
     /// <summary>
-    /// Gets the SKU name.
-    /// </summary>    
-    /// <returns>Text containing the value of HttpHeader 'x-ms-sku-name' of the underlying HttpResponseMessage. Returns empty string if HttpHeader does not exist.</returns>
-    procedure GetSkuName(): Text
-    var
-        ReturnValue: Text;
+    /// Gets the error (if any) of the response.
+    /// </summary>
+    /// <returns>Text representation of the error that occurred during the operation.</returns>
+    procedure GetError(): Text
     begin
-        ReturnValue := GetHeaderValueFromResponseHeaders('x-ms-sku-name');
-        exit(ReturnValue);
+        exit(ResponseError);
     end;
 
-    /// <summary>
-    /// Gets account kind.
-    /// </summary>    
-    /// <returns>Text containing the value of HttpHeader 'x-ms-sku-name' of the underlying HttpResponseMessage. Returns empty string if HttpHeader does not exist</returns>
-    procedure GetAccountKind(): Text
-    var
-        ReturnValue: Text;
+    internal procedure SetError(Error: Text)
     begin
-        ReturnValue := GetHeaderValueFromResponseHeaders('x-ms-account-kind');
-        exit(ReturnValue);
+        ResponseError := Error;
     end;
-
-    /// <summary>
-    /// Gets copy ID.
-    /// </summary>    
-    /// <returns>Text containing the value of HttpHeader 'x-ms-copy-id' of the underlying HttpResponseMessage. Returns empty string if HttpHeader does not exist</returns>
-    procedure GetCopyId(): Text
-    var
-        ReturnValue: Text;
-    begin
-        ReturnValue := GetHeaderValueFromResponseHeaders('x-ms-copy-id');
-        exit(ReturnValue);
-    end;
-
-    /// <summary>
-    /// Gets snapshot.
-    /// </summary>    
-    /// <returns>Text containing the value of HttpHeader 'x-ms-snapshot' of the underlying HttpResponseMessage. Returns empty string if HttpHeader does not exist</returns>
-    procedure GetSnapshot(): Text
-    var
-        ReturnValue: Text;
-    begin
-        ReturnValue := GetHeaderValueFromResponseHeaders('x-ms-snapshot');
-        exit(ReturnValue);
-    end;
-
-    /// <summary>
-    /// Gets metadata value.
-    /// </summary>    
-    /// <param name="MetaName">The name of the Metadata-value.</param>
-    /// <returns>Text containing the value of HttpHeader 'x-ms-meta-[MetaName]' of the underlying HttpResponseMessage. Returns empty string if HttpHeader does not exist</returns>
-    procedure GetMetaValue(MetaName: Text): Text
-    var
-        ReturnValue: Text;
-        MetaKeyValuePairLbl: Label 'x-ms-meta-%1', Comment = '%1 = Key';
-    begin
-        ReturnValue := GetHeaderValueFromResponseHeaders(StrSubstNo(MetaKeyValuePairLbl, MetaName));
-        exit(ReturnValue);
-    end;
-
 
     internal procedure SetHttpResponse(NewResponse: HttpResponseMessage)
     begin
         Response := NewResponse;
     end;
-
 
     internal procedure GetHttpResponseHeaders(): HttpHeaders
     begin
@@ -132,4 +82,5 @@ codeunit 9050 "ABS Operation Response"
 
     var
         Response: HttpResponseMessage;
+        ResponseError: Text;
 }

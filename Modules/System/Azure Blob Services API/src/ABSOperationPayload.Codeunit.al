@@ -159,4 +159,22 @@ codeunit 9042 "ABS Operation Payload"
         UriParameters.Remove(ParameterKey);
         UriParameters.Add(ParameterKey, ParameterValue);
     end;
+
+    procedure SetOptionalParameters(OptionalParameters: Codeunit "ABS Optional Parameters")
+    var
+        Optionals: Dictionary of [Text, Text];
+        OptionalParameterKey: Text;
+    begin
+        // TODO Consider filtering out parameters and header based on the operation
+
+        // Add request headers
+        Optionals := OptionalParameters.GetRequestHeaders();
+        foreach OptionalParameterKey in Optionals.Keys() do
+            AddRequestHeader(OptionalParameterKey, Optionals.Get(OptionalParameterKey));
+
+        // Add URI parameters
+        Optionals := OptionalParameters.GetParameters();
+        foreach OptionalParameterKey in Optionals.Keys() do
+            AddUriParameter(OptionalParameterKey, Optionals.Get(OptionalParameterKey));
+    end;
 }

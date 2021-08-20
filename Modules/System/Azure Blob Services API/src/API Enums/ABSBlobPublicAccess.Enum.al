@@ -12,7 +12,7 @@ enum 9043 "ABS Blob Public Access"
     Extensible = false;
 
     /// <summary>
-    ///  Indicates full public read access for container and blob data. Clients can enumerate blobs within the container via anonymous request, but cannot enumerate containers within the storage account.
+    ///  Indicates full public read access for container and blob data. Clients can use anonymous requests to enumerate blobs in the container, but cannot enumerate containers in the storage account.
     /// </summary>
     value(0; Container)
     {
@@ -20,7 +20,7 @@ enum 9043 "ABS Blob Public Access"
     }
 
     /// <summary>
-    ///Indicates public read access for blobs. Blob data within this container can be read via anonymous request, but container data is not available. Clients cannot enumerate blobs within the container via anonymous request.
+    ///Indicates public read access to blob data in this container. The blob data can be read via anonymous request, but container data is not available. Clients cannot enumerate blobs in the container via anonymous request.
     /// </summary>
     value(1; Blob)
     {

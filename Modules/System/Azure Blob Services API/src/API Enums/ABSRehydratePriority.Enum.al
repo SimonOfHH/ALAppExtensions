@@ -5,7 +5,7 @@
 
 /// <summary>
 /// Indicates the priority with which to rehydrate an archived blob.
-/// The priority can be set on a blob only once. This header will be ignored on subsequent requests to the same blob. Default priority without this header is Standard.
+/// The priority can be set on a blob only one time. This header will be ignored on subsequent requests to the same blob. The default priority without this header is Standard.
 /// </summary>
 enum 9046 "ABS Rehydrate Priority"
 {

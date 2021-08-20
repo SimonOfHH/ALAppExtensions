@@ -6,6 +6,7 @@
 codeunit 9043 "ABS Helper Library"
 {
     Access = Internal;
+    Permissions = tabledata Field = r;
 
     // #region Container-specific Helper
     procedure ContainerNodeListTotempRecord(NodeList: XmlNodeList; var Container: Record "ABS Container")
@@ -144,12 +145,12 @@ codeunit 9043 "ABS Helper Library"
         Node: XmlNode;
     begin
         ContainerContent.DeleteAll();
-        ContainerContentHelper.SetContainerContent(ContainerContent);
 
         if NodeList.Count = 0 then
             exit;
+
         foreach Node in NodeList do
-            ContainerContentHelper.AddNewEntryFromNode(Node, XPathName);
+            ContainerContentHelper.AddNewEntryFromNode(ContainerContent, Node, XPathName);
     end;
 
     local procedure NodeListToTempRecord(NodeList: XmlNodeList; XPathName: Text; var Container: Record "ABS Container")
@@ -158,12 +159,11 @@ codeunit 9043 "ABS Helper Library"
         Node: XmlNode;
     begin
         Container.DeleteAll();
-        ContainerHelper.SetContainer(Container);
 
         if NodeList.Count = 0 then
             exit;
         foreach Node in NodeList do
-            ContainerHelper.AddNewEntryFromNode(Node, XPathName);
+            ContainerHelper.AddNewEntryFromNode(Container, Node, XPathName);
     end;
     // #endregion
 
@@ -181,24 +181,4 @@ codeunit 9043 "ABS Helper Library"
         exit(FldNo <> 0);
     end;
     // #endregion
-
-    procedure ValidateApiVersion(CurrApiVersion: Enum "Storage Service API Version"; TargetApiVersion: Enum "Storage Service API Version"; CurrOperation: Enum "ABS Operation"; ThrowError: Boolean): Boolean
-    var
-        IncompatibleVersionsErr: Label 'Operation "%1" is only available after API Version %2, but you selected %3.', Comment = '%1 = Operation; %2 = Target API Version; %3 = Curr. API Version';
-    begin
-        exit(ValidateApiVersion(CurrApiVersion, TargetApiVersion, ThrowError, StrSubstNo(IncompatibleVersionsErr, CurrOperation, TargetApiVersion, CurrApiVersion)));
-    end;
-
-    procedure ValidateApiVersion(CurrApiVersion: Enum "Storage Service API Version"; TargetApiVersion: Enum "Storage Service API Version"; ThrowError: Boolean; ErrorMsg: Text): Boolean
-    begin
-        if (CurrApiVersion.AsInteger() >= TargetApiVersion.AsInteger()) then
-            exit(true);
-
-        if ThrowError then
-            Error(ErrorMsg);
-
-        exit(false);
-    end;
-
-    // #endregion Version Comparision 
 }

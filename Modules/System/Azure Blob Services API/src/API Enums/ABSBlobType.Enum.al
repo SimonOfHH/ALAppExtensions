@@ -21,7 +21,7 @@ enum 9047 "ABS Blob Type"
     }
 
     /// <summary>
-    /// Optimized for random read/write operations and which provide the ability to write to a range of bytes in a blob.
+    /// Optimized for random read/write operations and provides the ability to write to a range of bytes in a blob.
     /// </summary>
     value(1; PageBlob)
     {

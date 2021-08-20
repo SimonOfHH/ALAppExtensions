@@ -29,16 +29,19 @@ table 9044 "ABS Container"
         {
             DataClassification = SystemMetadata;
             Caption = 'Lease Status';
+            Access = Internal;
         }
         field(13; "Lease State"; Text[15])
         {
             DataClassification = SystemMetadata;
             Caption = 'Lease State';
+            Access = Internal;
         }
         field(14; "Default Encryption Scope"; Text[50])
         {
             DataClassification = SystemMetadata;
             Caption = 'Default Encryption Scope';
+            Access = Internal;
         }
         field(15; "Deny Encryption Scope Override"; Boolean)
         {

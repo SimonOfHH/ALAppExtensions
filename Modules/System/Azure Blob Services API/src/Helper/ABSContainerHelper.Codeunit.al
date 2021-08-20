@@ -7,25 +7,7 @@ codeunit 9055 "ABS Container Helper"
 {
     Access = Internal;
 
-    var
-        Container: Record "ABS Container";
-        OperationPayload: Codeunit "ABS Operation Payload";
-        StorageAccountName: Text;
-        ContainerName: Text;
-
-    procedure SetContainer(var NewContainer: Record "ABS Container")
-    begin
-        Container := NewContainer;
-    end;
-
-    procedure SetBaseInfos(NewOperationPayload: Codeunit "ABS Operation Payload")
-    begin
-        StorageAccountName := OperationPayload.GetStorageAccountName();
-        ContainerName := OperationPayload.GetContainerName();
-        OperationPayload := NewOperationPayload;
-    end;
-
-    procedure AddNewEntryFromNode(var Node: XmlNode; XPathName: Text)
+    procedure AddNewEntryFromNode(var Container: Record "ABS Container"; var Node: XmlNode; XPathName: Text)
     var
         HelperLibrary: Codeunit "ABS Helper Library";
         NameFromXml: Text;
@@ -38,32 +20,31 @@ codeunit 9055 "ABS Container Helper"
         Node.SelectSingleNode('.//Properties', PropertiesNode);
         ChildNodes := PropertiesNode.AsXmlElement().GetChildNodes();
         if ChildNodes.Count = 0 then
-            AddNewEntry(NameFromXml, OuterXml)
+            AddNewEntry(Container, NameFromXml, OuterXml)
         else
-            AddNewEntry(NameFromXml, OuterXml, ChildNodes);
+            AddNewEntry(Container, NameFromXml, OuterXml, ChildNodes);
     end;
 
-    procedure AddNewEntry(NameFromXml: Text; OuterXml: Text)
+    procedure AddNewEntry(var Container: Record "ABS Container"; NameFromXml: Text; OuterXml: Text)
     var
         ChildNodes: XmlNodeList;
     begin
-        AddNewEntry(NameFromXml, OuterXml, ChildNodes);
+        AddNewEntry(Container, NameFromXml, OuterXml, ChildNodes);
     end;
 
-    procedure AddNewEntry(NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
+    procedure AddNewEntry(var Container: Record "ABS Container"; NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
     var
         Outstr: OutStream;
     begin
         Container.Init();
         Container.Name := CopyStr(NameFromXml, 1, 250);
-        SetPropertyFields(ChildNodes);
+        SetPropertyFields(Container, ChildNodes);
         Container."XML Value".CreateOutStream(Outstr);
         Outstr.Write(OuterXml);
-        //Rec.URI := HelperLibrary.ConstructUrl(StorageAccountName, OperationPayload, Operation::ListContainerContents, ContainerName, NameFromXml); // TODO: Should this be removed?
         Container.Insert(true);
     end;
 
-    local procedure SetPropertyFields(ChildNodes: XmlNodeList)
+    local procedure SetPropertyFields(var Container: Record "ABS Container"; ChildNodes: XmlNodeList)
     var
         FormatHelper: Codeunit "ABS Format Helper";
         HelperLibrary: Codeunit "ABS Helper Library";

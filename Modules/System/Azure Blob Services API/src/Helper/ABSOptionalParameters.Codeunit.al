@@ -17,7 +17,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Guid value specifying the LeaseID</param>
     procedure LeaseId("Value": Guid)
     begin
-        SetHeader('x-ms-lease-id', BlobAPIFormatHelper.RemoveCurlyBracketsFromString(Format("Value").ToLower()));
+        SetRequestHeader('x-ms-lease-id', BlobAPIFormatHelper.RemoveCurlyBracketsFromString(Format("Value").ToLower()));
     end;
 
     /// <summary>
@@ -26,7 +26,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the source LeaseID</param>
     procedure SourceLeaseId("Value": Text)
     begin
-        SetHeader('x-ms-source-lease-id', "Value");
+        SetRequestHeader('x-ms-source-lease-id', "Value");
     end;
 
     /// <summary>
@@ -35,7 +35,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure Origin("Value": Text)
     begin
-        SetHeader('Origin', "Value");
+        SetRequestHeader('Origin', "Value");
     end;
 
     /// <summary>
@@ -44,7 +44,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure AccessControlRequestMethod("Value": Enum "Http Request Type")
     begin
-        SetHeader('Access-Control-Request-Method', Format("Value"));
+        SetRequestHeader('Access-Control-Request-Method', Format("Value"));
     end;
 
     /// <summary>
@@ -53,7 +53,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure AccessControlRequestHeaders("Value": Text)
     begin
-        SetHeader('Access-Control-Request-Headers', "Value");
+        SetRequestHeader('Access-Control-Request-Headers', "Value");
     end;
 
     /// <summary>
@@ -62,7 +62,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure ClientRequestId("Value": Text)
     begin
-        SetHeader('x-ms-client-request-id', "Value");
+        SetRequestHeader('x-ms-client-request-id', "Value");
     end;
 
     /// <summary>
@@ -71,7 +71,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Enum "Blob Public Access" value specifying the HttpHeader value</param>
     procedure BlobPublicAccess("Value": Enum "ABS Blob Public Access")
     begin
-        SetHeader('x-ms-blob-public-access', Format("Value"));
+        SetRequestHeader('x-ms-blob-public-access', Format("Value"));
     end;
 
     /// <summary>
@@ -83,7 +83,7 @@ codeunit 9047 "ABS Optional Parameters"
     var
         MetaKeyValuePairLbl: Label 'x-ms-meta-%1', Comment = '%1 = Key', Locked = true;
     begin
-        SetHeader(StrSubstNo(MetaKeyValuePairLbl, MetaName), "Value");
+        SetRequestHeader(StrSubstNo(MetaKeyValuePairLbl, MetaName), "Value");
     end;
 
     /// <summary>
@@ -92,7 +92,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure TagsValue("Value": Text)
     begin
-        SetHeader('x-ms-tags', "Value"); // Supported in version 2019-12-12 and newer.
+        SetRequestHeader('x-ms-tags', "Value"); // Supported in version 2019-12-12 and newer.
     end;
 
     /// <summary>
@@ -101,7 +101,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">DateTime value specifying the HttpHeader value</param>
     procedure SourceIfModifiedSince("Value": DateTime)
     begin
-        SetHeader('x-ms-source-if-modified-since', Format("Value")); // TODO: Check DateTime-format for URI
+        SetRequestHeader('x-ms-source-if-modified-since', Format("Value")); // TODO: Check DateTime-format for URI
     end;
 
     /// <summary>
@@ -110,7 +110,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">DateTime value specifying the HttpHeader value</param>
     procedure SourceIfUnmodifiedSince("Value": DateTime)
     begin
-        SetHeader('x-ms-source-if-unmodified-since', Format("Value")); // TODO: Check DateTime-format for URI
+        SetRequestHeader('x-ms-source-if-unmodified-since', Format("Value")); // TODO: Check DateTime-format for URI
     end;
 
     /// <summary>
@@ -119,7 +119,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure SourceIfMatch("Value": Text)
     begin
-        SetHeader('x-ms-source-if-match', "Value");
+        SetRequestHeader('x-ms-source-if-match', "Value");
     end;
 
     /// <summary>
@@ -128,7 +128,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure SourceIfNoneMatch("Value": Text)
     begin
-        SetHeader('x-ms-source-if-none-match', "Value");
+        SetRequestHeader('x-ms-source-if-none-match', "Value");
     end;
 
     /// <summary>
@@ -137,7 +137,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Text value specifying the HttpHeader value</param>
     procedure CopySourceName("Value": Text)
     begin
-        SetHeader('x-ms-copy-source', "Value");
+        SetRequestHeader('x-ms-copy-source', "Value");
     end;
 
     /// <summary>
@@ -146,7 +146,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Enum "Rehydrate Priority" value specifying the HttpHeader value</param>
     procedure RehydratePriority("Value": Enum "ABS Rehydrate Priority")
     begin
-        SetHeader('x-ms-rehydrate-priority', Format("Value"));
+        SetRequestHeader('x-ms-rehydrate-priority', Format("Value"));
     end;
 
     /// <summary>
@@ -155,7 +155,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Enum "Blob Expiry Option" value specifying the HttpHeader value</param>
     procedure BlobExpiryOption("Value": Enum "ABS Blob Expiry Option")
     begin
-        SetHeader('x-ms-expiry-option', Format("Value")); // Valid values are RelativeToCreation/RelativeToNow/Absolute/NeverExpire
+        SetRequestHeader('x-ms-expiry-option', Format("Value")); // Valid values are RelativeToCreation/RelativeToNow/Absolute/NeverExpire
     end;
 
     /// <summary>
@@ -164,7 +164,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Integer value specifying the HttpHeader value</param>
     procedure BlobExpiryTime("Value": Integer)
     begin
-        SetHeader('x-ms-expiry-time', Format("Value")); // Either an RFC 1123 datetime or miliseconds-value
+        SetRequestHeader('x-ms-expiry-time', Format("Value")); // Either an RFC 1123 datetime or miliseconds-value
     end;
 
     /// <summary>
@@ -173,7 +173,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">DateTime value specifying the HttpHeader value</param>
     procedure BlobExpiryTime("Value": DateTime)
     begin
-        SetHeader('x-ms-expiry-time', BlobAPIFormatHelper.GetRfc1123DateTime(("Value"))); // Either an RFC 1123 datetime or miliseconds-value
+        SetRequestHeader('x-ms-expiry-time', BlobAPIFormatHelper.GetRfc1123DateTime(("Value"))); // Either an RFC 1123 datetime or miliseconds-value
     end;
 
     /// <summary>
@@ -182,7 +182,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <param name="Value">Enum "Blob Access Tier" value specifying the HttpHeader value</param>
     procedure BlobAccessTier("Value": Enum "ABS Blob Access Tier")
     begin
-        SetHeader('x-ms-access-tier', Format("Value"));
+        SetRequestHeader('x-ms-access-tier', Format("Value"));
     end;
 
     /// <summary>
@@ -194,7 +194,7 @@ codeunit 9047 "ABS Optional Parameters"
     var
         RangeBytesLbl: Label 'bytes=%1-%2', Comment = '%1 = Start Range; %2 = End Range';
     begin
-        SetHeader('x-ms-range', StrSubstNo(RangeBytesLbl, BytesStartValue, BytesEndValue));
+        SetRequestHeader('x-ms-range', StrSubstNo(RangeBytesLbl, BytesStartValue, BytesEndValue));
     end;
 
     /// <summary>
@@ -206,7 +206,7 @@ codeunit 9047 "ABS Optional Parameters"
     var
         RangeBytesLbl: Label 'bytes=%1-%2', Comment = '%1 = Start Range; %2 = End Range';
     begin
-        SetHeader('x-ms-source-range', StrSubstNo(RangeBytesLbl, BytesStartValue, BytesEndValue));
+        SetRequestHeader('x-ms-source-range', StrSubstNo(RangeBytesLbl, BytesStartValue, BytesEndValue));
     end;
 
     /// <summary>
@@ -223,18 +223,18 @@ codeunit 9047 "ABS Optional Parameters"
         else
             ValueText := 'false';
 
-        SetHeader('x-ms-requires-sync', ValueText);
+        SetRequestHeader('x-ms-requires-sync', ValueText);
     end;
 
-    local procedure SetHeader(Header: Text; HeaderValue: Text)
+    local procedure SetRequestHeader(Header: Text; HeaderValue: Text)
     begin
-        Headers.Remove(Header);
-        Headers.Add(Header, HeaderValue);
+        RequestHeaders.Remove(Header);
+        RequestHeaders.Add(Header, HeaderValue);
     end;
 
-    internal procedure GetHeaders(): Dictionary of [Text, Text]
+    internal procedure GetRequestHeaders(): Dictionary of [Text, Text]
     begin
-        exit(Headers);
+        exit(RequestHeaders);
     end;
 
     #endregion
@@ -288,7 +288,7 @@ codeunit 9047 "ABS Optional Parameters"
 
     /// <summary>
     /// When the request includes this parameter, the operation returns a BlobPrefix element in the response body 
-    /// that acts as a placeholder for all blobs whose names begin with the same substring up to the appearance of the delimiter character. 
+    /// that acts as a placeholder for all blobs with names that begin with the same substring until the delimiter character is reached. 
     /// The delimiter may be a single character or a string.
     /// </summary>
     /// <param name="Value">Delimiting character/string</param>
@@ -309,7 +309,7 @@ codeunit 9047 "ABS Optional Parameters"
     /// <summary>
     /// Identifiers the ID of a Block in BlockBlob
     /// </summary>
-    /// <param name="Value">A valid Base64 string value that identifies the block. Prior to encoding, the string must be less than or equal to 64 bytes in size</param>
+    /// <param name="Value">A valid Base64 string value that identifies the block. Prior to encoding, the string must be less than or equal to 64 bytes</param>
     procedure BlockId("Value": Text)
     begin
         SetParameter('blockid', "Value");
@@ -329,6 +329,6 @@ codeunit 9047 "ABS Optional Parameters"
 
     var
         BlobAPIFormatHelper: Codeunit "ABS Format Helper";
-        Headers: Dictionary of [Text, Text];
+        RequestHeaders: Dictionary of [Text, Text];
         Parameters: Dictionary of [Text, Text];
 }

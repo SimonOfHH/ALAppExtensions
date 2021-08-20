@@ -65,6 +65,7 @@ table 9043 "ABS Container Content"
         {
             DataClassification = SystemMetadata;
             Caption = 'Blob Type';
+            Access = Internal;
         }
         field(100; "XML Value"; Blob)
         {

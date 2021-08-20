@@ -30,27 +30,6 @@ codeunit 132919 "ABS Container Client Test"
     end;
 
     //[Test]
-    procedure CreateContainerSASTest()
-    var
-        Response: Codeunit "ABS Operation Response";
-        ContainerName: Text;
-    begin
-        // TODO initialize the SAS authorization
-        // SharedKeyAuthorization := StorageServiceAuthorization.CreateAccountSAS(Helper.GetSasToken());
-
-        ABSContainerClient.Initialize(AzuriteTestLibrary.GetStorageAccountName(), SharedKeyAuthorization);
-        ABSContainerClient.SetBaseUrl(AzuriteTestLibrary.GetBlobStorageBaseUrl());
-
-        ContainerName := ABSTestLibrary.GetContainerName();
-        Response := ABSContainerClient.CreateContainer(ContainerName);
-
-        Assert.IsTrue(Response.IsSuccessful(), 'Operation CreateContainer failed');
-
-        Response := ABSContainerClient.DeleteContainer(ContainerName);
-        Assert.IsTrue(Response.IsSuccessful(), 'Operation DeleteContainer failed');
-    end;
-
-    //[Test]
     procedure CreateContainerFailedTest()
     var
         Response: Codeunit "ABS Operation Response";
@@ -66,8 +45,9 @@ codeunit 132919 "ABS Container Client Test"
         Response := ABSContainerClient.CreateContainer(ContainerName);
         Assert.IsTrue(Response.IsSuccessful(), 'Operation CreateContainer failed');
 
-        asserterror ABSContainerClient.CreateContainer(ContainerName);
-        Assert.ExpectedError('Could not create container ' + ContainerName);
+        Response := ABSContainerClient.CreateContainer(ContainerName);
+        Assert.IsFalse(Response.IsSuccessful(), 'Operation CreateContainer should have failed');
+        Assert.IsTrue(Response.GetError().Contains('Could not create container ' + ContainerName), 'Wrong error');
 
         // Clean-up
         Response := ABSContainerClient.DeleteContainer(ContainerName);

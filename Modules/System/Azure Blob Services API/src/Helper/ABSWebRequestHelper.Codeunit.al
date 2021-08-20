@@ -172,18 +172,15 @@ codeunit 9045 "ABS Web Request Helper"
     local procedure SendRequest(var Client: HttpClient; RequestMsg: HttpRequestMessage; OperationNotSuccessfulErr: Text): Codeunit "ABS Operation Response"
     var
         OperationResponse: Codeunit "ABS Operation Response";
-        DebugText: Text;
         Response: HttpResponseMessage;
     begin
-        Client.Send(RequestMsg, Response);
+        if not Client.Send(RequestMsg, Response) then
+            Error(OperationNotSuccessfulErr);
 
-        Response.Content.ReadAs(DebugText);
-
-        if not Response.IsSuccessStatusCode then
-            Error(HttpResponseInfoErr, OperationNotSuccessfulErr, Response.HttpStatusCode, Response.ReasonPhrase);
+        if not Response.IsSuccessStatusCode() then
+            OperationResponse.SetError(StrSubstNo(HttpResponseInfoErr, OperationNotSuccessfulErr, Response.HttpStatusCode, Response.ReasonPhrase));
 
         OperationResponse.SetHttpResponse(Response);
-
         exit(OperationResponse);
     end;
     #endregion

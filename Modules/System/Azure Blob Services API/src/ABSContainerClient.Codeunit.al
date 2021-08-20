@@ -48,6 +48,7 @@ codeunit 9052 "ABS Container Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-containers2
     /// </summary>
     /// <param name="Container">Collection of the result (temporary record).</param>
+    /// <returns>An operation reponse object</returns>
     procedure ListContainers(var Containers: Record "ABS Container"): Codeunit "ABS Operation Response"
     var
         OptionalParameters: Codeunit "ABS Optional Parameters";
@@ -60,6 +61,8 @@ codeunit 9052 "ABS Container Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-containers2
     /// </summary>
     /// <param name="Container">Collection of the result (temporary record).</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
     procedure ListContainers(var Containers: Record "ABS Container"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.ListContainers(Containers, OptionalParameters));
@@ -69,6 +72,8 @@ codeunit 9052 "ABS Container Client"
     /// Creates a new container in the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
     /// </summary>
+    /// <param name="ContainerName">The name of the container.</param>
+    /// <returns>An operation reponse object</returns>
     procedure CreateContainer(ContainerName: Text): Codeunit "ABS Operation Response"
     var
         OptionalParameters: Codeunit "ABS Optional Parameters";
@@ -80,6 +85,9 @@ codeunit 9052 "ABS Container Client"
     /// Creates a new container in the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/create-container
     /// </summary>
+    /// <param name="ContainerName">The name of the container to create.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
     procedure CreateContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.CreateContainer(ContainerName, OptionalParameters));
@@ -89,6 +97,8 @@ codeunit 9052 "ABS Container Client"
     /// Deletes a container from the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
     /// </summary>
+    /// <param name="ContainerName">The name of the container.</param>
+    /// <returns>An operation reponse object</returns>
     procedure DeleteContainer(ContainerName: Text): Codeunit "ABS Operation Response"
     var
         OptionalParameters: Codeunit "ABS Optional Parameters";
@@ -100,6 +110,9 @@ codeunit 9052 "ABS Container Client"
     /// Deletes a container from the Storage Account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-container
     /// </summary>
+    /// <param name="ContainerName">The name of the container to delete.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
     procedure DeleteContainer(ContainerName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.DeleteContainer(ContainerName, OptionalParameters));

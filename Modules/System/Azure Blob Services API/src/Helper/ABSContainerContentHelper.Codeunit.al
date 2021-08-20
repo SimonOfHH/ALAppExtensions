@@ -7,25 +7,7 @@ codeunit 9054 "ABS Container Content Helper"
 {
     Access = Internal;
 
-    var
-        ContainerContent: Record "ABS Container Content";
-        OperationPayload: Codeunit "ABS Operation Payload";
-        StorageAccountName: Text;
-        ContainerName: Text;
-
-    procedure SetContainerContent(var NewContainerContent: Record "ABS Container Content")
-    begin
-        ContainerContent := NewContainerContent;
-    end;
-
-    procedure SetBaseInfos(NewOperationPayload: Codeunit "ABS Operation Payload")
-    begin
-        StorageAccountName := OperationPayload.GetStorageAccountName();
-        ContainerName := OperationPayload.GetContainerName();
-        OperationPayload := NewOperationPayload;
-    end;
-
-    procedure AddNewEntryFromNode(var Node: XmlNode; XPathName: Text)
+    procedure AddNewEntryFromNode(var ContainerContent: Record "ABS Container Content"; var Node: XmlNode; XPathName: Text)
     var
         HelperLibrary: Codeunit "ABS Helper Library";
         NameFromXml: Text;
@@ -38,56 +20,60 @@ codeunit 9054 "ABS Container Content Helper"
         Node.SelectSingleNode('.//Properties', PropertiesNode);
         ChildNodes := PropertiesNode.AsXmlElement().GetChildNodes();
         if ChildNodes.Count = 0 then
-            AddNewEntry(NameFromXml, OuterXml)
+            AddNewEntry(ContainerContent, NameFromXml, OuterXml)
         else
-            AddNewEntry(NameFromXml, OuterXml, ChildNodes);
+            AddNewEntry(ContainerContent, NameFromXml, OuterXml, ChildNodes);
     end;
 
-    procedure AddNewEntry(NameFromXml: Text; OuterXml: Text)
+    procedure AddNewEntry(var ContainerContent: Record "ABS Container Content"; NameFromXml: Text; OuterXml: Text)
     var
         ChildNodes: XmlNodeList;
     begin
-        AddNewEntry(NameFromXml, OuterXml, ChildNodes);
+        AddNewEntry(ContainerContent, NameFromXml, OuterXml, ChildNodes);
     end;
 
-    procedure AddNewEntry(NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
+    procedure AddNewEntry(var ContainerContent: Record "ABS Container Content"; NameFromXml: Text; OuterXml: Text; ChildNodes: XmlNodeList)
     var
         NextEntryNo: Integer;
         Outstr: OutStream;
     begin
         if NameFromXml.Contains('/') then
-            AddParentEntry(NameFromXml);
+            AddParentEntry(ContainerContent, NameFromXml);
 
-        NextEntryNo := GetNextEntryNo();
+        NextEntryNo := GetNextEntryNo(ContainerContent);
 
         ContainerContent.Init();
+
         ContainerContent."Entry No." := NextEntryNo;
         ContainerContent."Parent Directory" := GetDirectParentName(NameFromXml);
         ContainerContent.Level := GetLevel(NameFromXml);
         ContainerContent."Full Name" := CopyStr(NameFromXml, 1, 250);
         ContainerContent.Name := GetName(NameFromXml);
-        SetPropertyFields(ChildNodes);
+        SetPropertyFields(ContainerContent, ChildNodes);
         ContainerContent."XML Value".CreateOutStream(Outstr);
         Outstr.Write(OuterXml);
+
         ContainerContent.Insert(true);
     end;
 
-    local procedure AddParentEntry(NameFromXml: Text)
+    local procedure AddParentEntry(var ContainerContent: Record "ABS Container Content"; NameFromXml: Text)
     var
         NextEntryNo: Integer;
     begin
-        NextEntryNo := GetNextEntryNo();
+        NextEntryNo := GetNextEntryNo(ContainerContent);
 
         ContainerContent.Init();
+
         ContainerContent."Entry No." := NextEntryNo;
         ContainerContent.Level := GetLevel(NameFromXml) - 1;
         ContainerContent.Name := GetDirectParentName(NameFromXml);
         ContainerContent."Parent Directory" := GetDirectParentName(NameFromXml);
         ContainerContent."Content Type" := 'Directory';
+
         ContainerContent.Insert(true);
     end;
 
-    local procedure SetPropertyFields(ChildNodes: XmlNodeList)
+    local procedure SetPropertyFields(var ContainerContent: Record "ABS Container Content"; ChildNodes: XmlNodeList)
     var
         FormatHelper: Codeunit "ABS Format Helper";
         HelperLibrary: Codeunit "ABS Helper Library";
@@ -119,7 +105,7 @@ codeunit 9054 "ABS Container Content Helper"
         end;
     end;
 
-    local procedure GetNextEntryNo(): Integer
+    local procedure GetNextEntryNo(var ContainerContent: Record "ABS Container Content"): Integer
     begin
         if ContainerContent.FindLast() then
             exit(ContainerContent."Entry No." + 1)
@@ -162,22 +148,22 @@ codeunit 9054 "ABS Container Content Helper"
     end;
 
     /// <summary>
-    /// The value in "Name" might be shortened (because it could be longer than 250 characters)
-    /// Use this function to retrieve the original name of the Blob (read from saved XmlNode)
+    /// The name will be shortened if it has more than 250 characters
+    /// Use this function to retrieve the original name of the blob (read from saved XmlNode)
     /// </summary>
     /// <returns>The Full name of the Blob, recovered from saved XmlNode</returns>
-    internal procedure GetFullNameFromXML(): Text
+    internal procedure GetFullNameFromXML(var ContainerContent: Record "ABS Container Content"): Text
     var
         HelperLibrary: Codeunit "ABS Helper Library";
         Node: XmlNode;
         NameFromXml: Text;
     begin
-        GetXmlNodeForEntry(Node);
+        GetXmlNodeForEntry(ContainerContent, Node);
         NameFromXml := HelperLibrary.GetValueFromNode(Node, './/Name');
         exit(NameFromXml);
     end;
 
-    local procedure GetXmlNodeForEntry(var Node: XmlNode)
+    local procedure GetXmlNodeForEntry(var ContainerContent: Record "ABS Container Content"; var Node: XmlNode)
     var
         InStr: InStream;
         XmlAsText: Text;

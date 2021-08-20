@@ -4,16 +4,17 @@
 // ------------------------------------------------------------------------------------------------
 
 /// <summary>
-/// Provides functionality to use operations on blobs in Azure BLOB Services.
+/// Provides functionality for using operations on blobs in Azure Blob storage.
 /// </summary>
 codeunit 9053 "ABS Blob Client"
 {
     Access = Public;
 
     /// <summary>
-    /// Initializes the Azure BLOB Storage BLOB client.
+    /// Initializes the Azure Blob storage client.
     /// </summary>
     /// <param name="StorageAccount">The name of Storage Account to use.</param>
+    /// <<param name="Container">The name of the container to use.</param>
     /// <param name="Authorization">The authorization to use.</param>
     procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization")
     var
@@ -26,6 +27,7 @@ codeunit 9053 "ABS Blob Client"
     /// Initializes the Azure BLOB Storage BLOB client.
     /// </summary>
     /// <param name="StorageAccount">The name of Storage Account to use.</param>
+    /// <param name="Container">The name of the container to use.</param>
     /// <param name="Authorization">The authorization to use.</param>
     /// <param name="APIVersion">The used API version to use.</param>
     procedure Initialize(StorageAccount: Text; Container: Text; Authorization: Interface "Storage Service Authorization"; APIVersion: Enum "Storage Service API Version")
@@ -49,48 +51,128 @@ codeunit 9053 "ABS Blob Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-blobs
     /// </summary>    
     /// <param name="ContainerContent">Collection of the result (temporary record).</param>
+    /// <returns>An operation reponse object</returns>
     procedure ListBlobs(var ContainerContent: Record "ABS Container Content"): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.ListBlobs(ContainerContent));
+        exit(BlobServicesApiImpl.ListBlobs(ContainerContent, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Lists the blobs in a specific container.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/list-blobs
+    /// </summary>    
+    /// <param name="ContainerContent">Collection of the result (temporary record).</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure ListBlobs(var ContainerContent: Record "ABS Container Content"; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.ListBlobs(ContainerContent, OptionalParameters));
     end;
 
     /// <summary>
     /// Uploads a file as a BlockBlob (with File Selection Dialog).
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
+    /// <returns>An operation reponse object</returns>
     procedure PutBlobBlockBlobUI(): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.PutBlobBlockBlobUI());
+        exit(BlobServicesApiImpl.PutBlobBlockBlobUI(OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Uploads a file as a BlockBlob (with File Selection Dialog).
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
+    /// </summary>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobBlockBlobUI(OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.PutBlobBlockBlobUI(OptionalParameters));
     end;
 
     /// <summary>
     /// Uploads the content of an InStream as a BlockBlob
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="SourceStream">The Content of the Blob as InStream.</param>
+    /// <returns>An operation reponse object</returns>
     procedure PutBlobBlockBlobStream(BlobName: Text; var SourceStream: InStream): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.PutBlobBlockBlobStream(BlobName, SourceStream));
+        exit(BlobServicesApiImpl.PutBlobBlockBlobStream(BlobName, SourceStream, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Uploads the content of an InStream as a BlockBlob.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="SourceStream">The Content of the Blob as InStream.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobBlockBlobStream(BlobName: Text; var SourceStream: InStream; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.PutBlobBlockBlobStream(BlobName, SourceStream, OptionalParameters));
     end;
 
     /// <summary>
     /// Uploads text as a BlockBlob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="SourceText">The Content of the Blob as Text.</param>
+    /// <returns>An operation reponse object</returns>
     procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.PutBlobBlockBlobText(BlobName, SourceText));
+        exit(BlobServicesApiImpl.PutBlobBlockBlobText(BlobName, SourceText, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Uploads text as a BlockBlob.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="SourceText">The Content of the Blob as Text.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobBlockBlobText(BlobName: Text; SourceText: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.PutBlobBlockBlobText(BlobName, SourceText, OptionalParameters));
     end;
 
     /// <summary>
     /// Creates a PageBlob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
+    /// <returns>An operation reponse object</returns>
     procedure PutBlobPageBlob(BlobName: Text; ContentType: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.PutBlobPageBlob(BlobName, ContentType));
+        exit(BlobServicesApiImpl.PutBlobPageBlob(BlobName, ContentType, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Creates a PageBlob.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobPageBlob(BlobName: Text; ContentType: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.PutBlobPageBlob(BlobName, ContentType, OptionalParameters));
     end;
 
     /// <summary>
@@ -98,9 +180,26 @@ codeunit 9053 "ABS Blob Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// Uses 'application/octet-stream' as Content-Type
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <returns>An operation reponse object</returns>
     procedure PutBlobAppendBlobStream(BlobName: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(PutBlobAppendBlob(BlobName, 'application/octet-stream'));
+        exit(PutBlobAppendBlob(BlobName, 'application/octet-stream', OptionalParameters));
+    end;
+
+    /// <summary>
+    /// The Put Blob operation creates a new append blob
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
+    /// Uses 'application/octet-stream' as Content-Type
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobAppendBlobStream(BlobName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(PutBlobAppendBlob(BlobName, 'application/octet-stream', OptionalParameters));
     end;
 
     /// <summary>
@@ -108,18 +207,24 @@ codeunit 9053 "ABS Blob Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// Uses 'text/plain; charset=UTF-8' as Content-Type
     /// </summary>
-    procedure PutBlobAppendBlobText(BlobName: Text): Codeunit "ABS Operation Response"
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobAppendBlobText(BlobName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(PutBlobAppendBlob(BlobName, 'text/plain; charset=UTF-8'));
+        exit(PutBlobAppendBlob(BlobName, 'text/plain; charset=UTF-8', OptionalParameters));
     end;
     /// <summary>
     /// The Put Blob operation creates a new append blob
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
-    procedure PutBlobAppendBlob(BlobName: Text; ContentType: Text): Codeunit "ABS Operation Response"
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlobAppendBlob(BlobName: Text; ContentType: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(BlobServicesApiImpl.PutBlobAppendBlob(BlobName, ContentType));
+        exit(BlobServicesApiImpl.PutBlobAppendBlob(BlobName, ContentType, OptionalParameters));
     end;
 
     /// <summary>
@@ -127,7 +232,9 @@ codeunit 9053 "ABS Blob Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block
     /// Uses 'text/plain; charset=UTF-8' as Content-Type
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentAsText">Text-variable containing the content that should be added to the Blob</param>
+    /// <returns>An operation reponse object</returns>
     procedure AppendBlockText(BlobName: Text; ContentAsText: Text): Codeunit "ABS Operation Response"
     begin
         exit(AppendBlockText(BlobName, ContentAsText, 'text/plain; charset=UTF-8'));
@@ -137,11 +244,29 @@ codeunit 9053 "ABS Blob Client"
     /// The Append Block operation commits a new block of data to the end of an existing append blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentAsText">Text-variable containing the content that should be added to the Blob</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
+    /// <returns>An operation reponse object</returns>
     procedure AppendBlockText(BlobName: Text; ContentAsText: Text; ContentType: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(AppendBlock(BlobName, ContentType, ContentAsText));
+        exit(AppendBlock(BlobName, ContentType, ContentAsText, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// The Append Block operation commits a new block of data to the end of an existing append blob.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="ContentAsText">Text-variable containing the content that should be added to the Blob</param>
+    /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure AppendBlockText(BlobName: Text; ContentAsText: Text; ContentType: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(AppendBlock(BlobName, ContentType, ContentAsText, OptionalParameters));
     end;
 
     /// <summary>
@@ -149,71 +274,147 @@ codeunit 9053 "ABS Blob Client"
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block
     /// Uses 'application/octet-stream' as Content-Type
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentAsStream">InStream containing the content that should be added to the Blob</param>
+    /// <returns>An operation reponse object</returns>
     procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(AppendBlockStream(BlobName, ContentAsStream, 'application/octet-stream'));
+        exit(AppendBlockStream(BlobName, ContentAsStream, 'application/octet-stream', OptionalParameters));
     end;
 
     /// <summary>
     /// The Append Block operation commits a new block of data to the end of an existing append blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentAsStream">InStream containing the content that should be added to the Blob</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
-    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream; ContentType: Text): Codeunit "ABS Operation Response"
+    /// <returns>An operation reponse object</returns>
+    procedure AppendBlockStream(BlobName: Text; ContentAsStream: InStream; ContentType: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(AppendBlock(BlobName, ContentType, ContentAsStream));
+        exit(AppendBlock(BlobName, ContentType, ContentAsStream, OptionalParameters));
     end;
 
     /// <summary>
     /// The Append Block operation commits a new block of data to the end of an existing append blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ContentType">Value for Content-Type HttpHeader (e.g. 'text/plain; charset=UTF-8')</param>
     /// <param name="SourceContent">Variant containing the content that should be added to the Blob</param>
-    procedure AppendBlock(BlobName: Text; ContentType: Text; SourceContent: Variant): Codeunit "ABS Operation Response"
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure AppendBlock(BlobName: Text; ContentType: Text; SourceContent: Variant; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(BlobServicesApiImpl.AppendBlock(BlobName, ContentType, SourceContent));
+        exit(BlobServicesApiImpl.AppendBlock(BlobName, ContentType, SourceContent, OptionalParameters));
     end;
 
     /// <summary>
     /// The Append Block From URL operation commits a new block of data to the end of an existing append blob.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block-from-url
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="SourceUri">Specifies the name of the source blob.</param>
+    /// <returns>An operation reponse object</returns>
     procedure AppendBlockFromURL(BlobName: Text; SourceUri: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.AppendBlockFromURL(SourceUri));
+        exit(BlobServicesApiImpl.AppendBlockFromURL(BlobName, SourceUri, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// The Append Block From URL operation commits a new block of data to the end of an existing append blob.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/append-block-from-url
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="SourceUri">Specifies the name of the source blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure AppendBlockFromURL(BlobName: Text; SourceUri: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.AppendBlockFromURL(BlobName, SourceUri, OptionalParameters));
     end;
 
     /// <summary>
     /// Receives a Blob as a File from a Container.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <returns>An operation reponse object</returns>
     procedure GetBlobAsFile(BlobName: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.GetBlobAsFile(BlobName));
+        exit(BlobServicesApiImpl.GetBlobAsFile(BlobName, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Receives a Blob as a File from a Container.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure GetBlobAsFile(BlobName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.GetBlobAsFile(BlobName, OptionalParameters));
     end;
 
     /// <summary>
     /// Receives a Blob as a InStream from a Container.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="TargetStream">The result InStream containg the content of the Blob.</param>
+    /// <returns>An operation reponse object</returns>
     procedure GetBlobAsStream(BlobName: Text; var TargetStream: InStream): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.GetBlobAsStream(BlobName, TargetStream));
+        exit(BlobServicesApiImpl.GetBlobAsStream(BlobName, TargetStream, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Receives a Blob as a InStream from a Container.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="TargetStream">The result InStream containg the content of the Blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure GetBlobAsStream(BlobName: Text; var TargetStream: InStream; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.GetBlobAsStream(BlobName, TargetStream, OptionalParameters));
     end;
 
     /// <summary>
     /// Receives a Blob as Text from a Container.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="TargetText">The result Text containg the content of the Blob.</param>
+    /// <returns>An operation reponse object</returns>
     procedure GetBlobAsText(BlobName: Text; var TargetText: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.GetBlobAsText(BlobName, TargetText));
+        exit(BlobServicesApiImpl.GetBlobAsText(BlobName, TargetText, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// Receives a Blob as Text from a Container.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="TargetText">The result Text containg the content of the Blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure GetBlobAsText(BlobName: Text; var TargetText: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.GetBlobAsText(BlobName, TargetText, OptionalParameters));
     end;
 
     /// <summary>
@@ -221,7 +422,9 @@ codeunit 9053 "ABS Blob Client"
     /// Sets the expiry time relative to the file creation time, x-ms-expiry-time must be specified as the number of milliseconds to elapse from creation time.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
     /// </summary>    
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="ExpiryTime">Number if miliseconds (Integer) until the expiration.</param>
+    /// <returns>An operation reponse object</returns>
     procedure SetBlobExpiryRelativeToCreation(BlobName: Text; ExpiryTime: Integer): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.SetBlobExpiryRelativeToCreation(BlobName, ExpiryTime));
@@ -231,8 +434,10 @@ codeunit 9053 "ABS Blob Client"
     /// The Set Blob Expiry operation sets an expiry time on an existing blob. This operation is only allowed on Hierarchical Namespace enabled accounts
     /// Sets the expiry relative to the current time, x-ms-expiry-time must be specified as the number of milliseconds to elapse from now.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
-    /// </summary>    
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>    
     /// <param name="ExpiryTime">Number if miliseconds (Integer) until the expiration.</param>
+    /// <returns>An operation reponse object</returns>
     procedure SetBlobExpiryRelativeToNow(BlobName: Text; ExpiryTime: Integer): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.SetBlobExpiryRelativeToNow(BlobName, ExpiryTime));
@@ -242,8 +447,10 @@ codeunit 9053 "ABS Blob Client"
     /// The Set Blob Expiry operation sets an expiry time on an existing blob. This operation is only allowed on Hierarchical Namespace enabled accounts
     /// Sets the expiry to an absolute DateTime
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-expiry
-    /// </summary>    
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>    
     /// <param name="ExpiryTime">Absolute DateTime for the expiration.</param>
+    /// <returns>An operation reponse object</returns>
     procedure SetBlobExpiryAbsolute(BlobName: Text; ExpiryTime: DateTime): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.SetBlobExpiryAbsolute(BlobName, ExpiryTime));
@@ -260,161 +467,94 @@ codeunit 9053 "ABS Blob Client"
     end;
 
     /// <summary>
-    /// The Get Blob Tags operation returns all user-defined tags for the specified blob, version, or snapshot.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-blob-tags
-    /// </summary>    
-    /// <param name="BlobTags">A XmlDocument which contains the Tags currently set on the Blob.</param>    
-    procedure GetBlobTags(BlobName: Text; var BlobTags: XmlDocument): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.GetBlobTags(BlobName, BlobTags));
-    end;
-
-    /// <summary>
     /// The Set Blob Tags operation sets user-defined tags for the specified blob as one or more key-value pairs.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-tags
-    /// </summary>    
+    /// </summary> 
+    /// <param name="BlobName">The name of the blob.</param>   
     /// <param name="Tags">A Dictionary of [Text, Text] which contains the Tags you want to set.</param>    
+    /// <returns>An operation reponse object</returns>
     procedure SetBlobTags(BlobName: Text; Tags: Dictionary of [Text, Text]): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.SetBlobTags(BlobName, Tags));
     end;
 
     /// <summary>
-    /// The Set Blob Tags operation sets user-defined tags for the specified blob as one or more key-value pairs.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/set-blob-tags
-    /// </summary>    
-    /// <param name="Tags">A Dictionary of [Text, Text] which contains the Tags you want to set.</param>    
-    procedure SetBlobTags(BlobName: Text; Tags: XmlDocument): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.SetBlobTags(BlobName, Tags));
-    end;
-
-    /// <summary>
-    /// The Find Blobs by Tags operation finds all blobs in the storage account whose tags match a given search expression.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/find-blobs-by-tags
+    /// The Delete Blob operation marks the specified blob or snapshot for deletion. The blob is later deleted during garbage collection.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-blob
     /// </summary>
-    /// <param name="SearchTags">A Dictionary of [Text, Text] containing the necessary tags to search for.</param>
-    /// <param name="FoundBlobs">XmlDocument containing the enumeration of found blobs</param>
-    procedure FindBlobsByTags(SearchTags: Dictionary of [Text, Text]; var FoundBlobs: XmlDocument): Codeunit "ABS Operation Response"
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure DeleteBlob(BlobName: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.FindBlobsByTags(SearchTags, FoundBlobs));
-    end;
-
-    /// <summary>
-    /// The Find Blobs by Tags operation finds all blobs in the storage account whose tags match a given search expression.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/find-blobs-by-tags
-    /// </summary>
-    /// <param name="SearchExpression">A search expression to find blobs by.</param>
-    /// <param name="FoundBlobs">XmlDocument containing the enumeration of found blobs</param>
-    procedure FindBlobsByTags(SearchExpression: Text; var FoundBlobs: XmlDocument): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.FindBlobsByTags(SearchExpression, FoundBlobs));
+        exit(BlobServicesApiImpl.DeleteBlob(BlobName, OptionalParameters));
     end;
 
     /// <summary>
     /// The Delete Blob operation marks the specified blob or snapshot for deletion. The blob is later deleted during garbage collection.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/delete-blob
     /// </summary>
-    procedure DeleteBlob(): Codeunit "ABS Operation Response"
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure DeleteBlob(BlobName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(BlobServicesApiImpl.DeleteBlob());
+        exit(BlobServicesApiImpl.DeleteBlob(BlobName, OptionalParameters));
     end;
 
     /// <summary>
     /// The Undelete Blob operation restores the contents and metadata of a soft deleted blob and any associated soft deleted snapshots (version 2017-07-29 or later)
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/undelete-blob
     /// </summary>
-    procedure UndeleteBlob(): Codeunit "ABS Operation Response"
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure UndeleteBlob(BlobName: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.UndeleteBlob());
+        exit(BlobServicesApiImpl.UndeleteBlob(BlobName, OptionalParameters));
+    end;
+
+    /// <summary>
+    /// The Undelete Blob operation restores the contents and metadata of a soft deleted blob and any associated soft deleted snapshots (version 2017-07-29 or later)
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/undelete-blob
+    /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure UndeleteBlob(BlobName: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
+    begin
+        exit(BlobServicesApiImpl.UndeleteBlob(BlobName, OptionalParameters));
     end;
 
     /// <summary>
     /// The Copy Blob operation copies a blob to a destination within the storage account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/copy-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="SourceName">Specifies the name of the source blob or file.</param>
-    procedure CopyBlob(SourceName: Text): Codeunit "ABS Operation Response"
+    /// <returns>An operation reponse object</returns>
+    procedure CopyBlob(BlobName: Text; SourceName: Text): Codeunit "ABS Operation Response"
     var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
         LeaseId: Guid;
     begin
-        exit(CopyBlob(SourceName, LeaseId));
+        exit(CopyBlob(BlobName, SourceName, LeaseId, OptionalParameters));
     end;
 
     /// <summary>
     /// The Copy Blob operation copies a blob to a destination within the storage account.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/copy-blob
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="SourceName">Specifies the name of the source blob or file.</param>
     /// <param name="LeaseId">Required if the destination blob has an active lease. The lease ID specified must match the lease ID of the destination blob.</param>
-    procedure CopyBlob(SourceName: Text; LeaseId: Guid): Codeunit "ABS Operation Response"
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure CopyBlob(BlobName: Text; SourceName: Text; LeaseId: Guid; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(BlobServicesApiImpl.CopyBlob(SourceName, LeaseId));
-    end;
-
-    /// <summary>
-    /// The Copy Blob From URL operation copies a blob to a destination within the storage account synchronously for source blob sizes up to 256 MiB
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/copy-blob-from-url
-    /// </summary>
-    /// <param name="SourceUri">Specifies the URL of the source blob.</param>
-    procedure CopyBlobFromURL(SourceUri: Text): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.CopyBlobFromURL(SourceUri));
-    end;
-
-    /// <summary>
-    /// The Put Block operation creates a new block to be committed as part of a blob.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block
-    /// </summary>
-    /// <param name="SourceContent">Variant containing the content that should be added to the page</param>
-    procedure PutBlock(SourceContent: Variant): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.PutBlock(SourceContent));
-    end;
-    /// <summary>
-    /// The Put Block operation creates a new block to be committed as part of a blob.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block
-    /// </summary>
-    /// <param name="SourceContent">Variant containing the content that should be added to the page</param>
-    /// <param name="BlockId">A valid Base64 string value that identifies the block</param>
-    procedure PutBlock(SourceContent: Variant; BlockId: Text): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.PutBlock(SourceContent, BlockId));
-    end;
-
-    /// <summary>
-    /// The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-block-list
-    /// </summary>
-    /// <param name="BlockListType">Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together.</param>
-    /// <param name="CommitedBlocks">Dictionary of [Text, Integer] containing the list of commited blocks (BLockId and Size)</param>
-    /// <param name="UncommitedBlocks">Dictionary of [Text, Integer] containing the list of uncommited blocks (BLockId and Size)</param>
-    procedure GetBlockList(BlockListType: Enum "ABS Block List Type"; var CommitedBlocks: Dictionary of [Text, Integer]; var UncommitedBlocks: Dictionary of [Text, Integer]): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.GetBlockList(BlockListType, CommitedBlocks, UncommitedBlocks));
-    end;
-
-    /// <summary>
-    /// The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-block-list
-    /// </summary>
-    /// <param name="BlockList">XmlDocument containing the Block List.</param>
-    procedure GetBlockList(var BlockList: XmlDocument): Codeunit "ABS Operation Response"
-    var
-        BlockListType: Enum "ABS Block List Type";
-    begin
-        exit(GetBlockList(BlockListType::Committed, BlockList)); // default API value is "committed"
-    end;
-
-    /// <summary>
-    /// The Get Block List operation retrieves the list of blocks that have been uploaded as part of a block blob.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/get-block-list
-    /// </summary>
-    /// <param name="BlockListType">Specifies whether to return the list of committed blocks, the list of uncommitted blocks, or both lists together.</param>
-    /// <param name="BlockList">XmlDocument containing the Block List.</param>
-    procedure GetBlockList(BlockListType: Enum "ABS Block List Type"; var BlockList: XmlDocument): Codeunit "ABS Operation Response"
-    begin
-        exit(BlobServicesApiImpl.GetBlockList(BlockListType, BlockList));
+        exit(BlobServicesApiImpl.CopyBlob(BlobName, SourceName, LeaseId, OptionalParameters));
     end;
 
     /// <summary>
@@ -423,29 +563,39 @@ codeunit 9053 "ABS Blob Client"
     /// </summary>
     /// <param name="CommitedBlocks">Dictionary of [Text, Integer] containing the list of commited blocks that should be put to the Blob</param>
     /// <param name="UncommitedBlocks">Dictionary of [Text, Integer] containing the list of uncommited blocks that should be put to the Blob</param>
+    /// <returns>An operation reponse object</returns>
     procedure PutBlockList(CommitedBlocks: Dictionary of [Text, Integer]; UncommitedBlocks: Dictionary of [Text, Integer]): Codeunit "ABS Operation Response"
     begin
         exit(BlobServicesApiImpl.PutBlockList(CommitedBlocks, UncommitedBlocks));
     end;
 
     /// <summary>
-    /// The Put Block List operation writes a blob by specifying the list of block IDs that make up the blob.
-    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block-list
+    /// The Put Block From URL operation creates a new block to be committed as part of a blob where the contents are read from a URL.
+    /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block-from-url
     /// </summary>
-    procedure PutBlockList(BlockList: XmlDocument): Codeunit "ABS Operation Response"
+    /// <param name="BlobName">The name of the blob.</param>
+    /// <param name="SourceUri">Specifies the name of the source block blob.</param>
+    /// <param name="BlockId">Specifies the BlockId that should be put.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlockFromURL(BlobName: Text; SourceUri: Text; BlockId: Text): Codeunit "ABS Operation Response"
+    var
+        OptionalParameters: Codeunit "ABS Optional Parameters";
     begin
-        exit(BlobServicesApiImpl.PutBlockList(BlockList));
+        exit(BlobServicesApiImpl.PutBlockFromURL(BlobName, SourceUri, BlockId, OptionalParameters));
     end;
 
     /// <summary>
     /// The Put Block From URL operation creates a new block to be committed as part of a blob where the contents are read from a URL.
     /// see: https://docs.microsoft.com/en-us/rest/api/storageservices/put-block-from-url
     /// </summary>
+    /// <param name="BlobName">The name of the blob.</param>
     /// <param name="SourceUri">Specifies the name of the source block blob.</param>
     /// <param name="BlockId">Specifies the BlockId that should be put.</param>
-    procedure PutBlockFromURL(SourceUri: Text; BlockId: Text): Codeunit "ABS Operation Response"
+    /// <param name="OptionalParameters">Optional parameters to pass.</param>
+    /// <returns>An operation reponse object</returns>
+    procedure PutBlockFromURL(BlobName: Text; SourceUri: Text; BlockId: Text; OptionalParameters: Codeunit "ABS Optional Parameters"): Codeunit "ABS Operation Response"
     begin
-        exit(BlobServicesApiImpl.PutBlockFromURL(SourceUri, BlockId));
+        exit(BlobServicesApiImpl.PutBlockFromURL(BlobName, SourceUri, BlockId, OptionalParameters));
     end;
 
     var
